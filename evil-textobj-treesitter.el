@@ -31,12 +31,27 @@
   (file-name-as-directory
    (concat evil-textobj-treesitter--dir "queries")))
 
-; TODO: add all supported items to this list
+; TODO: document how to add more languages
 (defvar evil-textobj-treesitter-queries (make-hash-table)
   "Map between `major-mode' and their language bundles of tree sitter queries.")
-(puthash 'rust-mode "rust" evil-textobj-treesitter-queries)
-(puthash 'python-mode "python" evil-textobj-treesitter-queries)
+(puthash 'bash-mode "bash" evil-textobj-treesitter-queries)
+(puthash 'bibtex-mode "bibtex" evil-textobj-treesitter-queries)
+(puthash 'c-mode "c" evil-textobj-treesitter-queries)
+(puthash 'csharp-mode "c_sharp" evil-textobj-treesitter-queries)
+(puthash 'cpp-mode "cpp" evil-textobj-treesitter-queries)
+(puthash 'dart-mode "dart" evil-textobj-treesitter-queries)
 (puthash 'go-mode "go" evil-textobj-treesitter-queries)
+(puthash 'html-mode "html" evil-textobj-treesitter-queries)
+(puthash 'java-mode "java" evil-textobj-treesitter-queries)
+(puthash 'javascript-mode "javascript" evil-textobj-treesitter-queries)
+(puthash 'julia-mode "julia" evil-textobj-treesitter-queries)
+(puthash 'latex-mode "latex" evil-textobj-treesitter-queries)
+(puthash 'lua-mode "lua" evil-textobj-treesitter-queries)
+(puthash 'php-mode "php" evil-textobj-treesitter-queries)
+(puthash 'python-mode "python" evil-textobj-treesitter-queries)
+(puthash 'ruby-mode "ruby" evil-textobj-treesitter-queries)
+(puthash 'rust-mode "rust" evil-textobj-treesitter-queries)
+(puthash 'typescript-mode "typescript" evil-textobj-treesitter-queries)
 
 ;;;###autoload
 (defun evil-textobj-treesitter--nodes-within (nodes)
