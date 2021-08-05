@@ -32,3 +32,8 @@ Below is my personal config:
       (define-key evil-inner-text-objects-map "n" (evil-textobj-treesitter-get-textobj "conditionalp.inner")))
 ```
 
+---
+
+*This is my first Emacs package, still just figuring things out. There
+is definitely some things that I could fix on this, feel free to let
+me know if there is something that I can improve.*
