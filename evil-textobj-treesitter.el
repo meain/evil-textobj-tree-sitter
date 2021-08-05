@@ -1,7 +1,19 @@
-;;; evil-textobj-treesitter.el --- evil textobj treesitter
+;;; evil-textobj-treesitter.el --- Provides evil textobjects using treesitter. -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; Tree sitter queries are pulled from https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+;; This package is a port of nvim-treesitter/nvim-treesitter-textobjects.
+;; In fact we pulled pretty much all the queries from that repo.
+;; You can do a sample map like below.
+;; (define-key evil-outer-text-objects-map "f"
+;;             (evil-textobj-treesitter-get-textobj "function.outer"))
+;; `evil-textobj-treesitter-get-textobj' will return you a function
+;; that you can use in a define-key map.  You can pass in any of the
+;; supported queries as an arg of that function.  You can also pass in
+;; multiple queries as a list and we will match on all of them, ranked
+;; on which ones comes up first in the file.
+;; You can find a list of supported queries in the
+;; nvim-treesitter-textobjects repo at
+;; https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects
 
 ;;; Code:
 
