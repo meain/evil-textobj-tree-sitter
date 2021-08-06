@@ -1,4 +1,9 @@
-;;; evil-textobj-treesitter.el --- Provides evil textobjects using treesitter. -*- lexical-binding: t; -*-
+;;; evil-textobj-treesitter.el --- Provides evil textobjects using treesitter -*- lexical-binding: t; -*-
+
+;; URL: https://github.com/meain/evil-textobj-treesitter
+;; Keywords: evil, tree-sitter, text-object, convenience
+;; Package-Requires: ((emacs "25.1"))
+;; Version: 0.1
 
 ;;; Commentary:
 ;; This package is a port of nvim-treesitter/nvim-treesitter-textobjects.
