@@ -59,7 +59,7 @@
                           (rust-mode . "rust")
                           (rustic-mode . "rust")
                           (typescript-mode . "typescript"))))
-  (setf (map-elt tree-sitter-major-mode-language-alist
+  (setf (map-elt evil-textobj-treesitter-major-mode-language-alist
                  major-mode) lang-symbol))
 
 ;;;###autoload
@@ -91,7 +91,7 @@
 They will be order with captures with point inside them first then the
 ones that follow.  This will return n(COUNT) items."
   ;; TODO: handle missing language queries gracefully
-  (let* ((lang-file (alist-get major-mode tree-sitter-major-mode-language-alist))
+  (let* ((lang-file (alist-get major-mode evil-textobj-treesitter-major-mode-language-alist))
          (query-filename (concat evil-textobj-treesitter--queries-dir
                                  lang-file "/textobjects.scm"))
          (debugging-query (with-temp-buffer
