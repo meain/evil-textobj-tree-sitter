@@ -62,12 +62,11 @@
   (setf (map-elt evil-textobj-treesitter-major-mode-language-alist
                  major-mode) lang-symbol))
 
-;;;###autoload
 (defun evil-textobj-treesitter--nodes-within (nodes)
   "NODES which contain the current point insdie them ordered inside out."
   (sort (remove-if-not (lambda (x)
-                         (and (< (car (tsc-node-byte-range x)) (point))
-                              (> (cdr (tsc-node-byte-range x)) (point))))
+                         (< (car (tsc-node-byte-range x)) (point)
+                            (cdr (tsc-node-byte-range x))))
                        nodes)
         (lambda (x y)
           (< (+ (abs (- (point)
@@ -78,14 +77,12 @@
                 (abs (- (point)
                         (cdr (tsc-node-byte-range y)))))))))
 
-;;;###autoload
 (defun evil-textobj-treesitter--nodes-after (nodes)
   "NODES which contain the current point before them ordered top to bottom."
   (remove-if-not (lambda (x)
                    (> (car (tsc-node-byte-range x)) (point)))
                  nodes))
 
-;;;###autoload
 (defun evil-textobj-treesitter--get-nodes (group count)
   "Get a list of viable nodes based on GROUP value.
 They will be order with captures with point inside them first then the
@@ -114,7 +111,6 @@ ones that follow.  This will return n(COUNT) items."
             0
             count)))
 
-;;;###autoload
 (defun evil-textobj-treesitter--range (count beg end type ts-group)
   "Get the range of the closeset item of type `TS-GROUP'.
 Not processing `BEG', `END' as of now.  `COUNT' is supported even
@@ -143,6 +139,7 @@ provide the start and end as of now which is what we are doing.
 You can pass in multiple groups as a list and in that case as long as
 any one of them is vaild, it will be picked.  Check this url for
 available objects https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects"
+  (declare (debug t) (indent defun))
   (let* ((groups (if (eq (type-of group) 'string)
                      (list group)
                    group))
