@@ -29,6 +29,14 @@ Below is my from personal config:
       (define-key evil-inner-text-objects-map "c" (evil-textobj-treesitter-get-textobj "class.inner")))
 ```
 
+You can find a list of available textobjects at
+[nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects).
+We might not have support for all of them as
+[emacs-tree-sitter](https://github.com/ubolonton/emacs-tree-sitter)
+does not support all the same languages as of now. As for the list of
+languages that we support you can check the value of
+`evil-textobj-treesitter-major-mode-language-alist`.
+
 ---
 
 *This is my first Emacs package, still just figuring things out. There
