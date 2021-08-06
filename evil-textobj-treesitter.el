@@ -124,11 +124,11 @@ provide the start and end as of now which is what we are doing.
 `TYPE' can probably be used to append inner or outer."
   (let* ((nodes (evil-textobj-treesitter--get-nodes ts-group
                                                     count))
-         (range-min (apply 'min
+         (range-min (apply #'min
                            (seq-map (lambda (x)
                                       (car (tsc-node-byte-range x)))
                                     nodes)))
-         (range-max (apply 'max
+         (range-max (apply #'max
                            (seq-map (lambda (x)
                                       (cdr (tsc-node-byte-range x)))
                                     nodes))))
@@ -148,7 +148,7 @@ available objects https://github.com/nvim-treesitter/nvim-treesitter-textobjects
                    group))
          (funsymbol (intern (concat "evil-textobj-treesitter-function--"
                                     (mapconcat 'identity groups "-"))))
-         (interned-groups (map 'identity 'intern groups)))
+         (interned-groups (map 'identity #'intern groups)))
     `(evil-define-text-object ,funsymbol
        (count &optional beg end type)
        (evil-textobj-treesitter--range count beg
