@@ -23,35 +23,40 @@
 (defgroup evil-textobj-treesitter nil "Text objects based on treesitter for Evil"
   :group 'evil)
 
-(defconst evil-textobj-treesitter--dir
-  (file-name-directory (locate-library "evil-textobj-treesitter.el"))
+(defconst evil-textobj-treesitter--dir (file-name-directory (locate-library "evil-textobj-treesitter.el"))
   "The directory where the library `tree-sitter-langs' is located.")
 
-(defconst evil-textobj-treesitter--queries-dir
-  (file-name-as-directory
-   (concat evil-textobj-treesitter--dir "queries")))
+(defconst evil-textobj-treesitter--queries-dir (file-name-as-directory (concat evil-textobj-treesitter--dir "queries")))
 
-; TODO: document how to add more languages
-(defvar evil-textobj-treesitter-queries (make-hash-table)
-  "Map between `major-mode' and their language bundles of tree sitter queries.")
-(puthash 'bash-mode "bash" evil-textobj-treesitter-queries)
-(puthash 'bibtex-mode "bibtex" evil-textobj-treesitter-queries)
-(puthash 'c-mode "c" evil-textobj-treesitter-queries)
-(puthash 'csharp-mode "c_sharp" evil-textobj-treesitter-queries)
-(puthash 'cpp-mode "cpp" evil-textobj-treesitter-queries)
-(puthash 'dart-mode "dart" evil-textobj-treesitter-queries)
-(puthash 'go-mode "go" evil-textobj-treesitter-queries)
-(puthash 'html-mode "html" evil-textobj-treesitter-queries)
-(puthash 'java-mode "java" evil-textobj-treesitter-queries)
-(puthash 'javascript-mode "javascript" evil-textobj-treesitter-queries)
-(puthash 'julia-mode "julia" evil-textobj-treesitter-queries)
-(puthash 'latex-mode "latex" evil-textobj-treesitter-queries)
-(puthash 'lua-mode "lua" evil-textobj-treesitter-queries)
-(puthash 'php-mode "php" evil-textobj-treesitter-queries)
-(puthash 'python-mode "python" evil-textobj-treesitter-queries)
-(puthash 'ruby-mode "ruby" evil-textobj-treesitter-queries)
-(puthash 'rust-mode "rust" evil-textobj-treesitter-queries)
-(puthash 'typescript-mode "typescript" evil-textobj-treesitter-queries)
+                                        ; TODO: document how to add more languages
+(defcustom evil-textobj-treesitter-major-mode-language-alist nil
+  "Alist that maps major modes to tree-sitter language names."
+  :group 'evil-textobj-treesitter
+  :type '(alist :key-type symbol
+                :value-type string))
+(pcase-dolist (`(,major-mode . ,lang-symbol)
+               (reverse '((sh-mode . "bash")
+                          (shell-script-mode . "bash")
+                          (c-mode . "c")
+                          (csharp-mode . "csharp")
+                          (c++-mode . "cpp")
+                          (go-mode . "go")
+                          (html-mode . "html")
+                          (java-mode . "java")
+                          (javascript-mode . "javascript")
+                          (js-mode . "javascript")
+                          (js2-mode . "javascript")
+                          (js3-mode . "javascript")
+                          (julia-mode . "julia")
+                          (php-mode . "php")
+                          (python-mode . "python")
+                          (rjsx-mode . "javascript")
+                          (ruby-mode . "ruby")
+                          (rust-mode . "rust")
+                          (rustic-mode . "rust")
+                          (typescript-mode . "typescript"))))
+  (setf (map-elt tree-sitter-major-mode-language-alist
+                 major-mode) lang-symbol))
 
 ;;;###autoload
 (defun evil-textobj-treesitter--nodes-within (nodes)
@@ -81,9 +86,10 @@
   "Get a list of viable nodes based on GROUP value.
 They will be order with captures with point inside them first then the
 ones that follow.  This will return n(COUNT) items."
-  (let* ((lang-file (gethash major-mode evil-textobj-treesitter-queries))
-         (query-filename (concat evil-textobj-treesitter--queries-dir lang-file
-                                 "/textobjects.scm"))
+  ;; TODO: handle missing language queries gracefully
+  (let* ((lang-file (alist-get major-mode tree-sitter-major-mode-language-alist))
+         (query-filename (concat evil-textobj-treesitter--queries-dir
+                                 lang-file "/textobjects.scm"))
          (debugging-query (with-temp-buffer
                             (insert-file-contents query-filename)
                             (buffer-string)))
