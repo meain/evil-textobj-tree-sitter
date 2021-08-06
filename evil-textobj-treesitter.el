@@ -129,7 +129,9 @@ provide the start and end as of now which is what we are doing.
                                       (cdr (tsc-node-byte-range x)))
                                     nodes))))
     ;; Have to compute min and max like this as we might have nested functions
-    (evil-range range-min range-max)))
+    ;; We have to use `cl-callf byte-to-position` ot the positioning might be off for unicode chars
+    (evil-range (cl-callf byte-to-position range-min)
+                (cl-callf byte-to-position range-max))))
 
 ;;;###autoload
 (defmacro evil-textobj-treesitter-get-textobj (group)
