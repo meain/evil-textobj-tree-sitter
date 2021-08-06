@@ -22,7 +22,7 @@ Below is my from personal config:
                       :repo "meain/evil-textobj-treesitter"
                       :files (:defaults "queries"))
   :after tree-sitter
-  :init
+  :config
       (define-key evil-outer-text-objects-map "f" (evil-textobj-treesitter-get-textobj "function.outer"))
       (define-key evil-inner-text-objects-map "f" (evil-textobj-treesitter-get-textobj "function.inner"))
       (define-key evil-outer-text-objects-map "c" (evil-textobj-treesitter-get-textobj "class.outer"))

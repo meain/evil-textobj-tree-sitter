@@ -33,7 +33,6 @@
 
 (defconst evil-textobj-treesitter--queries-dir (file-name-as-directory (concat evil-textobj-treesitter--dir "queries")))
 
-                                        ; TODO: document how to add more languages
 (defcustom evil-textobj-treesitter-major-mode-language-alist nil
   "Alist that maps major modes to tree-sitter language names."
   :group 'evil-textobj-treesitter
