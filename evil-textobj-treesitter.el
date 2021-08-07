@@ -121,20 +121,22 @@ thought it does not actually make sense in most cases as if we do
 3-in-func the selections will not be continues, but we can only
 provide the start and end as of now which is what we are doing.
 `TYPE' can probably be used to append inner or outer."
-  (let* ((nodes (evil-textobj-treesitter--get-nodes ts-group
-                                                    count))
-         (range-min (apply #'min
-                           (seq-map (lambda (x)
-                                      (car (tsc-node-byte-range x)))
-                                    nodes)))
-         (range-max (apply #'max
-                           (seq-map (lambda (x)
-                                      (cdr (tsc-node-byte-range x)))
-                                    nodes))))
-    ;; Have to compute min and max like this as we might have nested functions
-    ;; We have to use `cl-callf byte-to-position` ot the positioning might be off for unicode chars
-    (evil-range (cl-callf byte-to-position range-min)
-                (cl-callf byte-to-position range-max))))
+  (if (equal tree-sitter-mode nil)
+      (message "tree-sitter-mode not enabled for buffer")
+    (let* ((nodes (evil-textobj-treesitter--get-nodes ts-group
+                                                      count))
+           (range-min (apply #'min
+                             (seq-map (lambda (x)
+                                        (car (tsc-node-byte-range x)))
+                                      nodes)))
+           (range-max (apply #'max
+                             (seq-map (lambda (x)
+                                        (cdr (tsc-node-byte-range x)))
+                                      nodes))))
+      ;; Have to compute min and max like this as we might have nested functions
+      ;; We have to use `cl-callf byte-to-position` ot the positioning might be off for unicode chars
+      (evil-range (cl-callf byte-to-position range-min)
+                  (cl-callf byte-to-position range-max)))))
 
 ;;;###autoload
 (defmacro evil-textobj-treesitter-get-textobj (group)
