@@ -67,7 +67,7 @@
 
 (defun evil-textobj-treesitter--nodes-within (nodes)
   "NODES which contain the current point insdie them ordered inside out."
-  (sort (remove-if-not (lambda (x)
+  (sort (cl-remove-if-not (lambda (x)
                          (< (car (tsc-node-byte-range x)) (point)
                             (cdr (tsc-node-byte-range x))))
                        nodes)
@@ -82,7 +82,7 @@
 
 (defun evil-textobj-treesitter--nodes-after (nodes)
   "NODES which contain the current point before them ordered top to bottom."
-  (remove-if-not (lambda (x)
+  (cl-remove-if-not (lambda (x)
                    (> (car (tsc-node-byte-range x)) (point)))
                  nodes))
 
@@ -100,11 +100,11 @@ ones that follow.  This will return n(COUNT) items."
          (root-node (tsc-root-node tree-sitter-tree))
          (query (tsc-make-query tree-sitter-language debugging-query))
          (captures (tsc-query-captures query root-node #'tsc--buffer-substring-no-properties))
-         (filtered-captures (remove-if-not (lambda (x)
+         (filtered-captures (cl-remove-if-not (lambda (x)
                                              (member (car x) group))
                                            captures))
          (nodes (seq-map #'cdr filtered-captures))
-         (nodes-nodupes (remove-duplicates nodes
+         (nodes-nodupes (cl-remove-duplicates nodes
                                            :test (lambda (x y)
                                                    (and (= (car (tsc-node-byte-range x)) (car (tsc-node-byte-range y)))
                                                         (= (cdr (tsc-node-byte-range x)) (cdr (tsc-node-byte-range y)))))))
