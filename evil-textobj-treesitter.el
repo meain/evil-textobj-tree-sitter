@@ -147,7 +147,7 @@ available objects https://github.com/nvim-treesitter/nvim-treesitter-textobjects
                    group))
          (funsymbol (intern (concat "evil-textobj-treesitter-function--"
                                     (mapconcat 'identity groups "-"))))
-         (interned-groups (map 'identity #'intern groups)))
+         (interned-groups (mapcar #'intern groups)))
     `(evil-define-text-object ,funsymbol
        (count &optional beg end type)
        (evil-textobj-treesitter--range count beg
