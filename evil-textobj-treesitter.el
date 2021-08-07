@@ -110,7 +110,7 @@ ones that follow.  This will return n(COUNT) items."
                                                         (= (cdr (tsc-node-byte-range x)) (cdr (tsc-node-byte-range y)))))))
          (nodes-within (evil-textobj-treesitter--nodes-within nodes-nodupes))
          (nodes-after (evil-textobj-treesitter--nodes-after nodes-nodupes)))
-    (subseq (append nodes-within nodes-after)
+    (cl-subseq (append nodes-within nodes-after)
             0
             count)))
 
