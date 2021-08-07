@@ -68,9 +68,9 @@
 (defun evil-textobj-treesitter--nodes-within (nodes)
   "NODES which contain the current point insdie them ordered inside out."
   (sort (cl-remove-if-not (lambda (x)
-                         (< (car (tsc-node-byte-range x)) (point)
-                            (cdr (tsc-node-byte-range x))))
-                       nodes)
+                            (< (car (tsc-node-byte-range x)) (point)
+                               (cdr (tsc-node-byte-range x))))
+                          nodes)
         (lambda (x y)
           (< (+ (abs (- (point)
                         (car (tsc-node-byte-range x))))
@@ -83,8 +83,8 @@
 (defun evil-textobj-treesitter--nodes-after (nodes)
   "NODES which contain the current point before them ordered top to bottom."
   (cl-remove-if-not (lambda (x)
-                   (> (car (tsc-node-byte-range x)) (point)))
-                 nodes))
+                      (> (car (tsc-node-byte-range x)) (point)))
+                    nodes))
 
 (defun evil-textobj-treesitter--get-nodes (group count)
   "Get a list of viable nodes based on GROUP value.
@@ -101,18 +101,18 @@ ones that follow.  This will return n(COUNT) items."
          (query (tsc-make-query tree-sitter-language debugging-query))
          (captures (tsc-query-captures query root-node #'tsc--buffer-substring-no-properties))
          (filtered-captures (cl-remove-if-not (lambda (x)
-                                             (member (car x) group))
-                                           captures))
+                                                (member (car x) group))
+                                              captures))
          (nodes (seq-map #'cdr filtered-captures))
          (nodes-nodupes (cl-remove-duplicates nodes
-                                           :test (lambda (x y)
-                                                   (and (= (car (tsc-node-byte-range x)) (car (tsc-node-byte-range y)))
-                                                        (= (cdr (tsc-node-byte-range x)) (cdr (tsc-node-byte-range y)))))))
+                                              :test (lambda (x y)
+                                                      (and (= (car (tsc-node-byte-range x)) (car (tsc-node-byte-range y)))
+                                                           (= (cdr (tsc-node-byte-range x)) (cdr (tsc-node-byte-range y)))))))
          (nodes-within (evil-textobj-treesitter--nodes-within nodes-nodupes))
          (nodes-after (evil-textobj-treesitter--nodes-after nodes-nodupes)))
     (cl-subseq (append nodes-within nodes-after)
-            0
-            count)))
+               0
+               count)))
 
 (defun evil-textobj-treesitter--range (count beg end type ts-group)
   "Get the range of the closeset item of type `TS-GROUP'.
