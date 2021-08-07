@@ -2,7 +2,7 @@
 
 ;; URL: https://github.com/meain/evil-textobj-treesitter
 ;; Keywords: evil, tree-sitter, text-object, convenience
-;; Package-Requires: ((emacs "25.1") (evil "1.0.0") (tree-sitter "0.15.0"))
+;; Package-Requires: ((emacs "25.1") (evil "1.0.0") (tree-sitter "0.15.0") (tree-sitter-langs "0.10.0"))
 ;; Version: 0.1
 
 ;;; Commentary:
@@ -24,6 +24,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (require 'evil)
 (require 'tree-sitter)
 
