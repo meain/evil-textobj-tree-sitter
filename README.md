@@ -12,10 +12,11 @@ function,class,comment etc textobjects in multiple languages.
 
 # Installation & Usage
 
-I will pretty soon put this up on melpa as soon as I figure out
-how to do it, but for now you can use `straight` or `quelpa` to
-install. By defaul, the lib does not provide any keybindings, but it
-should be relatively easy to add them.
+I am working on submitting this to melpa, but for now you can use
+`straight` or `quelpa` to install. By default, the lib does not provide
+any keybindings, but it should be relatively easy to add them.
+
+> This only works if you have properly setup [`tree-sitter`](https://github.com/emacs-tree-sitter/elisp-tree-sitter)
 
 Below is my from personal config:
 
