@@ -8,7 +8,7 @@
 ;;; Commentary:
 ;; This package is a port of nvim-treesitter/nvim-treesitter-textobjects.
 ;; This package will let you create evil textobjects using the power
-;; of treesitter grammers.  You can easily create
+;; of treesitter grammars.  You can easily create
 ;; function,class,comment etc textobjects in multiple languages.
 ;;
 ;; You can do a sample map like below to create a function textobj.

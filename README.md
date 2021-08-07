@@ -7,7 +7,7 @@ Tree-sitter powered textobjects for evil mode in Emacs.
 > This is more or less a port of [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects).
 
 This package will let you create evil textobjects using the power of
-treesitter grammers. You can easily create
+treesitter grammars. You can easily create
 function,class,comment etc textobjects in multiple languages.
 
 # Installation & Usage
