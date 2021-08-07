@@ -7,8 +7,11 @@
 
 ;;; Commentary:
 ;; This package is a port of nvim-treesitter/nvim-treesitter-textobjects.
-;; In fact we pulled pretty much all the queries from that repo.
-;; You can do a sample map like below.
+;; This package will let you create evil textobjects using the power
+;; of treesitter grammers.  You can easily create
+;; function,class,comment etc textobjects in multiple languages.
+;;
+;; You can do a sample map like below to create a function textobj.
 ;; (define-key evil-outer-text-objects-map "f"
 ;;             (evil-textobj-treesitter-get-textobj "function.outer"))
 ;; `evil-textobj-treesitter-get-textobj' will return you a function
@@ -16,9 +19,8 @@
 ;; supported queries as an arg of that function.  You can also pass in
 ;; multiple queries as a list and we will match on all of them, ranked
 ;; on which ones comes up first in the file.
-;; You can find a list of supported queries in the
-;; nvim-treesitter-textobjects repo at
-;; https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects
+;; You can find more info in the  README.md file at
+;; https://github.com/meain/evil-textobj-treesitter
 
 ;;; Code:
 
