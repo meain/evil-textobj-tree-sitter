@@ -1,0 +1,30 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - testing
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        emacs_version:
+          # - 25.1
+          # - 26.3
+          - 27.1
+          # - snapshot
+    steps:
+    - uses: actions/checkout@v2
+    - uses: purcell/setup-emacs@master
+      with:
+        version: ${{ matrix.emacs_version }}
+    - run: curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python
+    - run: echo "/home/runner/.cask/bin" >> $GITHUB_PATH
+    - run: cask install
+    - run: make compile
+    - run: make lint
+    # - run: make test
