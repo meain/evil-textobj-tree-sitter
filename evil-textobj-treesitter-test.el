@@ -8,7 +8,7 @@
   "Zero check blank test."
   (should (equal 0 0)))
 
-(ert-deftest evil-textobj-treesitter-within-nounicode-test
+(ert-deftest evil-textobj-treesitter-within-unicode-test
     ()
   "Simple check with point inside the calling thigy and no unicode chars"
   (let* ((bufname (concat (make-temp-name "evil-textobj-treesitter-test--")
@@ -16,7 +16,7 @@
          (filename (concat "/tmp/" bufname)))
     (find-file filename)
     (with-current-buffer bufname
-      (insert "# Lukasz
+      (insert "# Łukasz
 def test():
     print('hello')")
       (tree-sitter-mode)
@@ -32,7 +32,7 @@ def test():
          (filename (concat "/tmp/" bufname)))
     (find-file filename)
     (with-current-buffer bufname
-      (insert "# Łukasz
+      (insert "# Lukasz
 def test():
     print('hello')")
       (tree-sitter-mode)
@@ -49,7 +49,7 @@ def test():
          (filename (concat "/tmp/" bufname)))
     (find-file filename)
     (with-current-buffer bufname
-      (insert "# Łukasz
+      (insert "# Lukasz
 def test():
     print('hello')")
       (goto-char 1)
