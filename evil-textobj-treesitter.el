@@ -134,8 +134,12 @@ are doing.  `TYPE' can probably be used to append inner or outer."
                                       nodes))))
       ;; Have to compute min and max like this as we might have nested functions
       ;; We have to use `cl-callf byte-to-position` ot the positioning might be off for unicode chars
-      (evil-range (cl-callf byte-to-position range-min)
-                  (cl-callf byte-to-position range-max)))))
+      (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))
+
+(defun evil-textobj-treesitter--textobj (count ts-group)
+  (let ((range (evil-textobj-treesitter--range count ts-group)))
+    (evil-range (car range)
+                (cdr range))))
 
 ;;;###autoload
 (defmacro evil-textobj-treesitter-get-textobj (group)
@@ -152,7 +156,9 @@ available objects https://github.com/nvim-treesitter/nvim-treesitter-textobjects
          (interned-groups (mapcar #'intern groups)))
     `(evil-define-text-object ,funsymbol
        (count &rest _)
-       (evil-textobj-treesitter--range count ',interned-groups))))
+       (let ((range (evil-textobj-treesitter--range count ',interned-groups)))
+         (evil-range (car range)
+                     (cdr range))))))
 
 (provide 'evil-textobj-treesitter)
 ;;; evil-textobj-treesitter.el ends here

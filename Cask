@@ -4,6 +4,7 @@
 (package-file "evil-textobj-treesitter.el")
 
 (development
+ (depends-on "ert")
  (depends-on "package-lint")
  (depends-on "evil")
  (depends-on "tree-sitter")

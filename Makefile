@@ -26,9 +26,8 @@ lint:
 	--eval "(advice-add 'package-lint--check-provide-form :around 'ignore)" \
 	-f package-lint-batch-and-exit *.el
 
-# test: elpa
-# 	$(CASK) exec $(EMACS) -Q -batch $(LOADPATH) $(TESTPATH) \
-# -l evil-collection-test.el -l evil-collection-magit-tests.el -f ert-run-tests-batch-and-exit
+test: elpa
+	$(CASK) exec $(EMACS) -Q -batch $(LOADPATH) $(TESTPATH) \
+-l evil-textobj-treesitter-test.el -f ert-run-tests-batch-and-exit
 
-# .PHONY: compile lint test
-.PHONY: compile lint
+.PHONY: compile lint test
