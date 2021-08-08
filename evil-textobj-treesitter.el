@@ -114,13 +114,12 @@ ones that follow.  This will return n(COUNT) items."
                0
                count)))
 
-(defun evil-textobj-treesitter--range (count beg end type ts-group)
+(defun evil-textobj-treesitter--range (count ts-group)
   "Get the range of the closeset item of type `TS-GROUP'.
-Not processing `BEG', `END' as of now.  `COUNT' is supported even
-thought it does not actually make sense in most cases as if we do
-3-in-func the selections will not be continues, but we can only
-provide the start and end as of now which is what we are doing.
-`TYPE' can probably be used to append inner or outer."
+`COUNT' is supported even thought it does not actually make sense in
+most cases as if we do 3-in-func the selections will not be continues,
+but we can only provide the start and end as of now which is what we
+are doing.  `TYPE' can probably be used to append inner or outer."
   (if (equal tree-sitter-mode nil)
       (message "tree-sitter-mode not enabled for buffer")
     (let* ((nodes (evil-textobj-treesitter--get-nodes ts-group
@@ -152,9 +151,8 @@ available objects https://github.com/nvim-treesitter/nvim-treesitter-textobjects
                                     (mapconcat 'identity groups "-"))))
          (interned-groups (mapcar #'intern groups)))
     `(evil-define-text-object ,funsymbol
-       (count &optional beg end type)
-       (evil-textobj-treesitter--range count beg
-                                       end type ',interned-groups))))
+       (count &rest _)
+       (evil-textobj-treesitter--range count ',interned-groups))))
 
 (provide 'evil-textobj-treesitter)
 ;;; evil-textobj-treesitter.el ends here
