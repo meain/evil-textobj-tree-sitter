@@ -24,10 +24,16 @@ lint:
 	--eval "(advice-add 'package-lint--check-symbol-separators :around 'ignore)" \
 	--eval "(advice-add 'package-lint--check-defs-prefix :around 'ignore)" \
 	--eval "(advice-add 'package-lint--check-provide-form :around 'ignore)" \
-	-f package-lint-batch-and-exit *.el
+	-f package-lint-batch-and-exit evil-textobj-treesitter.el
 
 test: elpa
 	$(CASK) exec $(EMACS) -Q -batch $(LOADPATH) $(TESTPATH) \
 -l evil-textobj-treesitter-test.el -f ert-run-tests-batch-and-exit
 
-.PHONY: compile lint test
+elpa: $(ELPA_DIR)
+$(ELPA_DIR): Cask
+	$(CASK) install
+	mkdir -p $(ELPA_DIR)
+	touch $@
+
+.PHONY: compile lint test elpa

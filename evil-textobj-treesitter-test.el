@@ -1,3 +1,8 @@
+;;; evil-textobj-treesitter-test.el --- Tests for evil-textobj-treesitter -*- lexical-binding: t -*-
+
+(require 'tree-sitter-langs)
+(require 'evil-textobj-treesitter)
+
 (ert-deftest evil-textobj-treesitter-zero-test
     ()
   "Zero check blank test."
@@ -14,6 +19,7 @@
       (insert "# Lukasz
 def test():
     print('hello')")
+      (tree-sitter-mode)
       (goto-char 31)
       (should (equal (evil-textobj-treesitter--range 1
                                                      (list (intern "function.inner"))) (cons 26 40))))))
@@ -29,6 +35,7 @@ def test():
       (insert "# Łukasz
 def test():
     print('hello')")
+      (tree-sitter-mode)
       (goto-char 31)
       (should (equal (evil-textobj-treesitter--range 1
                                                      (list (intern "function.inner"))) (cons 26 40))))))
@@ -48,3 +55,5 @@ def test():
       (goto-char 1)
       (should (equal (evil-textobj-treesitter--range 1
                                                      (list (intern "function.inner"))) (cons 26 40))))))
+
+;;; evil-textobj-treesitter-test.el ends here
