@@ -22,7 +22,9 @@ def test():
       (tree-sitter-mode)
       (goto-char 31)
       (should (equal (evil-textobj-treesitter--range 1
-                                                     (list (intern "function.inner"))) (cons 26 40))))))
+                                                     (list (intern "function.inner"))) (cons 26 40))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
 
 (ert-deftest evil-textobj-treesitter-within-test
     ()
@@ -38,7 +40,9 @@ def test():
       (tree-sitter-mode)
       (goto-char 31)
       (should (equal (evil-textobj-treesitter--range 1
-                                                     (list (intern "function.inner"))) (cons 26 40))))))
+                                                     (list (intern "function.inner"))) (cons 26 40))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
 
 
 (ert-deftest evil-textobj-treesitter-lookahed-test
@@ -54,6 +58,8 @@ def test():
     print('hello')")
       (goto-char 1)
       (should (equal (evil-textobj-treesitter--range 1
-                                                     (list (intern "function.inner"))) (cons 26 40))))))
+                                                     (list (intern "function.inner"))) (cons 26 40))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
 
 ;;; evil-textobj-treesitter-test.el ends here
