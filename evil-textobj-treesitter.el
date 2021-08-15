@@ -137,12 +137,6 @@ are doing.  `TYPE' can probably be used to append inner or outer."
       ;; We have to use `cl-callf byte-to-position` ot the positioning might be off for unicode chars
       (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))
 
-(defun evil-textobj-treesitter--textobj (count ts-group)
-  "Primary entry point for creating a textobj from `TS-GROUP'.  `COUNT' denotes the number of objects to match."
-  (let ((range (evil-textobj-treesitter--range count ts-group)))
-    (evil-range (car range)
-                (cdr range))))
-
 ;;;###autoload
 (defmacro evil-textobj-treesitter-get-textobj (group)
   "Macro to create a textobj function from `GROUP'.
