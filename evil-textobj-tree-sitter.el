@@ -87,17 +87,21 @@
                       (> (car (tsc-node-byte-range x)) (point)))
                     nodes))
 
-(defun evil-textobj-tree-sitter--get-nodes (group count)
-  "Get a list of viable nodes based on GROUP value.
+(defun evil-textobj-tree-sitter--get-nodes (group count &optional query)
+  "Get a list of viable nodes based on `GROUP' value.
 They will be order with captures with point inside them first then the
-ones that follow.  This will return n(COUNT) items."
+ones that follow.  This will return n(`COUNT') items.  If a `QUERY'
+alist is provided, we make use of that instead of the builtin query
+set."
   ;; TODO: handle missing language queries gracefully
   (let* ((lang-file (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
          (query-filename (concat evil-textobj-tree-sitter--queries-dir
                                  lang-file "/textobjects.scm"))
-         (debugging-query (with-temp-buffer
-                            (insert-file-contents query-filename)
-                            (buffer-string)))
+         (debugging-query (if (eq query nil)
+                              (with-temp-buffer
+                                (insert-file-contents query-filename)
+                                (buffer-string))
+                            (alist-get major-mode query)))
          (root-node (tsc-root-node tree-sitter-tree))
          (query (tsc-make-query tree-sitter-language debugging-query))
          (captures (tsc-query-captures query root-node #'tsc--buffer-substring-no-properties))
@@ -115,16 +119,17 @@ ones that follow.  This will return n(COUNT) items."
                0
                count)))
 
-(defun evil-textobj-tree-sitter--range (count ts-group)
-  "Get the range of the closest item of type `TS-GROUP'.
+(defun evil-textobj-tree-sitter--range (count ts-group &optional query)
+  "Get the range of the closeset item of type `TS-GROUP'.
 `COUNT' is supported even thought it does not actually make sense in
 most cases as if we do 3-in-func the selections will not be continues,
 but we can only provide the start and end as of now which is what we
-are doing.  `TYPE' can probably be used to append inner or outer."
+are doing.  If a `QUERY' alist is provided, we make use of that
+instead of the builtin query set."
   (if (equal tree-sitter-mode nil)
       (message "tree-sitter-mode not enabled for buffer")
     (let* ((nodes (evil-textobj-tree-sitter--get-nodes ts-group
-                                                       count))
+                                                      count query))
            (range-min (apply #'min
                              (seq-map (lambda (x)
                                         (car (tsc-node-byte-range x)))
@@ -138,11 +143,18 @@ are doing.  `TYPE' can probably be used to append inner or outer."
       (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))
 
 ;;;###autoload
-(defmacro evil-textobj-tree-sitter-get-textobj (group)
+(defmacro evil-textobj-tree-sitter-get-textobj (group &optional query)
   "Macro to create a textobj function from `GROUP'.
 You can pass in multiple groups as a list and in that case as long as
-any one of them is valid, it will be picked.  Check this url for
-available objects https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects"
+any one of them is available, it will be picked.
+
+You can optionally pass in a alist mapping `major-mode' to their
+respective tree-sitter query in `QUERY' with named captures to use
+that instead of the default query list.  Check the README file in the
+repo to see how to use it.
+
+Check this url for builtin objects
+https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects"
   (declare (debug t) (indent defun))
   (let* ((groups (if (eq (type-of group) 'string)
                      (list group)
@@ -152,7 +164,8 @@ available objects https://github.com/nvim-treesitter/nvim-treesitter-textobjects
          (interned-groups (mapcar #'intern groups)))
     `(evil-define-text-object ,funsymbol
        (count &rest _)
-       (let ((range (evil-textobj-tree-sitter--range count ',interned-groups)))
+       (let ((range (evil-textobj-tree-sitter--range count ',interned-groups
+                                                    ,query)))
          (evil-range (car range)
                      (cdr range))))))
 

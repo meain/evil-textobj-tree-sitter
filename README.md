@@ -56,6 +56,24 @@ does not support all the same languages as of now. As for the list of
 languages that we support you can check the value of
 `evil-textobj-tree-sitter-major-mode-language-alist`.
 
+# Custom textobjects
+
+If you are not able to find the text object that you are looking for
+in the builtin list, you can create custom text objects by passing the
+a custom query with captures.
+
+For example if you want to create text object to select `import`
+objects, you can write something like below. You will have to provide
+the captures in all the languages that you will need this to work for.
+
+``` emacs-lisp
+;; The first arguemnt to `evil-textobj-treesitter-get-textobj' will be the capture group to use
+;; and the second arg will be an alist mapping major-mode to the corresponding query to use.
+(define-key evil-outer-text-objects-map "m" (evil-textobj-treesitter-get-textobj "import"
+                                              '((python-mode . [(import_statement) @import])
+                                                (rust-mode . [(use_declaration) @import]))))
+```
+
 # License
 
 The primary codebase is licensed under `Apache-2.0`. The queries have
