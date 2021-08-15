@@ -69,8 +69,8 @@
 (defun evil-textobj-treesitter--nodes-within (nodes)
   "NODES which contain the current point insdie them ordered inside out."
   (sort (cl-remove-if-not (lambda (x)
-                            (< (car (tsc-node-byte-range x)) (point)
-                               (cdr (tsc-node-byte-range x))))
+                            (and (<= (car (tsc-node-byte-range x)) (point))
+                                 (< (point) (cdr (tsc-node-byte-range x)))))
                           nodes)
         (lambda (x y)
           (< (+ (abs (- (point)
