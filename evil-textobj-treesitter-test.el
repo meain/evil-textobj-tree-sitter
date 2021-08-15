@@ -62,4 +62,22 @@ def test():
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
+(ert-deftest evil-textobj-treesitter-right-at-start-test
+    ()
+  "Checking for off by one errors at start"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-treesitter-test--")
+                          ".py"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "# Lukasz
+def test():
+    print('hello')")
+      (tree-sitter-mode)
+      (goto-char 10)
+      (should (equal (evil-textobj-treesitter--range 1
+                                                     (list (intern "function.outer"))) (cons 10 40))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
 ;;; evil-textobj-treesitter-test.el ends here
