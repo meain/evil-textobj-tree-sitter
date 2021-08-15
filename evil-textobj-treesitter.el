@@ -137,6 +137,7 @@ are doing.  `TYPE' can probably be used to append inner or outer."
       (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))
 
 (defun evil-textobj-treesitter--textobj (count ts-group)
+  "Primary entry point for creating a textobj from `TS-GROUP'.  `COUNT' denotes the number of objects to match."
   (let ((range (evil-textobj-treesitter--range count ts-group)))
     (evil-range (car range)
                 (cdr range))))
