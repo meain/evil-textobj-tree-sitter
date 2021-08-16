@@ -51,6 +51,13 @@ does not support all the same languages as of now. As for the list of
 languages that we support you can check the value of
 `evil-textobj-treesitter-major-mode-language-alist`.
 
+# License
+
+The primary codebase is licensed under `Apache-2.0`. The queries have
+be taken from
+[nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
+which is also licensed under the same license.
+
 ---
 
 _This is my first Emacs package, still just figuring things out. There
