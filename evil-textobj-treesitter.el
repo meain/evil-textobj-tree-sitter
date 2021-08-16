@@ -67,7 +67,7 @@
                  major-mode) lang-symbol))
 
 (defun evil-textobj-treesitter--nodes-within (nodes)
-  "NODES which contain the current point insdie them ordered inside out."
+  "NODES which contain the current point inside them ordered inside out."
   (sort (cl-remove-if-not (lambda (x)
                             (and (<= (car (tsc-node-byte-range x)) (point))
                                  (< (point) (cdr (tsc-node-byte-range x)))))
@@ -116,7 +116,7 @@ ones that follow.  This will return n(COUNT) items."
                count)))
 
 (defun evil-textobj-treesitter--range (count ts-group)
-  "Get the range of the closeset item of type `TS-GROUP'.
+  "Get the range of the closest item of type `TS-GROUP'.
 `COUNT' is supported even thought it does not actually make sense in
 most cases as if we do 3-in-func the selections will not be continues,
 but we can only provide the start and end as of now which is what we
@@ -141,7 +141,7 @@ are doing.  `TYPE' can probably be used to append inner or outer."
 (defmacro evil-textobj-treesitter-get-textobj (group)
   "Macro to create a textobj function from `GROUP'.
 You can pass in multiple groups as a list and in that case as long as
-any one of them is vaild, it will be picked.  Check this url for
+any one of them is valid, it will be picked.  Check this url for
 available objects https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects"
   (declare (debug t) (indent defun))
   (let* ((groups (if (eq (type-of group) 'string)
