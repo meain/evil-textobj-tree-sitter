@@ -56,6 +56,7 @@ def test():
       (insert "# Lukasz
 def test():
     print('hello')")
+      (tree-sitter-mode)
       (goto-char 1)
       (should (equal (evil-textobj-treesitter--range 1
                                                      (list (intern "function.inner"))) (cons 26 40))))
