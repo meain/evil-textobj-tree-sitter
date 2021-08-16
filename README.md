@@ -15,13 +15,18 @@ function,class,comment etc textobjects in multiple languages.
 
 # Installation & Usage
 
-I am working on submitting this to melpa, but for now you can use
-`straight` or `quelpa` to install. By default, the lib does not provide
+You can install `evil-textobj-treesitter` from melpa. Here is how you would do it using `use-package`:
+
+``` emacs-lisp
+(use-package evil-textobj-treesitter :ensure t)
+```
+
+By default, the lib does not provide
 any keybindings, but it should be relatively easy to add them.
 
 > This only works if you have properly setup [`tree-sitter`](https://github.com/emacs-tree-sitter/elisp-tree-sitter)
 
-Below is my from personal config:
+Below is my from personal config using `straight`:
 
 ```emacs-lisp
 (use-package evil-textobj-treesitter
