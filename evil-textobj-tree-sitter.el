@@ -114,10 +114,10 @@ set."
                                                       (and (= (car (tsc-node-byte-range x)) (car (tsc-node-byte-range y)))
                                                            (= (cdr (tsc-node-byte-range x)) (cdr (tsc-node-byte-range y)))))))
          (nodes-within (evil-textobj-tree-sitter--nodes-within nodes-nodupes))
-         (nodes-after (evil-textobj-tree-sitter--nodes-after nodes-nodupes)))
-    (cl-subseq (append nodes-within nodes-after)
-               0
-               count)))
+         (nodes-after (evil-textobj-tree-sitter--nodes-after nodes-nodupes))
+         (all-nodes (append nodes-within nodes-after)))
+      (if (> (length all-nodes) 0)
+          (cl-subseq all-nodes 0 count))))
 
 (defun evil-textobj-tree-sitter--range (count ts-group &optional query)
   "Get the range of the closeset item of type `TS-GROUP'.
@@ -128,19 +128,20 @@ are doing.  If a `QUERY' alist is provided, we make use of that
 instead of the builtin query set."
   (if (equal tree-sitter-mode nil)
       (message "tree-sitter-mode not enabled for buffer")
-    (let* ((nodes (evil-textobj-tree-sitter--get-nodes ts-group
-                                                      count query))
-           (range-min (apply #'min
-                             (seq-map (lambda (x)
-                                        (car (tsc-node-byte-range x)))
-                                      nodes)))
-           (range-max (apply #'max
-                             (seq-map (lambda (x)
-                                        (cdr (tsc-node-byte-range x)))
-                                      nodes))))
-      ;; Have to compute min and max like this as we might have nested functions
-      ;; We have to use `cl-callf byte-to-position` ot the positioning might be off for unicode chars
-      (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))
+    (let ((nodes (evil-textobj-tree-sitter--get-nodes ts-group
+                                                     count query)))
+      (if (not (eq nodes nil))
+          (let ((range-min (apply #'min
+                                   (seq-map (lambda (x)
+                                              (car (tsc-node-byte-range x)))
+                                            nodes)))
+                 (range-max (apply #'max
+                                   (seq-map (lambda (x)
+                                              (cdr (tsc-node-byte-range x)))
+                                            nodes))))
+            ;; Have to compute min and max like this as we might have nested functions
+            ;; We have to use `cl-callf byte-to-position` ot the positioning might be off for unicode chars
+            (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))))
 
 ;;;###autoload
 (defmacro evil-textobj-tree-sitter-get-textobj (group &optional query)
@@ -166,8 +167,10 @@ https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobje
        (count &rest _)
        (let ((range (evil-textobj-tree-sitter--range count ',interned-groups
                                                     ,query)))
-         (evil-range (car range)
-                     (cdr range))))))
+         (if (not (eq range nil))
+             (evil-range (car range)
+                         (cdr range))
+           (message (concat "No '" ,group "' text object found")))))))
 
 (provide 'evil-textobj-tree-sitter)
 ;;; evil-textobj-tree-sitter.el ends here
