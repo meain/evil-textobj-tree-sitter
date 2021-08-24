@@ -1,3 +1,7 @@
+**We recently change the package from `evil-textobj-treesitter` to `evil-textobj-tree-sitter` (with the extra `-`). All you will have to do is to chnage the package name that you use as well as update function `evil-textobj-treesitter-get-textobj` to `evil-textobj-tree-sitter-get-textobj`. You can see the related discussion [here](https://github.com/meain/evil-textobj-tree-sitter/issues/3).**
+
+---
+
 # evil-textobj-tree-sitter
 
 [![MELPA](https://melpa.org/packages/evil-textobj-treesitter-badge.svg)](https://melpa.org/#/evil-textobj-treesitter)
