@@ -21,8 +21,6 @@ function,class,comment etc textobjects in multiple languages.
 
 You can install `evil-textobj-tree-sitter` from melpa. Here is how you would do it using `use-package`:
 
-> **NOTE: The package will be soon renamed to `evil-textobj-tree-sitter` on [melpa](https://github.com/melpa/melpa/pull/7698)**
-
 ``` emacs-lisp
 (use-package evil-textobj-tree-sitter :ensure t)
 ```
