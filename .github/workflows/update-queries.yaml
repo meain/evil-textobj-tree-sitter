@@ -2,6 +2,7 @@ name: Update tree-siter queries
 on:
   schedule:
     - cron:  '0 13 * * 5'
+  workflow_dispatch:
 jobs:
   update-queries:
     runs-on: ubuntu-latest
