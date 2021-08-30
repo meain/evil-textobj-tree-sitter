@@ -67,9 +67,9 @@ objects, you can write something like below. You will have to provide
 the captures in all the languages that you will need this to work for.
 
 ``` emacs-lisp
-;; The first arguemnt to `evil-textobj-treesitter-get-textobj' will be the capture group to use
+;; The first arguemnt to `evil-textobj-tree-sitter-get-textobj' will be the capture group to use
 ;; and the second arg will be an alist mapping major-mode to the corresponding query to use.
-(define-key evil-outer-text-objects-map "m" (evil-textobj-treesitter-get-textobj "import"
+(define-key evil-outer-text-objects-map "m" (evil-textobj-tree-sitter-get-textobj "import"
                                               '((python-mode . [(import_statement) @import])
                                                 (rust-mode . [(use_declaration) @import]))))
 ```
