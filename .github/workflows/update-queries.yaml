@@ -20,3 +20,4 @@ jobs:
           title: Update tree-sitter queries
           body: Update tree-sitter queries to latest from nvim-treesitter/nvim-treesitter-textobjects
           branch: auto-update-queries
+          base: master
