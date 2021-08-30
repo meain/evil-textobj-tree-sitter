@@ -1,0 +1,25 @@
+name: Update tree-siter queries
+on:
+  push:
+    branches: [ query-update ]
+# on:
+#   schedule:
+#     - cron:  '1 3 * * *'
+jobs:
+  updateQueries:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Update repos
+        run: |
+          git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter-textobjects /tmp/nts
+          mv /tmp/nts/queries queries
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Update tree-sitter queries to <commitid>
+          title: Update tree-sitter queries
+          body: Update tree-sitter queries to <commitid>
+          branch: auto-update-queries
