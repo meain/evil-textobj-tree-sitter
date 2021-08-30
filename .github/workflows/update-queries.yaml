@@ -6,7 +6,7 @@ on:
 #   schedule:
 #     - cron:  '1 3 * * *'
 jobs:
-  updateQueries:
+  update-queries:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,7 +15,7 @@ jobs:
       - name: Update repos
         run: |
           git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter-textobjects /tmp/nts
-          rm queries && mv /tmp/nts/queries .
+          rm -r queries && mv /tmp/nts/queries .
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
