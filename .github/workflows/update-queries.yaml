@@ -15,11 +15,11 @@ jobs:
       - name: Update repos
         run: |
           git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter-textobjects /tmp/nts
-          mv /tmp/nts/queries queries
+          rm queries && mv /tmp/nts/queries .
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: Update tree-sitter queries to <commitid>
+          commit-message: Update tree-sitter queries to latest
           title: Update tree-sitter queries
-          body: Update tree-sitter queries to <commitid>
+          body: Update tree-sitter queries to latest from nvim-treesitter/nvim-treesitter-textobjects
           branch: auto-update-queries
