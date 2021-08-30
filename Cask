@@ -1,7 +1,7 @@
 (source gnu)
 (source melpa)
 
-(package-file "evil-textobj-treesitter.el")
+(package-file "evil-textobj-tree-sitter.el")
 
 (development
  (depends-on "ert")
