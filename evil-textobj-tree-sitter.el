@@ -156,25 +156,5 @@ available objects https://github.com/nvim-treesitter/nvim-treesitter-textobjects
          (evil-range (car range)
                      (cdr range))))))
 
-;;;###autoload
-(defmacro evil-textobj-treesitter-get-textobj (group)
-  "Util to help with name transition.
-We are changing from evil-textobj-treesitter to evil-textobj-tree-sitter.
-`GROUP' is just passed on directly to the actual function."
-  (declare (debug t) (indent defun))
-  (let* ((groups (if (eq (type-of group) 'string)
-                     (list group)
-                   group))
-         (funsymbol (intern (concat "evil-textobj-tree-sitter-function--"
-                                    (mapconcat 'identity groups "-"))))
-         (interned-groups (mapcar #'intern groups)))
-    (progn
-      (message "[DEPRECATED] Use evil-texobj-tree-sitter-get-textobj instead of evil-textojb-treesittter-get-textobj")
-      `(evil-define-text-object ,funsymbol
-         (count &rest _)
-         (let ((range (evil-textobj-tree-sitter--range count ',interned-groups)))
-           (evil-range (car range)
-                       (cdr range)))))))
-
 (provide 'evil-textobj-tree-sitter)
 ;;; evil-textobj-tree-sitter.el ends here
