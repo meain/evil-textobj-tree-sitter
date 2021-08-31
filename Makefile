@@ -19,16 +19,18 @@ lint:
 	--eval "(package-initialize)" \
 	--eval "(package-refresh-contents)" \
 	-l package-lint.el \
-	--eval "(advice-add 'package-lint--check-eval-after-load :around 'ignore)" \
-	--eval "(advice-add 'package-lint--check-version-regexp-list :around 'ignore)" \
-	--eval "(advice-add 'package-lint--check-symbol-separators :around 'ignore)" \
-	--eval "(advice-add 'package-lint--check-defs-prefix :around 'ignore)" \
-	--eval "(advice-add 'package-lint--check-provide-form :around 'ignore)" \
 	-f package-lint-batch-and-exit evil-textobj-tree-sitter.el
+
+checkdoc:
+	$(CASK) exec $(EMACS) -Q -batch	\
+	--eval '(find-file "evil-textobj-tree-sitter.el")' \
+	--eval '(setq checkdoc-create-error-function (lambda (text &rest _) (message "%s" text) (kill-emacs 1)))' \
+	-l checkdoc.el \
+	-f checkdoc
 
 test: elpa
 	$(CASK) exec $(EMACS) -Q -batch $(LOADPATH) $(TESTPATH) \
--l evil-textobj-tree-sitter-test.el -f ert-run-tests-batch-and-exit
+    -l evil-textobj-tree-sitter-test.el -f ert-run-tests-batch-and-exit
 
 elpa: $(ELPA_DIR)
 $(ELPA_DIR): Cask
@@ -36,4 +38,4 @@ $(ELPA_DIR): Cask
 	mkdir -p $(ELPA_DIR)
 	touch $@
 
-.PHONY: compile lint test elpa
+.PHONY: compile lint checkdoc test elpa
