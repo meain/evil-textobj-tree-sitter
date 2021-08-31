@@ -13,10 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         emacs_version:
-          # - 25.1
-          # - 26.3
-          - 27.1
-          # - snapshot
+          - 27.2
     steps:
     - uses: actions/checkout@v2
     - uses: purcell/setup-emacs@master
@@ -29,4 +26,4 @@ jobs:
     - run: make compile
     - run: make lint
     - run: make checkdoc
-    # - run: make test
+    - run: make test
