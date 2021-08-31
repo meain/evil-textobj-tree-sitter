@@ -28,4 +28,5 @@ jobs:
     - run: cask install
     - run: make compile
     - run: make lint
+    - run: make checkdoc
     # - run: make test
