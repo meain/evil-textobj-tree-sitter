@@ -27,6 +27,7 @@
 
 (require 'cl-lib)
 (require 'evil)
+(require 's)
 (require 'tree-sitter)
 
 (defgroup evil-textobj-tree-sitter nil "Text objects based on tree-sitter for Evil"
@@ -87,20 +88,41 @@
                       (> (car (tsc-node-byte-range x)) (point)))
                     nodes))
 
+(defun evil-textobj-tree-sitter--get-query (language top-level)
+  "Get tree sitter query for LANGUAGE.
+TOP-LEVEL is used to mention if we should load optional inherits.
+https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
+  (with-temp-buffer
+    (let ((filename (concat evil-textobj-tree-sitter--queries-dir
+                            language "/textobjects.scm")))
+      (if (file-exists-p filename)
+          (progn
+            (insert-file-contents filename)
+            (goto-char (point-min))
+            (let ((first-line-matches (s-match "^; *inherits *:? *\\([a-z_,()]+\\) *$"
+                                               (thing-at-point 'line t))))
+              (if first-line-matches
+                  (insert (s-join "\n"
+                                  (mapcar (lambda (x)
+                                            (if (s-starts-with-p "(" x)
+                                                (if top-level
+                                                    (evil-textobj-tree-sitter--get-query (substring x 1 -1)
+                                                                nil))
+                                              (evil-textobj-tree-sitter--get-query x nil)))
+                                          (split-string (cadr first-line-matches)
+                                                        ","))))))
+            (buffer-string))))))
+
 (defun evil-textobj-tree-sitter--get-nodes (group count &optional query)
   "Get a list of viable nodes based on `GROUP' value.
 They will be order with captures with point inside them first then the
 ones that follow.  This will return n(`COUNT') items.  If a `QUERY'
 alist is provided, we make use of that instead of the builtin query
 set."
-  ;; TODO: handle missing language queries gracefully
-  (let* ((lang-file (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
-         (query-filename (concat evil-textobj-tree-sitter--queries-dir
-                                 lang-file "/textobjects.scm"))
+  (let* ((lang-name (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
          (debugging-query (if (eq query nil)
-                              (with-temp-buffer
-                                (insert-file-contents query-filename)
-                                (buffer-string))
+                              (evil-textobj-tree-sitter--get-query lang-name
+                                                                   t)
                             (alist-get major-mode query)))
          (root-node (tsc-root-node tree-sitter-tree))
          (query (tsc-make-query tree-sitter-language debugging-query))
@@ -116,8 +138,8 @@ set."
          (nodes-within (evil-textobj-tree-sitter--nodes-within nodes-nodupes))
          (nodes-after (evil-textobj-tree-sitter--nodes-after nodes-nodupes))
          (all-nodes (append nodes-within nodes-after)))
-      (if (> (length all-nodes) 0)
-          (cl-subseq all-nodes 0 count))))
+    (if (> (length all-nodes) 0)
+        (cl-subseq all-nodes 0 count))))
 
 (defun evil-textobj-tree-sitter--range (count ts-group &optional query)
   "Get the range of the closeset item of type `TS-GROUP'.
@@ -129,16 +151,16 @@ instead of the builtin query set."
   (if (equal tree-sitter-mode nil)
       (message "tree-sitter-mode not enabled for buffer")
     (let ((nodes (evil-textobj-tree-sitter--get-nodes ts-group
-                                                     count query)))
+                                                      count query)))
       (if (not (eq nodes nil))
           (let ((range-min (apply #'min
-                                   (seq-map (lambda (x)
-                                              (car (tsc-node-byte-range x)))
-                                            nodes)))
-                 (range-max (apply #'max
-                                   (seq-map (lambda (x)
-                                              (cdr (tsc-node-byte-range x)))
-                                            nodes))))
+                                  (seq-map (lambda (x)
+                                             (car (tsc-node-byte-range x)))
+                                           nodes)))
+                (range-max (apply #'max
+                                  (seq-map (lambda (x)
+                                             (cdr (tsc-node-byte-range x)))
+                                           nodes))))
             ;; Have to compute min and max like this as we might have nested functions
             ;; We have to use `cl-callf byte-to-position` ot the positioning might be off for unicode chars
             (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))))
@@ -166,7 +188,7 @@ https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobje
     `(evil-define-text-object ,funsymbol
        (count &rest _)
        (let ((range (evil-textobj-tree-sitter--range count ',interned-groups
-                                                    ,query)))
+                                                     ,query)))
          (if (not (eq range nil))
              (evil-range (car range)
                          (cdr range))
