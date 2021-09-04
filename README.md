@@ -74,6 +74,24 @@ the captures in all the languages that you will need this to work for.
                                                 (rust-mode . [(use_declaration) @import]))))
 ```
 
+# Contributing new textobjects
+
+As I have already mentioned, I pull the text objects from
+[nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects)
+project. This right now automatically happens every friday using a [Github
+Action](https://github.com/meain/evil-textobj-tree-sitter/blob/master/.github/workflows/update-queries.yaml)
+which will create a new PR on the repo. So if you would like to extend
+the available tree sitter objects in the core, feel free to update
+them in the neovim project repository. Unless there is something Emacs
+specific I recommend everyone to just submit the new queries to that
+project.
+
+If you are adding a completely new language, there is two other things
+that you will have to do to make sure everything will work well.
+
+1) Make sure the lang is available in [emacs-tree-sitter/tree-sitter-langs](https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/master/queries)
+2) Make sure we have a `major-mode` mapping in [evil-textobj-tree-sitter-major-mode-language-alist](https://github.com/meain/evil-textobj-tree-sitter/blob/d416b3ab8610f179defadd58f5c20fdc65bf21e5/evil-textobj-tree-sitter.el#L40)
+
 # License
 
 The primary codebase is licensed under `Apache-2.0`. The queries have
