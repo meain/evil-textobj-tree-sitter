@@ -1,0 +1,25 @@
+#!/bin/sh
+# Get a list of languages currently supportable and supported
+
+tmpdir=$(mktemp -d)
+git clone --depth 1 https://github.com/emacs-tree-sitter/tree-sitter-langs $tmpdir/tslangs
+git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter-textobjects $tmpdir/ntsto
+
+ls $tmpdir/tslangs/queries >$tmpdir/available-emacs-langs
+ls $tmpdir/ntsto/queries | tr '\n' '|' | sed 's/.$/$/;s/\|/$\|^/g;s/^/^/' |
+	xargs -I{} grep -E {} $tmpdir/available-emacs-langs > $tmpdir/supportable-languages
+
+echo "" # Just some spacing
+
+printf "Supported languages: "
+grep -Eo '\([a-z+]+-mode . "[^"]+"' evil-textobj-tree-sitter.el |
+	cut -d'"' -f2 | sort | uniq |
+	tr '\n' '|' | sed 's/.$/$/;s/\|/$\|^/g;s/^/^/' |
+	xargs -I{} grep -E {} $tmpdir/supportable-languages | xargs echo
+
+
+printf "Supportable but not supported languages: "
+grep -Eo '\([a-z+]+-mode . "[^"]+"' evil-textobj-tree-sitter.el |
+	cut -d'"' -f2 | sort | uniq |
+	tr '\n' '|' | sed 's/.$/$/;s/\|/$\|^/g;s/^/^/' |
+	xargs -I{} grep -Ev {} $tmpdir/supportable-languages | xargs echo
