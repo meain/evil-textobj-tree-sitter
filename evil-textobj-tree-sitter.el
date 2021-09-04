@@ -27,7 +27,6 @@
 
 (require 'cl-lib)
 (require 'evil)
-(require 's)
 (require 'tree-sitter)
 
 (defgroup evil-textobj-tree-sitter nil "Text objects based on tree-sitter for Evil"
@@ -99,12 +98,12 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
           (progn
             (insert-file-contents filename)
             (goto-char (point-min))
-            (let ((first-line-matches (s-match "^; *inherits *:? *\\([a-z_,()]+\\) *$"
+            (let ((first-line-matches (string-match "^; *inherits *:? *\\([a-z_,()]+\\) *$"
                                                (thing-at-point 'line t))))
               (if first-line-matches
-                  (insert (s-join "\n"
+                  (insert (string-join "\n"
                                   (mapcar (lambda (x)
-                                            (if (s-starts-with-p "(" x)
+                                            (if (string-prefix-p "(" x)
                                                 (if top-level
                                                     (evil-textobj-tree-sitter--get-query (substring x 1 -1)
                                                                 nil))
