@@ -89,4 +89,46 @@ int main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
+(ert-deftest evil-textoj-tree-sitter-check-query-read-simple
+    ()
+  "Simple query read check"
+  (should (string-prefix-p ";; \"Classes\""
+                           (evil-textobj-tree-sitter--get-query "zig"
+                                                                t))))
+
+(ert-deftest evil-textoj-tree-sitter-check-query-read-nocomment
+    ()
+  "Simple query read check"
+  (should (string-prefix-p "(function_definition"
+                           (evil-textobj-tree-sitter--get-query "bash"
+                                                                t))))
+
+(ert-deftest evil-textoj-tree-sitter-check-query-read-nested
+    ()
+  "Simple query read check"
+  (should (string-prefix-p "; inherits: (jsx)"
+                           (evil-textobj-tree-sitter--get-query "typescript"
+                                                                t))))
+
+(ert-deftest evil-textoj-tree-sitter-check-query-read-nested-nofile
+    ()
+  "Simple query read check"
+  (should (string-prefix-p "; inherits: (jsx)"
+                           (evil-textobj-tree-sitter--get-query "javascript"
+                                                                t))))
+
+(ert-deftest evil-textoj-tree-sitter-check-query-read-nested-multi
+    ()
+  "Simple query read check"
+  (should (string-prefix-p "; inherits: (javascript)"
+                           (evil-textobj-tree-sitter--get-query "tsx"
+                                                                t))))
+
+(ert-deftest evil-textoj-tree-sitter-check-query-read-non-top-level
+    ()
+  "Simple query read check"
+  (should (string-prefix-p "; inherits: (javascript)"
+                           (evil-textobj-tree-sitter--get-query "typescript"
+                                                                nil))))
+
 ;;; evil-textobj-tree-sitter-test.el ends here
