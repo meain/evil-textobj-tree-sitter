@@ -102,14 +102,14 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
                                                        (match-string 1
                                                                      (thing-at-point 'line t)))))
               (if first-line-matches
-                  (insert (string-join "\n"
-                                       (mapcar (lambda (x)
+                  (insert (string-join (mapcar (lambda (x)
                                                  (if (string-prefix-p "(" x)
                                                      (if top-level
                                                          (evil-textobj-tree-sitter--get-query (substring x 1 -1)
                                                                                               nil))
                                                    (evil-textobj-tree-sitter--get-query x nil)))
-                                               (split-string first-line-matches ","))))))
+                                               (split-string first-line-matches ","))
+                                       "\n"))))
             (buffer-string))))))
 
 (defun evil-textobj-tree-sitter--get-nodes (group count &optional query)
