@@ -92,43 +92,49 @@ int main() {
 (ert-deftest evil-textoj-tree-sitter-check-query-read-simple
     ()
   "Simple query read check"
-  (should (string-prefix-p ";; \"Classes\""
-                           (evil-textobj-tree-sitter--get-query "zig"
-                                                                t))))
+  (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
+    (should (string-prefix-p ";; \"Classes\""
+                             (evil-textobj-tree-sitter--get-query "zig"
+                                                                  t)))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nocomment
     ()
-  "Simple query read check"
-  (should (string-prefix-p "(function_definition"
-                           (evil-textobj-tree-sitter--get-query "bash"
-                                                                t))))
+  "Check a query file with no comment"
+  (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
+    (should (string-prefix-p "(function_definition"
+                             (evil-textobj-tree-sitter--get-query "bash"
+                                                                  t)))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nested
     ()
-  "Simple query read check"
-  (should (string-prefix-p "; inherits: (jsx)"
-                           (evil-textobj-tree-sitter--get-query "typescript"
-                                                                t))))
+  "Check a query with nested files to be loaded"
+  (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
+    (should (string-prefix-p "; inherits: (jsx)"
+                             (evil-textobj-tree-sitter--get-query "typescript"
+                                                                  t)))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nested-nofile
     ()
-  "Simple query read check"
-  (should (string-prefix-p "; inherits: (jsx)"
-                           (evil-textobj-tree-sitter--get-query "javascript"
-                                                                t))))
+  "Check a file pointing to a non existent file"
+  (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
+    (should (string-prefix-p "; inherits: (jsx)"
+                             (evil-textobj-tree-sitter--get-query "javascript"
+                                                                  t)))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nested-multi
     ()
-  "Simple query read check"
-  (should (string-prefix-p "; inherits: (javascript)"
-                           (evil-textobj-tree-sitter--get-query "tsx"
-                                                                t))))
+  "Check a query with multiple nesting items"
+  (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
+    (should (string-prefix-p "; inherits: (javascript)"
+                             (evil-textobj-tree-sitter--get-query "tsx"
+                                                                  t)))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-non-top-level
     ()
-  "Simple query read check"
-  (should (string-prefix-p "; inherits: (javascript)"
-                           (evil-textobj-tree-sitter--get-query "typescript"
-                                                                nil))))
+  "Check a non top level direct query"
+  (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
+    (should (string-prefix-p "; inherits: (javascript)"
+                             (evil-textobj-tree-sitter--get-query "typescript"
+                                                                  nil)))))
 
 ;;; evil-textobj-tree-sitter-test.el ends here
