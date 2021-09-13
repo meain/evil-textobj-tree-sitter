@@ -98,9 +98,9 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
           (progn
             (insert-file-contents filename)
             (goto-char (point-min))
-            (let ((first-line-matches (save-match-data (string-match "^; *inherits *:? *\\([a-z_,()]+\\) *$" (thing-at-point 'line t))
-                                                       (match-string 1
-                                                                     (thing-at-point 'line t)))))
+            (let* ((first-line (thing-at-point 'line t))
+                   (first-line-matches (save-match-data (when (string-match "^; *inherits *:? *\\([a-z_,()]+\\) *$" first-line)
+                                                          (match-string 1 first-line)))))
               (if first-line-matches
                   (insert (string-join (mapcar (lambda (x)
                                                  (if (string-prefix-p "(" x)
