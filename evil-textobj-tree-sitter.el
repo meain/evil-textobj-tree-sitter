@@ -68,24 +68,26 @@
 
 (defun evil-textobj-tree-sitter--nodes-within (nodes)
   "NODES which contain the current point inside them ordered inside out."
-  (sort (cl-remove-if-not (lambda (x)
-                            (and (<= (car (tsc-node-byte-range x)) (point))
-                                 (< (point) (cdr (tsc-node-byte-range x)))))
-                          nodes)
-        (lambda (x y)
-          (< (+ (abs (- (point)
-                        (car (tsc-node-byte-range x))))
-                (abs (- (point)
-                        (cdr (tsc-node-byte-range x))))) (+ (abs (- (point)
-                        (car (tsc-node-byte-range y))))
-                (abs (- (point)
-                        (cdr (tsc-node-byte-range y)))))))))
+  (let ((byte-pos (position-bytes (point))))
+    (sort (cl-remove-if-not (lambda (x)
+                              (and (<= (car (tsc-node-byte-range x)) byte-pos)
+                                   (< byte-pos (cdr (tsc-node-byte-range x)))))
+                            nodes)
+          (lambda (x y)
+            (< (+ (abs (- byte-pos
+                          (car (tsc-node-byte-range x))))
+                  (abs (- byte-pos
+                          (cdr (tsc-node-byte-range x))))) (+ (abs (- byte-pos
+                          (car (tsc-node-byte-range y))))
+                  (abs (- byte-pos
+                          (cdr (tsc-node-byte-range y))))))))))
 
 (defun evil-textobj-tree-sitter--nodes-after (nodes)
   "NODES which contain the current point before them ordered top to bottom."
-  (cl-remove-if-not (lambda (x)
-                      (> (car (tsc-node-byte-range x)) (point)))
-                    nodes))
+  (let ((byte-pos (position-bytes (point))))
+    (cl-remove-if-not (lambda (x)
+                        (> (car (tsc-node-byte-range x)) byte-pos))
+                      nodes)))
 
 (defun evil-textobj-tree-sitter--get-query (language top-level)
   "Get tree sitter query for LANGUAGE.
