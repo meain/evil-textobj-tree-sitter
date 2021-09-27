@@ -4,6 +4,7 @@
 ;; We can only use statically linked files here or libstdc++ screams at you.
 ;; C is an ideal candidate for this as it is builtin and is statically linked.
 
+(require 'go-mode) ;; TODO: make this go away (find a simpler method)
 (require 'tree-sitter-langs)
 (require 'evil-textobj-tree-sitter)
 
