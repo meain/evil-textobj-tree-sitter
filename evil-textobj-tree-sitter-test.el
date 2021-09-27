@@ -50,6 +50,25 @@ int main(int temp, int temp2) {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
+(ert-deftest evil-textobj-tree-sitter-within-unicode-test3
+    ()
+  "Simple check with point inside the calling thigy and no unicode chars"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".go"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// Комментарий
+func main(int Комментарий, int temp2) {
+    printf(\"hello\");
+}")
+      (tree-sitter-mode)
+      (goto-char 31)
+      (should (equal (evil-textobj-tree-sitter--range 1
+                                                      (list (intern "parameter.inner"))) (cons 26 41))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
 (ert-deftest evil-textobj-tree-sitter-within-test
     ()
   "Simple check with point inside the calling thigy with unicode chars"

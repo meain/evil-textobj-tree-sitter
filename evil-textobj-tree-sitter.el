@@ -68,26 +68,24 @@
 
 (defun evil-textobj-tree-sitter--nodes-within (nodes)
   "NODES which contain the current point inside them ordered inside out."
-  (let ((byte-pos (position-bytes (point))))
-    (sort (cl-remove-if-not (lambda (x)
-                              (and (<= (car (tsc-node-byte-range x)) byte-pos)
-                                   (< byte-pos (cdr (tsc-node-byte-range x)))))
-                            nodes)
-          (lambda (x y)
-            (< (+ (abs (- byte-pos
-                          (car (tsc-node-byte-range x))))
-                  (abs (- byte-pos
-                          (cdr (tsc-node-byte-range x))))) (+ (abs (- byte-pos
-                          (car (tsc-node-byte-range y))))
-                  (abs (- byte-pos
-                          (cdr (tsc-node-byte-range y))))))))))
+  (sort (cl-remove-if-not (lambda (x)
+                            (and (<= (byte-to-position (car (tsc-node-byte-range x))) (point))
+                                 (< (point) (byte-to-position (cdr (tsc-node-byte-range x))))))
+                          nodes)
+        (lambda (x y)
+          (< (+ (abs (- (point)
+                        (car (tsc-node-byte-range x))))
+                (abs (- (point)
+                        (cdr (tsc-node-byte-range x))))) (+ (abs (- (point)
+                        (car (tsc-node-byte-range y))))
+                (abs (- (point)
+                        (cdr (tsc-node-byte-range y)))))))))
 
 (defun evil-textobj-tree-sitter--nodes-after (nodes)
   "NODES which contain the current point before them ordered top to bottom."
-  (let ((byte-pos (position-bytes (point))))
-    (cl-remove-if-not (lambda (x)
-                        (> (car (tsc-node-byte-range x)) byte-pos))
-                      nodes)))
+  (cl-remove-if-not (lambda (x)
+                      (> (byte-to-position (car (tsc-node-byte-range x))) (point)))
+                    nodes))
 
 (defun evil-textobj-tree-sitter--get-query (language top-level)
   "Get tree sitter query for LANGUAGE.
@@ -101,7 +99,8 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
             (insert-file-contents filename)
             (goto-char (point-min))
             (let* ((first-line (thing-at-point 'line t))
-                   (first-line-matches (save-match-data (when (string-match "^; *inherits *:? *\\([a-z_,()]+\\) *$" first-line)
+                   (first-line-matches (save-match-data (when (string-match "^; *inherits *:? *\\([a-z_,()]+\\) *$"
+                                                                            first-line)
                                                           (match-string 1 first-line)))))
               (if first-line-matches
                   (insert (string-join (mapcar (lambda (x)
