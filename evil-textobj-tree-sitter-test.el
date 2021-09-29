@@ -4,7 +4,6 @@
 ;; We can only use statically linked files here or libstdc++ screams at you.
 ;; C is an ideal candidate for this as it is builtin and is statically linked.
 
-(require 'go-mode) ;; TODO: make this go away (find a simpler method)
 (require 'tree-sitter-langs)
 (require 'evil-textobj-tree-sitter)
 
@@ -59,6 +58,7 @@ int main(int temp, int temp2) {
          (filename (concat "/tmp/" bufname)))
     (find-file filename)
     (with-current-buffer bufname
+      (setq major-mode 'go-mode)
       (insert "// Комментарий
 func main(int Комментарий, int temp2) {
     printf(\"hello\");
