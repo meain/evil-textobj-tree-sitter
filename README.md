@@ -1,10 +1,3 @@
-**We recently changed the package from `evil-textobj-treesitter` to `evil-textobj-tree-sitter` (extra `-` between `tree` and `sitter`).
-All you will have to do is to change the package name to `evil-textobj-tree-sitter`
-and update the function `evil-textobj-treesitter-get-textobj` to `evil-textobj-tree-sitter-get-textobj`.
-You can see the related discussion [here](https://github.com/meain/evil-textobj-tree-sitter/issues/3).**
-
----
-
 # evil-textobj-tree-sitter
 
 [![MELPA](https://melpa.org/packages/evil-textobj-treesitter-badge.svg)](https://melpa.org/#/evil-textobj-treesitter)
@@ -14,21 +7,27 @@ Tree-sitter powered textobjects for evil mode in Emacs.
 
 ![gif](https://meain.io/blog-videos/gifs/evil-textobj-treesitter.gif)
 
-> This is more or less a port of [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects).
+> This is an Emacs port of [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects).
 
-This package will let you create evil textobjects using the power of
-tree-sitter grammars. You can easily create
-function,class,comment etc textobjects in multiple languages.
+This package will let you create evil textobjects using tree-sitter
+grammars. You can easily create function,class,comment etc textobjects
+in multiple languages.
 
 # Installation & Usage
 
-You can install `evil-textobj-tree-sitter` from melpa. Here is how you would do it using `use-package`:
+You can install `evil-textobj-tree-sitter` from melpa. Here is how you would do it using `use-package` and `package.el`:
 
 ``` emacs-lisp
 (use-package evil-textobj-tree-sitter :ensure t)
 ```
 
-Or you can use straight.el:
+Or you can use `straight.el`:
+
+``` emacs-lisp
+(use-package evil-textobj-tree-sitter :straight t)
+```
+
+Or using `straight.el` and `el-get` to pull from source:
 
 ```emacs-lisp
 (use-package evil-textobj-tree-sitter
@@ -37,12 +36,13 @@ Or you can use straight.el:
                       :repo "meain/evil-textobj-tree-sitter"
                       :files (:defaults "queries")))
 ```
-> This only works if you have properly setup [`tree-sitter`](https://github.com/emacs-tree-sitter/elisp-tree-sitter)
+
+> You will also have to setup [`tree-sitter`](https://github.com/emacs-tree-sitter/elisp-tree-sitter).
 
 # Mapping textobjects
 
-By default, the library does not provide
-any keybindings, but it should be relatively easy to add them.
+By default, the library does not provide any keybindings, but it
+should be relatively easy to add them.
 
 ```emacs-lisp
 ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
@@ -51,11 +51,12 @@ any keybindings, but it should be relatively easy to add them.
 (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
 ```
 
-We support multiple textobjects. You can find a list of available textobjects at
+We support quite a few textobjects. You can find a list of available
+textobjects at
 [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects).
 We might not have support for all of them as
 [emacs-tree-sitter](https://github.com/ubolonton/emacs-tree-sitter)
-does not support all the same languages as of now. As for the list of
+does not yet support all the languages as of now. As for the list of
 languages that we support you can check the value of
 `evil-textobj-tree-sitter-major-mode-language-alist`.
 
@@ -66,8 +67,9 @@ in the builtin list, you can create custom text objects by passing the
 a custom query with captures.
 
 For example if you want to create text object to select `import`
-objects, you can write something like below. You will have to provide
-the captures in all the languages that you will need this to work for.
+statements, you can write something like below. *You will have to
+provide the tree-sitter queries for all the languages that you want it
+to work for*
 
 ``` emacs-lisp
 ;; The first arguemnt to `evil-textobj-tree-sitter-get-textobj' will be the capture group to use
@@ -81,11 +83,11 @@ the captures in all the languages that you will need this to work for.
 
 As I have already mentioned, I pull the text objects from
 [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects)
-project. This right now automatically happens every friday using a [Github
-Action](https://github.com/meain/evil-textobj-tree-sitter/blob/master/.github/workflows/update-queries.yaml)
-which will create a new PR on the repo. So if you would like to extend
-the available tree sitter objects in the core, feel free to update
-them in the neovim project repository. Unless there is something Emacs
+project. This right now automatically happens every friday using a
+[Github Action](https://github.com/meain/evil-textobj-tree-sitter/blob/master/.github/workflows/update-queries.yaml)
+which will create a new PR on the repo. So if you would like to
+update/add the builtin tree-sitter objects, feel free to update them
+in the neovim project repository. Unless there is something Emacs
 specific I recommend everyone to just submit the new queries to that
 project.
 
@@ -101,9 +103,3 @@ The primary codebase is licensed under `Apache-2.0`. The queries have
 be taken from
 [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 which is also licensed under the same license.
-
----
-
-_This is my first Emacs package, still just figuring things out. There
-is definitely some things that I could fix on this, feel free to let
-me know if there is something that I can improve._
