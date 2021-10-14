@@ -31,7 +31,7 @@ Or using `straight.el` and `el-get` to pull from source:
 
 ```emacs-lisp
 (use-package evil-textobj-tree-sitter
-  :straight (el-patch :type git
+  :straight (evil-textobj-tree-sitter :type git
                       :host github
                       :repo "meain/evil-textobj-tree-sitter"
                       :files (:defaults "queries")))
