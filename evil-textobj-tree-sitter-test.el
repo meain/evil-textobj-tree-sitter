@@ -263,7 +263,7 @@ int main2() {
                                                                           (list "function.outer"))
                                                                   nil
                                                                   t
-                                                                  nil) 44)))
+                                                                  nil) 43)))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
@@ -291,7 +291,7 @@ int main2() {
                                                                           (list "function.outer"))
                                                                   nil
                                                                   t
-                                                                  nil) 82)))
+                                                                  nil) 81)))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
@@ -322,7 +322,7 @@ int main3() {
                                                                           (list "function.outer"))
                                                                   t
                                                                   t
-                                                                  nil) 82)))
+                                                                  nil) 81)))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
@@ -353,7 +353,72 @@ int main3() {
                                                                           (list "function.outer"))
                                                                   t
                                                                   t
-                                                                  nil) 44)))
+                                                                  nil) 43)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+
+(ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi-on-end-with-comment-at-end
+    ()
+  "Testing going to end of previous one while on end of current one."
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// mango
+int main() {
+    printf(\"hello\")
+} // one
+
+int main2() {
+    printf(\"hello2\")
+} // two
+
+int main3() {
+    printf(\"hello3\")
+} // three
+")
+      (tree-sitter-mode)
+      (goto-char 82)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  t
+                                                                  t
+                                                                  nil) 43)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+
+(ert-deftest evil-textobj-tree-sitter-goto-next-end-multi-on-end
+    ()
+  "Testing going to end of previous one while on end of current one."
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// mango
+int main() {
+    printf(\"hello\")
+}
+
+int main2() {
+    printf(\"hello2\")
+}
+
+int main3() {
+    printf(\"hello3\")
+}
+")
+      (tree-sitter-mode)
+      ;; somehow (goto-char 44) (point) gives 43?
+      (goto-char 43)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  nil
+                                                                  t
+                                                                  nil) 81)))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 

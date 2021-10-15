@@ -223,13 +223,24 @@ you want to go to the end of the textobj instead.  You can pass in
                                           (= (byte-to-position (car (tsc-node-byte-range x))) (point)))
                                         (append nodes-within nodes-before)))
                       (if end
-                          (append nodes-within nodes-after)
+                          (cl-remove-if (lambda (x)
+                                          "Remove the item if we already on the end of that one."
+                                          (= (- (byte-to-position (cdr (tsc-node-byte-range x))) 1) (point)))
+                                        (append nodes-within nodes-after))
                         nodes-after)))))
+    ;; TODO: for a nested function if we do "goto end of next" from a
+    ;; point before the nested function starts, we got the end of the
+    ;; top level func which might not be the desired outcome.
     (if node
-        (cl-callf byte-to-position
-            (if end
-                (cdr (tsc-node-byte-range node))
-              (car (tsc-node-byte-range node)))))))
+        (let ((actual-position (cl-callf byte-to-position
+                                   (if end
+                                       (cdr (tsc-node-byte-range node))
+                                     (car (tsc-node-byte-range node))))))
+          (if end
+              ;; tree sitter count + 1 kinda (probably have to look in other places as well)
+              ;; This is a mess that evil creates (not really an issue in Emacs mode)
+              (- actual-position 1)
+            actual-position)))))
 
 ;;;###autoload
 (defun evil-textobj-tree-sitter-goto-textobj (group &optional previous end query)
