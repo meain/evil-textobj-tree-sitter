@@ -20,14 +20,14 @@
          (filename (concat "/tmp/" bufname)))
     (find-file filename)
     (with-current-buffer bufname
-      (insert "# Łukasz
+      (insert "// Łukasz
 int main() {
     printf(\"hello\")
 }")
       (tree-sitter-mode)
       (goto-char 31)
       (should (equal (evil-textobj-tree-sitter--range 1
-                                                      (list (intern "function.inner"))) (cons 21 44))))
+                                                      (list (intern "function.inner"))) (cons 22 45))))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
@@ -97,14 +97,14 @@ int main() {
          (filename (concat "/tmp/" bufname)))
     (find-file filename)
     (with-current-buffer bufname
-      (insert "# Lukasz
+      (insert "// Lukasz
 int main() {
     printf(\"hello\")
 }")
       (tree-sitter-mode)
       (goto-char 31)
       (should (equal (evil-textobj-tree-sitter--range 1
-                                                      (list (intern "function.inner"))) (cons 21 44))))
+                                                      (list (intern "function.inner"))) (cons 22 45))))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
@@ -117,14 +117,14 @@ int main() {
          (filename (concat "/tmp/" bufname)))
     (find-file filename)
     (with-current-buffer bufname
-      (insert "# Lukasz
+      (insert "// Lukasz
 int main() {
     printf(\"hello\")
 }")
       (tree-sitter-mode)
       (goto-char 1)
       (should (equal (evil-textobj-tree-sitter--range 1
-                                                      (list (intern "function.inner"))) (cons 21 44))))
+                                                      (list (intern "function.inner"))) (cons 22 45))))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
@@ -136,14 +136,14 @@ int main() {
          (filename (concat "/tmp/" bufname)))
     (find-file filename)
     (with-current-buffer bufname
-      (insert "# Lukasz
+      (insert "// Lukasz
 int main() {
     printf(\"hello\")
 }")
       (tree-sitter-mode)
       (goto-char 10)
       (should (equal (evil-textobj-tree-sitter--range 1
-                                                      (list (intern "function.inner"))) (cons 21 44))))
+                                                      (list (intern "function.inner"))) (cons 22 45))))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
