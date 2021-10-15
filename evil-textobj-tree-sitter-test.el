@@ -195,4 +195,224 @@ int main() {
                              (evil-textobj-tree-sitter--get-query "typescript"
                                                                   nil)))))
 
+
+(ert-deftest evil-textobj-tree-sitter-goto-next-start-simple
+    ()
+  "Go to next start simple test"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// mango
+int main() {
+    printf(\"hello\")
+}")
+      (tree-sitter-mode)
+      (goto-char 1)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  nil
+                                                                  nil
+                                                                  nil) 10)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+(ert-deftest evil-textobj-tree-sitter-goto-next-start-unicode
+    ()
+  "Go to next start with unicode in comment"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// Łukasz
+int main() {
+    printf(\"hello\")
+}")
+      (tree-sitter-mode)
+      (goto-char 1)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  nil
+                                                                  nil
+                                                                  nil) 11)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+(ert-deftest evil-textobj-tree-sitter-goto-next-end-simple
+    ()
+  "Go to next start simple test"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// mango
+int main() {
+    printf(\"hello\")
+}
+
+int main2() {
+    printf(\"hello2\")
+}
+")
+      (tree-sitter-mode)
+      (goto-char 1)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  nil
+                                                                  t
+                                                                  nil) 44)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+
+(ert-deftest evil-textobj-tree-sitter-goto-next-end-multi
+    ()
+  "Go to next start simple test"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// mango
+int main() {
+    printf(\"hello\")
+}
+
+int main2() {
+    printf(\"hello2\")
+}
+")
+      (tree-sitter-mode)
+      (goto-char 46)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  nil
+                                                                  t
+                                                                  nil) 82)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+(ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi
+    ()
+  "Go to next start simple test"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// mango
+int main() {
+    printf(\"hello\")
+}
+
+int main2() {
+    printf(\"hello2\")
+}
+
+int main3() {
+    printf(\"hello3\")
+}
+")
+      (tree-sitter-mode)
+      (goto-char 83)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  t
+                                                                  t
+                                                                  nil) 82)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+(ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi-on-end
+    ()
+  "Testing going to end of previous one while on end of current one."
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// mango
+int main() {
+    printf(\"hello\")
+}
+
+int main2() {
+    printf(\"hello2\")
+}
+
+int main3() {
+    printf(\"hello3\")
+}
+")
+      (tree-sitter-mode)
+      (goto-char 82)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  t
+                                                                  t
+                                                                  nil) 44)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+
+(ert-deftest evil-textobj-tree-sitter-goto-previous-start-multi-on-start
+    ()
+  "Testing going to start of previous one while on start of current one."
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// mango
+int main() {
+    printf(\"hello\")
+}
+
+int main2() {
+    printf(\"hello2\")
+}
+
+int main3() {
+    printf(\"hello3\")
+}
+")
+      (tree-sitter-mode)
+      (goto-char 46)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  t
+                                                                  nil
+                                                                  nil) 10)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+
+(ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested
+    ()
+  "Go to next start simple test"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".go"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// comment
+func main() {
+	fmt.Println(\"howdy bruh!\")
+	func() {
+		fmt.Println(\"yo!\")
+	}
+}")
+      (tree-sitter-mode)
+      (goto-char 66)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "function.outer"))
+                                                                  t
+                                                                  nil
+                                                                  nil) 56)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
 ;;; evil-textobj-tree-sitter-test.el ends here
