@@ -398,6 +398,7 @@ int main3() {
          (filename (concat "/tmp/" bufname)))
     (find-file filename)
     (with-current-buffer bufname
+      (setq major-mode 'go-mode)
       (insert "// comment
 func main() {
 	fmt.Println(\"howdy bruh!\")
@@ -411,7 +412,7 @@ func main() {
                                                                           (list "function.outer"))
                                                                   t
                                                                   nil
-                                                                  nil) 56)))
+                                                                  nil) 55)))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
