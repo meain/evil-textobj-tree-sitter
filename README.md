@@ -79,6 +79,41 @@ to work for*
                                                 (rust-mode . [(use_declaration) @import]))))
 ```
 
+# Goto
+
+We have also added support for for a fancier version of
+`goto-char`. You can use this to go to the next function, previous
+class or do any motions like that.
+
+You can use the `evil-textobj-tree-sitter-goto-textobj` function to
+invoke goto. You can either use this in other function or just bound
+to a key. The first argument is the textobj that you want to use, the
+second one specifies if you want to search forward or backward and the
+last one is for specifying wheather to go to the start or end of the
+textobj.
+
+Below are some sample binding that you can do. You can use any textobj
+that is available here.
+
+``` emacs-lisp
+;; Goto start of next function
+(define-key evil-normal-state-map (kbd "]f") (lambda ()
+                                                  (interactive)
+                                                  (evil-textobj-tree-sitter-goto-textobj "function.outer")))
+;; Goto start of previous function
+(define-key evil-normal-state-map (kbd "[f") (lambda ()
+                                                  (interactive)
+                                                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
+;; Goto end of next function
+(define-key evil-normal-state-map (kbd "]F") (lambda ()
+                                                  (interactive)
+                                                  (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
+;; Goto end of previous function
+(define-key evil-normal-state-map (kbd "[F") (lambda ()
+                                                  (interactive)
+                                                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
+```
+
 # Contributing new textobjects
 
 As I have already mentioned, I pull the text objects from
