@@ -66,6 +66,12 @@
   (setf (map-elt evil-textobj-tree-sitter-major-mode-language-alist
                  major-mode) lang-symbol))
 
+(defun evil-textobj-tree-sitter--nodes-before (nodes)
+  "NODES which contain the current after them."
+  (cl-remove-if-not (lambda (x)
+                      (< (byte-to-position (cdr (tsc-node-byte-range x))) (point)))
+                    nodes))
+
 (defun evil-textobj-tree-sitter--nodes-within (nodes)
   "NODES which contain the current point inside them ordered inside out."
   (let ((byte-pos (position-bytes (point))))
@@ -114,12 +120,11 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
                                        "\n"))))
             (buffer-string))))))
 
-(defun evil-textobj-tree-sitter--get-nodes (group count &optional query)
+(defun evil-textobj-tree-sitter--get-nodes (group query)
   "Get a list of viable nodes based on `GROUP' value.
 They will be order with captures with point inside them first then the
-ones that follow.  This will return n(`COUNT') items.  If a `QUERY'
-alist is provided, we make use of that instead of the builtin query
-set."
+ones that follow.  If a `QUERY' alist is provided, we make use of that
+instead of the builtin query set."
   (let* ((lang-name (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
          (debugging-query (if (eq query nil)
                               (evil-textobj-tree-sitter--get-query lang-name
@@ -131,16 +136,21 @@ set."
          (filtered-captures (cl-remove-if-not (lambda (x)
                                                 (member (car x) group))
                                               captures))
-         (nodes (seq-map #'cdr filtered-captures))
-         (nodes-nodupes (cl-remove-duplicates nodes
-                                              :test (lambda (x y)
-                                                      (and (= (car (tsc-node-byte-range x)) (car (tsc-node-byte-range y)))
-                                                           (= (cdr (tsc-node-byte-range x)) (cdr (tsc-node-byte-range y)))))))
-         (nodes-within (evil-textobj-tree-sitter--nodes-within nodes-nodupes))
-         (nodes-after (evil-textobj-tree-sitter--nodes-after nodes-nodupes))
-         (all-nodes (append nodes-within nodes-after)))
-    (if (> (length all-nodes) 0)
-        (cl-subseq all-nodes 0 count))))
+         (nodes (seq-map #'cdr filtered-captures)))
+    (cl-remove-duplicates nodes
+                          :test (lambda (x y)
+                                  (and (= (car (tsc-node-byte-range x)) (car (tsc-node-byte-range y)))
+                                       (= (cdr (tsc-node-byte-range x)) (cdr (tsc-node-byte-range y))))))))
+
+(defun evil-textobj-tree-sitter--get-within-and-after (group count query)
+  "Given a `GROUP' `QUERY' find `COUNT' number of nodes within in and after current point."
+  (let* ((nodes (evil-textobj-tree-sitter--get-nodes group
+                                                     query))
+         (nodes-within (evil-textobj-tree-sitter--nodes-within nodes))
+         (nodes-after (evil-textobj-tree-sitter--nodes-after nodes))
+         (filtered-nodes (append nodes-within nodes-after)))
+    (if (> (length filtered-nodes) 0)
+        (cl-subseq filtered-nodes 0 count))))
 
 (defun evil-textobj-tree-sitter--range (count ts-group &optional query)
   "Get the range of the closeset item of type `TS-GROUP'.
@@ -151,8 +161,8 @@ are doing.  If a `QUERY' alist is provided, we make use of that
 instead of the builtin query set."
   (if (equal tree-sitter-mode nil)
       (message "tree-sitter-mode not enabled for buffer")
-    (let ((nodes (evil-textobj-tree-sitter--get-nodes ts-group
-                                                      count query)))
+    (let ((nodes (evil-textobj-tree-sitter--get-within-and-after
+                  ts-group count query)))
       (if (not (eq nodes nil))
           (let ((range-min (apply #'min
                                   (seq-map (lambda (x)
@@ -194,6 +204,49 @@ https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobje
              (evil-range (car range)
                          (cdr range))
            (message (concat "No '" ,group "' text object found")))))))
+
+(defun evil-textobj-tree-sitter--get-goto-location (groups previous end query)
+  "Get the start/end of the textobj of type `GROUPS'.
+By default it goes to the start of the textobj, but pass in `END' if
+you want to go to the end of the textobj instead.  You can pass in
+`PREVIOUS' if you want to search backwards.  `QUERY' for custom queries."
+  (let* ((nodes (evil-textobj-tree-sitter--get-nodes groups
+                                                     query))
+         (nodes-before (reverse (evil-textobj-tree-sitter--nodes-before nodes)))
+         (nodes-within (evil-textobj-tree-sitter--nodes-within nodes))
+         (nodes-after (evil-textobj-tree-sitter--nodes-after nodes))
+         (node (car (if previous
+                        (if end
+                            nodes-before
+                          (cl-remove-if (lambda (x)
+                                          "Remove the item if we already on the start of that one."
+                                          (= (byte-to-position (car (tsc-node-byte-range x))) (point)))
+                                        (append nodes-within nodes-before)))
+                      (if end
+                          (append nodes-within nodes-after)
+                        nodes-after)))))
+    (if node
+        (cl-callf byte-to-position
+            (if end
+                (cdr (tsc-node-byte-range node))
+              (car (tsc-node-byte-range node)))))))
+
+;;;###autoload
+(defun evil-textobj-tree-sitter-goto-textobj (group &optional previous end query)
+  "Got to the start/end of the textobj of type `GROUP'.
+By default it goes to the start of the textobj, but pass in `END' if
+you want to go to the end of the textobj instead.  You can pass in
+`PREVIOUS' if you want to search backwards.  Optionally pass in
+`QUERY' if you want to define a custom query."
+  (let* ((groups (if (eq (type-of group) 'string)
+                     (list group)
+                   group))
+         (interned-groups (mapcar #'intern groups))
+         (goto-position (evil-textobj-tree-sitter--get-goto-location
+                         interned-groups previous end query)))
+    (if goto-position
+        (goto-char goto-position)
+      (message (concat "No '" interned-groups "' text object found")))))
 
 (provide 'evil-textobj-tree-sitter)
 ;;; evil-textobj-tree-sitter.el ends here
