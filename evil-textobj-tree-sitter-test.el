@@ -70,6 +70,25 @@ func main(int Комментарий, int temp2) {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
+(ert-deftest evil-textobj-tree-sitter-within-unicode-test4
+    ()
+  "Check sorting of nested object in multibyte file"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// Комментарий Комментарий Комментарий Комментарий Комментарий
+int main() {
+    if (1) if (0) { true; }
+}")
+      (tree-sitter-mode)
+      (goto-char 100)
+      (should (equal (evil-textobj-tree-sitter--range 1
+                                                      (list (intern "conditional.outer"))) (cons 88 104))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
 (ert-deftest evil-textobj-tree-sitter-within-test
     ()
   "Simple check with point inside the calling thigy with unicode chars"
