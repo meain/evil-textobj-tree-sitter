@@ -187,7 +187,8 @@ https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobje
                                     (mapconcat 'identity groups "-"))))
          (interned-groups (mapcar #'intern groups)))
     `(evil-define-text-object ,funsymbol
-       (count &rest _)
+       ;; rest argument is named because of compiler warning `argument _ not left unused`
+       (count &rest unused)
        (let ((range (evil-textobj-tree-sitter--range count ',interned-groups
                                                      ,query)))
          (if (not (eq range nil))
