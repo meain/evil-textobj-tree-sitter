@@ -222,16 +222,17 @@ you want to go to the end of the textobj instead.  You can pass in
                           (cl-remove-if (lambda (x)
                                           "Remove the item if we already on the start of that one."
                                           (= (byte-to-position (car (tsc-node-byte-range x))) (point)))
-                                        (append nodes-within nodes-before)))
+                                        (cl-merge 'list nodes-within nodes-before
+                                                  (lambda (x y) (> (car (tsc-node-byte-range x))
+                                                                   (car (tsc-node-byte-range y)))))))
                       (if end
                           (cl-remove-if (lambda (x)
                                           "Remove the item if we already on the end of that one."
                                           (= (- (byte-to-position (cdr (tsc-node-byte-range x))) 1) (point)))
-                                        (append nodes-within nodes-after))
+                                        (cl-merge 'list nodes-within nodes-after
+                                                  (lambda (x y) (< (cdr (tsc-node-byte-range x))
+                                                                   (cdr (tsc-node-byte-range y))))))
                         nodes-after)))))
-    ;; TODO: for a nested function if we do "goto end of next" from a
-    ;; point before the nested function starts, we got the end of the
-    ;; top level func which might not be the desired outcome.
     (if node
         (let ((actual-position (cl-callf byte-to-position
                                    (if end
