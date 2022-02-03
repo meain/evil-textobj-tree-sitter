@@ -481,4 +481,90 @@ func main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
+(ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested-2
+    ()
+  "Go to previous nested function test"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".py"))
+         (filename (concat "/tmp/" bufname)))
+    (setq python-indent-guess-indent-offset nil
+          python-indent-offset 4)
+    (find-file filename)
+    (with-current-buffer bufname
+      (setq major-mode 'python-mode)
+      (insert "def func ():
+    var1
+    def nested():
+        var2
+    var3
+")
+      (tree-sitter-mode)
+      ;; place the cursor after the nested function (on var3)
+      (goto-char 58)
+      (let ((pos (evil-textobj-tree-sitter--get-goto-location
+                  (mapcar #'intern (list "function.outer")) t nil nil)))
+        ;; cursor should be on the beginning of nested function after move to the previous outer function
+        (should (equal pos 27))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+(ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested-3
+    ()
+  "Go to previous nested complex test"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".py"))
+         (filename (concat "/tmp/" bufname)))
+    (setq python-indent-guess-indent-offset nil
+          python-indent-offset 4)
+    (find-file filename)
+    (with-current-buffer bufname
+      (setq major-mode 'python-mode)
+      (insert "def func ():
+    var1
+    def func2(): pass
+    def nested():
+        var2
+        def inner():
+            var3
+        var4
+    var5
+")
+      (tree-sitter-mode)
+      ;; place the cursor on var2 (inside two nested functions)
+      (goto-char 71)
+      (let ((pos (evil-textobj-tree-sitter--get-goto-location
+                  (mapcar #'intern (list "function.outer")) t nil nil)))
+        ;; cursor should be on the beginning of nested
+        (should (equal pos 49))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+(ert-deftest evil-textobj-tree-sitter-goto-next-end-nested-2
+    ()
+  "Go to next nested function test"
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".py"))
+         (filename (concat "/tmp/" bufname)))
+    (setq python-indent-guess-indent-offset nil
+          python-indent-offset 4)
+    (find-file filename)
+    (with-current-buffer bufname
+      (setq major-mode 'python-mode)
+
+      (insert "def func ():
+    var1
+    def nested():
+        var2
+    var3
+")
+      (tree-sitter-mode)
+      ;; place the cursor before the nested function (on var1)
+      (goto-char 18)
+      (let ((pos (evil-textobj-tree-sitter--get-goto-location
+                  (mapcar #'intern (list "function.outer")) nil t nil)))
+      ;; cursor should be on the end of nested function (var2)
+        (should (equal pos 52))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
 ;;; evil-textobj-tree-sitter-test.el ends here
