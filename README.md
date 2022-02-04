@@ -1,6 +1,6 @@
 # evil-textobj-tree-sitter
 
-[![MELPA](https://melpa.org/packages/evil-textobj-treesitter-badge.svg)](https://melpa.org/#/evil-textobj-treesitter)
+[![MELPA](https://melpa.org/packages/evil-textobj-tree-sitter-badge.svg)](https://melpa.org/#/evil-textobj-tree-sitter)
 [![test](https://github.com/meain/evil-textobj-tree-sitter/actions/workflows/test.yaml/badge.svg)](https://github.com/meain/evil-textobj-tree-sitter/actions/workflows/test.yaml)
 
 Tree-sitter powered textobjects for evil mode in Emacs.
