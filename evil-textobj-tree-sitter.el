@@ -259,7 +259,7 @@ you want to go to the end of the textobj instead.  You can pass in
                          interned-groups previous end query)))
     (if goto-position
         (goto-char goto-position)
-      (message (concat "No '" interned-groups "' text object found")))))
+      (message (concat "No '" group "' text object found")))))
 
 (provide 'evil-textobj-tree-sitter)
 ;;; evil-textobj-tree-sitter.el ends here
