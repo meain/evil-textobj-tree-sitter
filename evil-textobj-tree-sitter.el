@@ -69,29 +69,29 @@
 (defun evil-textobj-tree-sitter--nodes-before (nodes)
   "NODES which contain the current after them."
   (cl-remove-if-not (lambda (x)
-                      (< (byte-to-position (cdr (tsc-node-byte-range x))) (point)))
+                      (< (byte-to-position (car (last x))) (point)))
                     nodes))
 
 (defun evil-textobj-tree-sitter--nodes-within (nodes)
   "NODES which contain the current point inside them ordered inside out."
   (let ((byte-pos (position-bytes (point))))
     (sort (cl-remove-if-not (lambda (x)
-                              (and (<= (car (tsc-node-byte-range x)) byte-pos)
-                                   (< byte-pos (cdr (tsc-node-byte-range x)))))
+                              (and (<= (nth 1 x) byte-pos)
+                                   (< byte-pos (car (last x)))))
                             nodes)
           (lambda (x y)
             (< (+ (abs (- byte-pos
-                          (car (tsc-node-byte-range x))))
+                          (nth 1 x)))
                   (abs (- byte-pos
-                          (cdr (tsc-node-byte-range x))))) (+ (abs (- byte-pos
-                          (car (tsc-node-byte-range y))))
+                          (car (last x))))) (+ (abs (- byte-pos
+                          (nth 1 y)))
                   (abs (- byte-pos
-                          (cdr (tsc-node-byte-range y))))))))))
+                          (car (last x))))))))))
 
 (defun evil-textobj-tree-sitter--nodes-after (nodes)
   "NODES which contain the current point before them ordered top to bottom."
   (cl-remove-if-not (lambda (x)
-                      (> (byte-to-position (car (tsc-node-byte-range x))) (point)))
+                      (> (byte-to-position (nth 1 x)) (point)))
                     nodes))
 
 (defun evil-textobj-tree-sitter--get-query (language top-level)
@@ -132,15 +132,35 @@ instead of the builtin query set."
                             (alist-get major-mode query)))
          (root-node (tsc-root-node tree-sitter-tree))
          (query (tsc-make-query tree-sitter-language debugging-query))
-         (captures (tsc-query-captures query root-node #'tsc--buffer-substring-no-properties))
-         (filtered-captures (cl-remove-if-not (lambda (x)
+         (matches (tsc-query-matches query root-node #'tsc--buffer-substring-no-properties))
+         (all-captures '())
+         (captures (tsc-query-captures query root-node #'tsc--buffer-substring-no-properties)))
+    (progn
+      ;; TODO: seq-map may not be the right choice
+      (seq-map (lambda (x)
+                 (let* ((match-captures (cdr x))
+                        (capture-start nil)
+                        (capture-end nil))
+                   (seq-map (lambda (y)
+                              (let ((csplits (split-string (symbol-name (car y)) "\\.")))
+                                (pcase (car (last csplits))
+                                  ("_end" (setq capture-end y))
+                                  ("_start" (setq capture-start y))
+                                  (_ (push (list (car y) (car (tsc-node-byte-range (cdr y))) (cdr (tsc-node-byte-range (cdr y)))) all-captures)))))
+                            match-captures)
+                   (if (and capture-start capture-end)
+                       (push (list (intern (string-join (subseq (split-string (symbol-name (car capture-start)) "\\.") 0 2) "."))
+                                   (car (tsc-node-byte-range (cdr capture-start)))
+                                   (cdr (tsc-node-byte-range (cdr capture-end))))
+                             all-captures))))
+               matches)
+      (cl-remove-duplicates (cl-remove-if-not (lambda (x)
                                                 (member (car x) group))
-                                              captures))
-         (nodes (seq-map #'cdr filtered-captures)))
-    (cl-remove-duplicates nodes
-                          :test (lambda (x y)
-                                  (and (= (car (tsc-node-byte-range x)) (car (tsc-node-byte-range y)))
-                                       (= (cdr (tsc-node-byte-range x)) (cdr (tsc-node-byte-range y))))))))
+                                              all-captures)
+                            :test (lambda (x y)
+                                    (and (eq (car x) (car y)) ;; names are equal
+                                         (= (nth 1 x) (nth 1 y))
+                                         (= (car (last x)) (car (last y)))))))))
 
 (defun evil-textobj-tree-sitter--get-within-and-after (group count query)
   "Given a `GROUP' `QUERY' find `COUNT' number of nodes within in and after current point."
@@ -166,14 +186,14 @@ instead of the builtin query set."
       (if (not (eq nodes nil))
           (let ((range-min (apply #'min
                                   (seq-map (lambda (x)
-                                             (car (tsc-node-byte-range x)))
+                                             (nth 1 x))
                                            nodes)))
                 (range-max (apply #'max
                                   (seq-map (lambda (x)
-                                             (cdr (tsc-node-byte-range x)))
+                                             (car (last x)))
                                            nodes))))
             ;; Have to compute min and max like this as we might have nested functions
-            ;; We have to use `cl-callf byte-to-position` ot the positioning might be off for unicode chars
+            ;; We have to use `cl-callf byte-to-position` of the positioning might be off for unicode chars
             (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))))
 
 ;;;###autoload
@@ -211,33 +231,37 @@ https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobje
 By default it goes to the start of the textobj, but pass in `END' if
 you want to go to the end of the textobj instead.  You can pass in
 `PREVIOUS' if you want to search backwards.  `QUERY' for custom queries."
-  (let* ((nodes (evil-textobj-tree-sitter--get-nodes groups
-                                                     query))
-         (nodes-before (reverse (evil-textobj-tree-sitter--nodes-before nodes)))
-         (nodes-within (evil-textobj-tree-sitter--nodes-within nodes))
-         (nodes-after (evil-textobj-tree-sitter--nodes-after nodes))
-         (node (car (if previous
-                        (if end
-                            nodes-before
-                          (cl-remove-if (lambda (x)
-                                          "Remove the item if we already on the start of that one."
-                                          (= (byte-to-position (car (tsc-node-byte-range x))) (point)))
-                                        (cl-merge 'list nodes-within nodes-before
-                                                  (lambda (x y) (> (car (tsc-node-byte-range x))
-                                                                   (car (tsc-node-byte-range y)))))))
-                      (if end
-                          (cl-remove-if (lambda (x)
-                                          "Remove the item if we already on the end of that one."
-                                          (= (- (byte-to-position (cdr (tsc-node-byte-range x))) 1) (point)))
-                                        (cl-merge 'list nodes-within nodes-after
-                                                  (lambda (x y) (< (cdr (tsc-node-byte-range x))
-                                                                   (cdr (tsc-node-byte-range y))))))
-                        nodes-after)))))
+  (let* ((nodes (evil-textobj-tree-sitter--get-nodes groups query))
+         (usable-nodes (if previous
+                           (if end
+                               (cl-remove-if-not (lambda (x)
+                                                   (< (byte-to-position (car (last x))) (point)))
+                                                 nodes)
+                             (cl-remove-if-not (lambda (x)
+                                                 (< (byte-to-position (nth 1 x)) (point)))
+                                               nodes))
+                         (if end
+                             (cl-remove-if-not (lambda (x)
+                                                 ;; -1 is needed as evil cannot select till end
+                                                 (> (- (byte-to-position (car (last x))) 1) (point)))
+                                               nodes)
+                           (cl-remove-if-not (lambda (x)
+                                               (> (byte-to-position (nth 1 x)) (point)))
+                                             nodes))))
+         (node (car (sort usable-nodes
+                          (lambda (x y)
+                            (if previous
+                                (if end
+                                    (> (car(last x)) (car (last y)))
+                                  (> (nth 1 x) (nth 1 y)))
+                              (if end
+                                  (< (car(last x)) (car (last y)))
+                                (< (nth 1 x) (nth 1 y)))))))))
     (if node
         (let ((actual-position (cl-callf byte-to-position
                                    (if end
-                                       (cdr (tsc-node-byte-range node))
-                                     (car (tsc-node-byte-range node))))))
+                                       (car (last node))
+                                     (nth 1 node)))))
           (if end
               ;; tree sitter count + 1 kinda (probably have to look in other places as well)
               ;; This is a mess that evil creates (not really an issue in Emacs mode)
