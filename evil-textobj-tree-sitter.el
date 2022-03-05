@@ -149,7 +149,7 @@ instead of the builtin query set."
                                   (_ (push (list (car y) (car (tsc-node-byte-range (cdr y))) (cdr (tsc-node-byte-range (cdr y)))) all-captures)))))
                             match-captures)
                    (if (and capture-start capture-end)
-                       (push (list (intern (string-join (subseq (split-string (symbol-name (car capture-start)) "\\.") 0 2) "."))
+                       (push (list (intern (string-join (butlast (split-string (symbol-name (car capture-start)) "\\.") 1) "."))
                                    (car (tsc-node-byte-range (cdr capture-start)))
                                    (cdr (tsc-node-byte-range (cdr capture-end))))
                              all-captures))))
