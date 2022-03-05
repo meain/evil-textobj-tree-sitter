@@ -11,39 +11,28 @@ import (
 
 func reprint(col []string, mr []string) {
 	if mr != nil {
-		// drop the outer layer
 		ibc := 0
 		icol := []string{}
 		for _, ie := range col {
 			switch ie {
 			case "(":
 				ibc += 1
-				if ibc != 1 {
-					icol = append(icol, ie)
-				}
+				icol = append(icol, ie)
 			case ")":
-				if ibc != 1 {
-					icol = append(icol, ie)
-				}
+				icol = append(icol, ie)
 				ibc -= 1
 			case mr[1]:
-				if ibc != 1 {
-					if ie != "@_start" && ie != "@_end" {
-						icol = append(icol, ie)
-					}
-					icol = append(icol, " ", "@"+mr[0]+"._start")
-				}
-			case mr[2]:
-				if ibc != 1 {
-					if ie != "@_start" && ie != "@_end" {
-						icol = append(icol, ie)
-					}
-					icol = append(icol, " ", "@"+mr[0]+"._end")
-				}
-			default:
-				if ibc != 1 {
+				if ie != "@_start" && ie != "@_end" {
 					icol = append(icol, ie)
 				}
+				icol = append(icol, " ", "@"+mr[0]+"._start")
+			case mr[2]:
+				if ie != "@_start" && ie != "@_end" {
+					icol = append(icol, ie)
+				}
+				icol = append(icol, " ", "@"+mr[0]+"._end")
+			default:
+				icol = append(icol, ie)
 			}
 		}
 		fmt.Print(strings.Join(icol, ""))
