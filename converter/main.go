@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -49,8 +52,8 @@ func reprint(col []string, mr []string) {
 	}
 }
 
-func reformat(input string) string {
-
+func tokenize(input string) []string {
+	// I thought of writing a full tokenizer, but lets use a hacky one
 	reg := regexp.MustCompile("[^( )]+|[( )]")
 	lines := strings.Split(input, "\n")
 	split := []string{}
@@ -59,6 +62,30 @@ func reformat(input string) string {
 		split = append(split, "\n")
 	}
 
+	msplit := []string{}
+	ins := false
+	s := []string{}
+	for _, e := range split {
+		switch e {
+		case "\"":
+			if ins {
+				msplit = append(msplit, "\""+strings.Join(s, "")+"\"")
+				s = []string{}
+			}
+			ins = !ins
+		default:
+			if ins {
+				s = append(s, e)
+			} else {
+				msplit = append(msplit, e)
+			}
+		}
+	}
+	return msplit
+}
+
+func reformat(input string) string {
+	split := tokenize(input)
 	bc := 0
 	i := 0
 	var mr []string
@@ -85,7 +112,6 @@ func reformat(input string) string {
 		default:
 			if bc == 0 {
 				fmt.Print(e)
-				fmt.Print(e)
 			} else {
 				col = append(col, e)
 			}
@@ -101,7 +127,7 @@ func reformat(input string) string {
 }
 
 func main() {
-	// 	reformat(`(function_definition
+	// reformat(`(function_definition
 	// body: (block)? @function.inner) @function.outer`)
 
 	// 	reformat(`((tuple
@@ -111,19 +137,20 @@ func main() {
 	// 	(#make-range! "parameter.outer" @_start @parameter.inner)
 	// 	)`)
 
-	reformat(`
-((tuple
-    "(" .
-    (_) @parameter.inner
-    . ","? @_end
-  )
-  (#make-range! "parameter.outer" @parameter.inner @_end)
-)
-`)
+	// 	reformat(`
+	// ((tuple
+	//     "(" .
+	//     (_) @parameter.inner
+	//     . ","? @_end
+	//   )
+	//   (#make-range! "parameter.outer" @parameter.inner @_end)
+	// )
+	// `)
 
-	// content, err := ioutil.ReadFile(os.Args[1]) // the file is inside the local directory
-	// if err != nil {
-	// 	fmt.Println("Err")
-	// }
-	// reformat(string(content))
+	// TODO: see what is with function.outer.start in the source
+	content, err := ioutil.ReadFile(os.Args[1]) // the file is inside the local directory
+	if err != nil {
+		log.Fatalf("unable to read file %s", os.Args[1])
+	}
+	reformat(string(content))
 }
