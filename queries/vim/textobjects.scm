@@ -4,11 +4,11 @@
 
 (parameters (identifier) @parameter.inner)
 
-((parameters "," @_start . (identifier) @_end)
- (#make-range! "parameter.outer" @_start @_end))
+((parameters ","  @parameter.outer._start . (identifier)  @parameter.outer._end)
+ )
 
-((parameters . (identifier) @_start . "," @_end)
- (#make-range! "parameter.outer" @_start @_end))
+((parameters . (identifier)  @parameter.outer._start . ","  @parameter.outer._end)
+ )
 
 (if_statement (body) @conditional.inner) @conditional.outer
 (for_loop (body) @loop.inner) @loop.outer
@@ -18,3 +18,4 @@
 
 (_ (body) @block.inner) @block.outer
 (body (_) @statement.outer)
+

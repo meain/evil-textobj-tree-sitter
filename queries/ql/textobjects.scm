@@ -11,3 +11,4 @@
 (classlessPredicate name: (predicateName) @scopename.inner)
 (memberPredicate name: (predicateName) @scopename.inner)
 (charpred (className) @scopename.inner)
+

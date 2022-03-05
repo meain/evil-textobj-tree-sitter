@@ -1,12 +1,12 @@
 ; Blocks
 ((compound_expression
-  . (_)? @_start
-  (_) @_end .)
-(#make-range! "block.inner" @_start @_end)) @block.outer
+  . (_)?  @block.inner._start
+  (_)  @block.inner._end .)
+) @block.outer
 ((let_statement
-  . (_)? @_start
-  (_) @_end .)
-(#make-range! "block.inner" @_start @_end)) @block.outer
+  . (_)?  @block.inner._start
+  (_)  @block.inner._end .)
+) @block.outer
 
 ; Calls
 (call_expression
@@ -15,36 +15,36 @@
 ; Objects (class)
 ((struct_definition
   name: (_)
-  . (_)? @_start
-  (_) @_end .
+  . (_)?  @class.inner._start
+  (_)  @class.inner._end .
   "end"
-)(#make-range! "class.inner" @_start @_end)) @class.outer
+)) @class.outer
 
 ((struct_definition
   name: (_) type_parameters: (_)
-  . (_)? @_start
-  (_) @_end .
+  . (_)?  @class.inner._start
+  (_)  @class.inner._end .
   "end"
-)(#make-range! "class.inner" @_start @_end)) @class.outer
+)) @class.outer
 
 ; Comments
 [(comment) (triple_string)]@comment.outer
 
 ; Conditionals
 ((if_statement condition: (_)
-    . (_)? @_start
+    . (_)?  @conditional.inner._start
     .
-    (_) @_end .
+    (_)  @conditional.inner._end .
     ["end" (elseif_clause) (else_clause)])
-(#make-range! "conditional.inner" @_start @_end)) @conditional.outer
+) @conditional.outer
 ((elseif_clause condition: (_)
-  . (_)? @_start
-  (_) @_end .)
-(#make-range! "conditional.inner" @_start @_end))
+  . (_)?  @conditional.inner._start
+  (_)  @conditional.inner._end .)
+)
 ((else_clause
-  . (_)? @_start
-  (_) @_end .)
-(#make-range! "conditional.inner" @_start @_end))
+  . (_)?  @conditional.inner._start
+  (_)  @conditional.inner._end .)
+)
 
 ; Functions
 (assignment_expression 
@@ -58,57 +58,58 @@
 
 ((macro_definition
   name: (_) parameters: (_)
-  . (_)? @_start
-  (_) @_end .
+  . (_)?  @function.inner._start
+  (_)  @function.inner._end .
   "end"
-)(#make-range! "function.inner" @_start @_end)) @function.outer
+)) @function.outer
 
 ((function_definition
   name: (_) parameters: (_)
-  . (_)? @_start
-  (_) @_end .
+  . (_)?  @function.inner._start
+  (_)  @function.inner._end .
   "end"
-)(#make-range! "function.inner" @_start @_end)) @function.outer
+)) @function.outer
 
 ; Loops
 (for_statement
- . (_)? @_start
- (_) @_end .
- (#make-range! "loop.inner" @_start @_end)
+ . (_)?  @loop.inner._start
+ (_)  @loop.inner._end .
+ 
   "end") @loop.outer
 (while_statement
- . (_)? @_start
- (_) @_end .
- (#make-range! "loop.inner" @_start @_end)
+ . (_)?  @loop.inner._start
+ (_)  @loop.inner._end .
+ 
   "end") @loop.outer
 
 ; Parameters
 ((subscript_expression
-    "," @_start . 
-    (_) @parameter.inner)
- (#make-range! "parameter.outer" @_start @parameter.inner)) 
+    ","  @parameter.outer._start . 
+    (_) @parameter.inner @parameter.outer._end)
+ ) 
 
 ((subscript_expression
-    . (_) @parameter.inner 
-    . ","? @_end)
- (#make-range! "parameter.outer" @parameter.inner @_end)) 
+    . (_) @parameter.inner @parameter.outer._start 
+    . ","?  @parameter.outer._end)
+ ) 
 
 ((argument_list
-    "," @_start .
-    (_) @parameter.inner)
-(#make-range! "parameter.outer" @_start @parameter.inner))
+    ","  @parameter.outer._start .
+    (_) @parameter.inner @parameter.outer._end)
+)
 
 ((argument_list
-    (_) @parameter.inner
-    . "," @_end)
-(#make-range! "parameter.outer" @parameter.inner @_end))
+    (_) @parameter.inner @parameter.outer._start
+    . ","  @parameter.outer._end)
+)
 
 ((parameter_list
-    "," @_start .
-    (_) @parameter.inner)
-(#make-range! "parameter.outer" @_start @parameter.inner))
+    ","  @parameter.outer._start .
+    (_) @parameter.inner @parameter.outer._end)
+)
 
 ((parameter_list
-    (_) @parameter.inner
-    . [","] @_end)
-(#make-range! "parameter.outer" @parameter.inner @_end))
+    (_) @parameter.inner @parameter.outer._start
+    . [","]  @parameter.outer._end)
+)
+

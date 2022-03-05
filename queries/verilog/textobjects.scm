@@ -17,3 +17,4 @@
 [
   (module_declaration)
 ] @class.outer
+

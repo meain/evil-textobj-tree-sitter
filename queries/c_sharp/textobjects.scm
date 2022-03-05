@@ -40,20 +40,21 @@
 
 ;; parameters
 ((parameter_list
-  "," @_start . (parameter) @parameter.inner)
- (#make-range! "parameter.outer" @_start @parameter.inner)) 
+  ","  @parameter.outer._start . (parameter) @parameter.inner @parameter.outer._end)
+ ) 
 
 ((parameter_list
-  . (parameter) @parameter.inner . ","? @_end)
- (#make-range! "parameter.outer" @parameter.inner @_end)) 
+  . (parameter) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+ ) 
 
 ((argument_list
-  "," @_start . (argument) @parameter.inner)
- (#make-range! "parameter.outer" @_start @parameter.inner)) 
+  ","  @parameter.outer._start . (argument) @parameter.inner @parameter.outer._end)
+ ) 
 
 ((argument_list
-  . (argument) @parameter.inner . ","? @_end)
- (#make-range! "parameter.outer" @parameter.inner @_end)) 
+  . (argument) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+ ) 
 
 ;; comments
 (comment) @comment.outer
+

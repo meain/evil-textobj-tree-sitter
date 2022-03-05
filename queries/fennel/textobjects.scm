@@ -6,11 +6,11 @@
 (_ . "(" ")" .) @statement.outer
 
 ; functions
-((fn . name: (_)? . (parameters) . docstring: (_)? . (_) @_start . (_)* . (_)? @_end .)
- (#make-range! "function.inner" @_start @_end)) @function.outer
+((fn . name: (_)? . (parameters) . docstring: (_)? . (_)  @function.inner._start . (_)* . (_)?  @function.inner._end .)
+ ) @function.outer
 
-((lambda . name: (_)? . (parameters) . docstring: (_)? . (_) @_start . (_)* . (_)? @_end .)
- (#make-range! "function.inner" @_start @_end)) @function.outer
+((lambda . name: (_)? . (parameters) . docstring: (_)? . (_)  @function.inner._start . (_)* . (_)?  @function.inner._end .)
+ ) @function.outer
 
 (hashfn ["#" "hashfn"] @function.outer.start (_) @function.inner) @function.outer
 
@@ -25,28 +25,29 @@
 
 ; conditionals
 ((list . ((symbol) @_if (#any-of? @_if "if" "when")) . (_) .
-  (_) @_start .
+  (_)  @conditional.inner._start .
   (_)* .
-  (_)? @_end .)
- (#make-range! "conditional.inner" @_start @_end)) @conditional.outer
+  (_)?  @conditional.inner._end .)
+ ) @conditional.outer
 
 
 ; loops
 ((for . (for_clause) .
-  (_) @_start .
+  (_)  @loop.inner._start .
   (_)* .
-  (_)? @_end .)
- (#make-range! "loop.inner" @_start @_end)) @loop.outer
+  (_)?  @loop.inner._end .)
+ ) @loop.outer
 
 ((each . (each_clause) .
-  (_) @_start .
+  (_)  @loop.inner._start .
   (_)* .
-  (_)? @_end .)
- (#make-range! "loop.inner" @_start @_end)) @loop.outer
+  (_)?  @loop.inner._end .)
+ ) @loop.outer
 
 ((list . ((symbol) @_while (#eq? @_while "while")) . (_) .
-  (_) @_start .
+  (_)  @loop.inner._start .
   (_)* .
-  (_)? @_end .)
- (#make-range! "loop.inner" @_start @_end)) @loop.outer
+  (_)?  @loop.inner._end .)
+ ) @loop.outer
+
 

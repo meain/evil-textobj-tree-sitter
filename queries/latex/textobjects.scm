@@ -1,17 +1,17 @@
 ((environment
   . (_)
-  . (_) @_start
-  (_) @_end . (_) .
+  . (_)  @block.inner._start
+  (_)  @block.inner._end . (_) .
 ) @block.outer
-(#make-range! "block.inner" @_start @_end))
+)
 
 ((environment
   (begin
    name: (word) @_frame)
-  . (_) @_start
-  (_) @_end . (_) .) @frame.outer
+  . (_)  @frame.inner._start
+  (_)  @frame.inner._end . (_) .) @frame.outer
  (#eq? @_frame "frame")
- (#make-range! "frame.inner" @_start @_end)) 
+ ) 
 
 [
   (generic_command)
@@ -26,3 +26,4 @@
   (paragraph)
   (subparagraph)
 ] @class.outer
+

@@ -39,12 +39,13 @@
 
 ;; parameters
 (formal_parameters
-  "," @_start .
-  (formal_parameter) @parameter.inner
- (#make-range! "parameter.outer" @_start @parameter.inner))
+  ","  @parameter.outer._start .
+  (formal_parameter) @parameter.inner @parameter.outer._end
+ )
 (formal_parameters
-  . (formal_parameter) @parameter.inner
+  . (formal_parameter) @parameter.inner @parameter.outer._end
   . ","? @_end
- (#make-range! "parameter.outer" @_start @parameter.inner))
+ )
 
 (comment) @comment.outer
+

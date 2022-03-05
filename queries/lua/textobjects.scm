@@ -14,50 +14,50 @@
 (function_call) @call.outer
 
 (arguments
-  "," @_start .
-  (_) @parameter.inner
- (#make-range! "parameter.outer" @_start @parameter.inner))
+  ","  @parameter.outer._start .
+  (_) @parameter.inner @parameter.outer._end
+ )
 (arguments
-  . (_) @parameter.inner
-  . ","? @_end
- (#make-range! "parameter.outer" @parameter.inner @_end))
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+ )
 
 (parameters
-  "," @_start .
-  (_) @parameter.inner
- (#make-range! "parameter.outer" @_start @parameter.inner))
+  ","  @parameter.outer._start .
+  (_) @parameter.inner @parameter.outer._end
+ )
 (parameters
-  . (_) @parameter.inner
-  . ","? @_end
- (#make-range! "parameter.outer" @parameter.inner @_end))
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+ )
 
 (arguments 
   . (table
-    "," @_start .
-    (_) @parameter.inner
-   (#make-range! "parameter.outer" @_start @parameter.inner))
+    ","  @parameter.outer._start .
+    (_) @parameter.inner @parameter.outer._end
+   )
   . ) 
 (arguments 
   . (table
-    . (_) @parameter.inner
-    . ","? @_end
-   (#make-range! "parameter.outer" @parameter.inner @_end))
+    . (_) @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
+   )
   . ) 
 
 (comment) @comment.outer
 
 ((function
-  . (function_name) . (parameters) . (_) @_start
-  (_) @_end .)
- (#make-range! "function.inner" @_start @_end))
+  . (function_name) . (parameters) . (_)  @function.inner._start
+  (_)  @function.inner._end .)
+ )
 ((local_function
-  . (identifier) . (parameters) . (_) @_start
-  (_) @_end .)
- (#make-range! "function.inner" @_start @_end))
+  . (identifier) . (parameters) . (_)  @function.inner._start
+  (_)  @function.inner._end .)
+ )
 ((function_definition
-  . (parameters) . (_) @_start
-  (_) @_end .)
- (#make-range! "function.inner" @_start @_end))
+  . (parameters) . (_)  @function.inner._start
+  (_)  @function.inner._end .)
+ )
 
 ((function
   . (function_name) . (parameters) . (_) @function.inner .))
@@ -65,3 +65,4 @@
   . (identifier) . (parameters) . (_) @function.inner .))
 ((function_definition
   . (parameters) . (_) @function.inner .))
+

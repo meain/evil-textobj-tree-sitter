@@ -1,8 +1,8 @@
 ; Block Objects
 ([
-  (do_block "do" . (_) @_do (_) @_end . "end")
-  (do_block "do" . ((_) @_do) @_end . "end")
-] (#make-range! "block.inner" @_do @_end)) @block.outer
+  (do_block "do" . (_) @_do @block.inner._start (_)  @block.inner._end . "end")
+  (do_block "do" . ((_) @_do @block.inner._start)  @block.inner._end . "end")
+] ) @block.outer
 
 ; Class Objects (Modules, Protocols)
 (call
@@ -13,10 +13,10 @@
   ))
   (arguments (alias))
   [
-    (do_block "do" . (_) @_do (_) @_end . "end")
-    (do_block "do" . ((_) @_do) @_end . "end")
+    (do_block "do" . (_) @_do @class.inner._start (_)  @class.inner._end . "end")
+    (do_block "do" . ((_) @_do @class.inner._start)  @class.inner._end . "end")
   ]
-  (#make-range! "class.inner" @_do @_end)
+  
 ) @class.outer
 
 ; Function, Parameter, and Call Objects
@@ -32,12 +32,12 @@
   (arguments (call [
     (arguments (_) @parameter.inner . "," @_delimiter)
     (arguments ((_) @parameter.inner) @_delimiter .) 
-  ] (#make-range! "parameter.outer" @parameter.inner @_delimiter)))
+  ] ))
   [
-    (do_block "do" . (_) @_do (_) @_end . "end")
-    (do_block "do" . ((_) @_do) @_end . "end")
+    (do_block "do" . (_) @_do @function.inner._start (_)  @function.inner._end . "end")
+    (do_block "do" . ((_) @_do @function.inner._start)  @function.inner._end . "end")
   ]
-  (#make-range! "function.inner" @_do @_end)
+  
 ) @function.outer
 
 ; Comment Objects
@@ -53,3 +53,4 @@
     "doc"
   )))
 ) @comment.outer
+
