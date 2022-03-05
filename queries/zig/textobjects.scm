@@ -24,19 +24,19 @@
 
 ;; parameters
 ((ParamDeclList 
-  "," @_start . (ParamDecl) @parameter.inner)
- (#make-range! "parameter.outer" @_start @parameter.inner)) 
+  ","  @parameter.outer._start . (ParamDecl) @parameter.inner @parameter.outer._end)
+ ) 
 ((ParamDeclList
-  . (ParamDecl) @parameter.inner . ","? @_end)
- (#make-range! "parameter.outer" @parameter.inner @_end)) 
+  . (ParamDecl) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+ ) 
 
 ;; arguments
 ((FnCallArguments
-  "," @_start . (_) @parameter.inner)
- (#make-range! "parameter.outer" @_start @parameter.inner)) 
+  ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
+ ) 
 ((FnCallArguments
-  . (_) @parameter.inner . ","? @_end)
- (#make-range! "parameter.outer" @parameter.inner @_end)) 
+  . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+ ) 
 
 ;; comments
 (doc_comment) @comment.outer
@@ -48,8 +48,9 @@
   (_) @conditional.inner) @conditional.outer
 
 ((SwitchExpr
-  "{" @_start "}" @_end)
-  (#make-range! "conditional.inner" @_start @_end))  @conditional.outer
+  "{"  @conditional.inner._start "}"  @conditional.inner._end)
+  )  @conditional.outer
 
 ;; calls
 (_ (FnCallArguments) @call.inner) @call.outer
+

@@ -2,9 +2,9 @@
 ((
   [(marker_annotation)? (annotation)?] @class.outer.start .
   (class_definition 
-    body: (class_body) @_end @class.inner) @_start
+    body: (class_body)  @class.outer._end @class.inner)  @class.outer._start
  )
- (#make-range! "class.outer" @_start @_end))
+ )
 (mixin_declaration (class_body) @class.inner) @class.outer
 (enum_declaration
   body: (enum_body) @class.inner) @class.outer
@@ -14,10 +14,10 @@
 ; function/method
 (( 
   [(marker_annotation)? (annotation)?] @function.outer.start .
-  [(method_signature) (function_signature)] @_start .
-  (function_body) @_end @function.inner
+  [(method_signature) (function_signature)]  @function.outer._start .
+  (function_body)  @function.outer._end @function.inner
  )
- (#make-range! "function.outer" @_start @_end))
+ )
 (type_alias (function_type)? @function.inner) @function.outer
 
 ; parameter
@@ -27,27 +27,27 @@
   (type_parameter)
 ] @parameter.inner
 (
-"," @_start . [
+","  @parameter.outer._start . [
   (formal_parameter)
   (normal_parameter_type)
   (type_parameter)
- ] @_par
- (#make-range! "parameter.outer" @_start @_par))
+ ] @_par @parameter.outer._end
+ )
 (
  [
   (formal_parameter)
   (normal_parameter_type)
   (type_parameter)
- ] @_par . "," @_end 
- (#make-range! "parameter.outer" @_par @_end))
+ ] @_par @parameter.outer._start . ","  @parameter.outer._end 
+ )
 
 ;; TODO: (_)* not supported yet -> for now this works correctly only with simple arguments 
 ((arguments
-  . (_) @parameter.inner . ","? @_end)
- (#make-range! "parameter.outer" @parameter.inner @_end))
+  . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+ )
 ((arguments
-  "," @_start . (_) @parameter.inner)
- (#make-range! "parameter.outer" @_start @parameter.inner))
+  ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
+ )
 
 ; call
 (expression_statement
@@ -102,3 +102,4 @@
   (continue_statement)
   (try_statement)
 ] @statement.outer
+

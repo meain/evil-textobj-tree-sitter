@@ -36,7 +36,7 @@
 ;; Parameters
 
 ((parameters
-    "," @_start .
+    ","  @parameter.outer._start .
     [
       (identifier)
       (tuple)
@@ -45,9 +45,9 @@
       (typed_default_parameter)
       (dictionary_splat_pattern)
       (list_splat_pattern)
-    ] @parameter.inner
+    ] @parameter.inner @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @_start @parameter.inner))
+  )
 
 ((parameters
     . [
@@ -58,14 +58,14 @@
       (typed_default_parameter)
       (dictionary_splat_pattern)
       (list_splat_pattern)
-    ] @parameter.inner
-    . ","? @_end
+    ] @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @parameter.inner @_end)
+  
 )
 
 ((lambda_parameters
-    "," @_start .
+    ","  @parameter.outer._start .
     [
       (identifier)
       (tuple)
@@ -74,9 +74,9 @@
       (typed_default_parameter)
       (dictionary_splat_pattern)
       (list_splat_pattern)
-    ] @parameter.inner
+    ] @parameter.inner @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @_start @parameter.inner))
+  )
 
 ((lambda_parameters
     . [
@@ -87,73 +87,74 @@
       (typed_default_parameter)
       (dictionary_splat_pattern)
       (list_splat_pattern)
-    ] @parameter.inner
-    . ","? @_end
+    ] @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @parameter.inner @_end))
+  )
 
 ((tuple
-    "," @_start .
-    (_) @parameter.inner
+    ","  @parameter.outer._start .
+    (_) @parameter.inner @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @_start @parameter.inner)
+  
 )
 
 ((tuple
     "(" .
-    (_) @parameter.inner
-    . ","? @_end
+    (_) @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @parameter.inner @_end)
+  
 )
 
 ((list
-    "," @_start .
-    (_) @parameter.inner
+    ","  @parameter.outer._start .
+    (_) @parameter.inner @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @_start @parameter.inner)
+  
 )
 
 ((list
-    . (_) @parameter.inner
-    . ","? @_end
+    . (_) @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @parameter.inner @_end))
+  )
 
 ((dictionary
-    . (pair) @parameter.inner
-    . ","? @_end
+    . (pair) @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @parameter.inner @_end))
+  )
 
 ((dictionary
-    "," @_start . 
-    (pair) @parameter.inner
+    ","  @parameter.outer._start . 
+    (pair) @parameter.inner @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @_start @parameter.inner))
+  )
 
 ((argument_list
-    . (_) @parameter.inner
-    . ","? @_end
+    . (_) @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @parameter.inner @_end))
+  )
 
 ((argument_list
-    "," @_start .
-    (_) @parameter.inner
+    ","  @parameter.outer._start .
+    (_) @parameter.inner @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @_start @parameter.inner))
+  )
 
 ((subscript
-    "[" . (_) @parameter.inner
-    . ","? @_end
+    "[" . (_) @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @parameter.inner @_end))
+  )
 
 ((subscript
-    "," @_start .
-    (_) @parameter.inner
+    ","  @parameter.outer._start .
+    (_) @parameter.inner @parameter.outer._end
   )
-  (#make-range! "parameter.outer" @_start @parameter.inner))
+  )
 
 ; TODO: exclude comments using the future negate syntax from tree-sitter
+

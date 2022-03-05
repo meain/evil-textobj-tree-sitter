@@ -47,35 +47,36 @@
 ; function ([ x ]) ...
 ; function (v = default_value)
 (formal_parameters
-  "," @_start .
-  (_) @parameter.inner
- (#make-range! "parameter.outer" @_start @parameter.inner))
+  ","  @parameter.outer._start .
+  (_) @parameter.inner @parameter.outer._end
+ )
 (formal_parameters
-  . (_) @parameter.inner
-  . ","? @_end
- (#make-range! "parameter.outer" @parameter.inner @_end))
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+ )
 
 ; If the array/object pattern is the first parameter, treat its elements as the argument list
 (formal_parameters
   . (_
-    [(object_pattern "," @_start .  (_) @parameter.inner)
-    (array_pattern "," @_start .  (_) @parameter.inner)]
+    [(object_pattern ","  @parameter.outer._start .  (_) @parameter.inner @parameter.outer._end)
+    (array_pattern ","  @parameter.outer._start .  (_) @parameter.inner @parameter.outer._end)]
     )
- (#make-range! "parameter.outer" @_start @parameter.inner))
+ )
 (formal_parameters
   . (_
-    [(object_pattern . (_) @parameter.inner . ","? @_end)
-    (array_pattern . (_) @parameter.inner . ","? @_end)]
+    [(object_pattern . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+    (array_pattern . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)]
     )
- (#make-range! "parameter.outer" @parameter.inner @_end))
+ )
 
 
 ;; arguments
 (arguments
-  "," @_start .
-  (_) @parameter.inner
- (#make-range! "parameter.outer" @_start @parameter.inner))
+  ","  @parameter.outer._start .
+  (_) @parameter.inner @parameter.outer._end
+ )
 (arguments
-  . (_) @parameter.inner
-  . ","? @_end
- (#make-range! "parameter.outer" @parameter.inner @_end))
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+ )
+

@@ -4,26 +4,26 @@
     (method
       . name: (identifier)
       !parameters
-      . (_) @_start (_) @_end .)
+      . (_)  @function.inner._start (_)  @function.inner._end .)
 
     (method
       . name: (identifier)
       . parameters: (method_parameters)
-      . (_) @_start (_) @_end .)
+      . (_)  @function.inner._start (_)  @function.inner._end .)
 
     (singleton_method
       . object: (_)
       . name: (identifier)
       !parameters
-      . (_) @_start (_) @_end .)
+      . (_)  @function.inner._start (_)  @function.inner._end .)
 
     (singleton_method
       . object: (_)
       . name: (identifier)
       . parameters: (method_parameters)
-      . (_) @_start (_) @_end .)
+      . (_)  @function.inner._start (_)  @function.inner._end .)
   ] @function.outer
-   (#make-range! "function.inner" @_start @_end))
+   )
 
 [
   (method
@@ -55,16 +55,16 @@
     (call
       block: (_
         !parameters
-        . (_) @_start (_) @_end .)
+        . (_)  @block.inner._start (_)  @block.inner._end .)
       )
 
     (call
       block: (_
         . parameters: (block_parameters)
-        . (_) @_start (_) @_end .)
+        . (_)  @block.inner._start (_)  @block.inner._end .)
       )
   ]
-   (#make-range! "block.inner" @_start @_end))
+   )
 
 [
   (call
@@ -85,9 +85,9 @@
 
 ((lambda
   body: (_
-    . (_) @_start (_) @_end .)
+    . (_)  @block.inner._start (_)  @block.inner._end .)
   ) @block.outer
- (#make-range! "block.inner" @_start @_end))
+ )
 
 (lambda
   body: (_
@@ -103,22 +103,22 @@
     (class
       . name: (_)
       . superclass: (_)
-      . (_) @_start (_) @_end .)
+      . (_)  @class.inner._start (_)  @class.inner._end .)
 
     (class
       . name: (_)
       !superclass
-      . (_) @_start (_) @_end .)
+      . (_)  @class.inner._start (_)  @class.inner._end .)
 
     (module
       . name: (_)
-      . (_) @_start (_) @_end .)
+      . (_)  @class.inner._start (_)  @class.inner._end .)
 
     (singleton_class
       . value: (_)
-      . (_) @_start (_) @_end .)
+      . (_)  @class.inner._start (_)  @class.inner._end .)
   ] @class.outer
- (#make-range! "class.inner" @_start @_end))
+ )
 
 [
   ;; match against classes with and without parrents
@@ -191,3 +191,4 @@
 
  (lambda_parameters (_) @parameter.inner)
 ] @parameter.outer
+

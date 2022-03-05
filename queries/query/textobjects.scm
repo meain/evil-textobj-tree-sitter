@@ -9,3 +9,4 @@
 (program [(named_node) (grouping) (list)] @statement.outer)
 
 (parameters (_) @parameter.inner)
+
