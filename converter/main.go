@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func reprint(col []string, mr []string) {
+func reprint(col []string, mr []string) []string {
 	if mr != nil {
 		ibc := 0
 		icol := []string{}
@@ -35,9 +35,9 @@ func reprint(col []string, mr []string) {
 				icol = append(icol, ie)
 			}
 		}
-		fmt.Print(strings.Join(icol, ""))
+		return icol
 	} else {
-		fmt.Print(strings.Join(col, ""))
+		return col
 	}
 }
 
@@ -79,6 +79,7 @@ func reformat(input string) string {
 	i := 0
 	var mr []string
 	var col []string
+	var out []string
 	for {
 		e := split[i]
 		switch e {
@@ -89,7 +90,7 @@ func reformat(input string) string {
 			bc -= 1
 			col = append(col, e)
 			if bc == 0 {
-				reprint(col, mr)
+				out = append(out, reprint(col, mr)...)
 				mr = nil
 				col = []string{}
 			}
@@ -100,7 +101,7 @@ func reformat(input string) string {
 			i += 7
 		default:
 			if bc == 0 {
-				fmt.Print(e)
+				out = append(out, e)
 			} else {
 				col = append(col, e)
 			}
@@ -112,34 +113,14 @@ func reformat(input string) string {
 		}
 	}
 
-	return input
+	return strings.Join(out, "")
 }
 
 func main() {
-	// reformat(`(function_definition
-	// body: (block)? @function.inner) @function.outer`)
-
-	// 	reformat(`((tuple
-	// 	"," @_start .
-	// 	(_) @parameter.inner
-	// 	)
-	// 	(#make-range! "parameter.outer" @_start @parameter.inner)
-	// 	)`)
-
-	// 	reformat(`
-	// ((tuple
-	//     "(" .
-	//     (_) @parameter.inner
-	//     . ","? @_end
-	//   )
-	//   (#make-range! "parameter.outer" @parameter.inner @_end)
-	// )
-	// `)
-
 	// TODO: see what is with function.outer.start in the source
 	content, err := ioutil.ReadFile(os.Args[1]) // the file is inside the local directory
 	if err != nil {
 		log.Fatalf("unable to read file %s", os.Args[1])
 	}
-	reformat(string(content))
+	fmt.Print(reformat(string(content)))
 }
