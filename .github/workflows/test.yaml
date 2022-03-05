@@ -27,3 +27,4 @@ jobs:
     - run: make lint
     - run: make checkdoc
     - run: make test
+    - run: cd converter && go test -v
