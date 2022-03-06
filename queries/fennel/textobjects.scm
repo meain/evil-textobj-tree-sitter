@@ -38,7 +38,7 @@
   (_)?  @loop.inner._end .)
  ) @loop.outer
 
-((each . (each_clause) .
+((each . (_) .
   (_)  @loop.inner._start .
   (_)* .
   (_)?  @loop.inner._end .)

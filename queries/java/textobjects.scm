@@ -43,9 +43,21 @@
   (formal_parameter) @parameter.inner @parameter.outer._end
  )
 (formal_parameters
-  . (formal_parameter) @parameter.inner @parameter.outer._end
-  . ","? @_end
+  . (formal_parameter) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
  )
 
-(comment) @comment.outer
+(argument_list
+  ","  @parameter.outer._start .
+  (_) @parameter.inner @parameter.outer._end
+ )
+(argument_list
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+ )
+
+[
+  (line_comment)
+  (block_comment)
+] @comment.outer
 

@@ -1,13 +1,14 @@
-((environment
+((generic_environment
   . (_)
   . (_)  @block.inner._start
   (_)  @block.inner._end . (_) .
 ) @block.outer
 )
 
-((environment
+((generic_environment
   (begin
-   name: (word) @_frame)
+   name: (curly_group_text
+           (text) @_frame))
   . (_)  @frame.inner._start
   (_)  @frame.inner._end . (_) .) @frame.outer
  (#eq? @_frame "frame")

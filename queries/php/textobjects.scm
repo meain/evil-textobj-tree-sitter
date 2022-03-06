@@ -23,9 +23,21 @@
 (_ (switch_block) @block.inner) @block.outer
 
 ;; parameters
-(formal_parameters
-  (simple_parameter) @parameter.inner)
-
 (arguments
-  (argument) @parameter.inner)
+  ","  @parameter.outer._start .
+  (_) @parameter.inner @parameter.outer._end
+ )
+(arguments
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+ )
+
+(formal_parameters
+  ","  @parameter.outer._start .
+  (_) @parameter.inner @parameter.outer._end
+ )
+(formal_parameters
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+ )
 
