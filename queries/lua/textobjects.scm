@@ -1,68 +1,78 @@
-(function) @function.outer
-(local_function) @function.outer
-(function_definition) @function.outer
+; block
 
-(for_in_statement) @loop.outer
-(for_statement) @loop.outer
-(while_statement) @loop.outer
-(repeat_statement) @loop.outer
+(_ (block) @block.inner) @block.outer
 
-(if_statement) @conditional.outer
+; call
 
-(function_call
-  (arguments) @call.inner)
-(function_call) @call.outer
+(function_call) @call.outer (arguments) @call.inner
 
-(arguments
-  ","  @parameter.outer._start .
-  (_) @parameter.inner @parameter.outer._end
- )
-(arguments
-  . (_) @parameter.inner @parameter.outer._start
-  . ","?  @parameter.outer._end
- )
+; class
 
-(parameters
-  ","  @parameter.outer._start .
-  (_) @parameter.inner @parameter.outer._end
- )
-(parameters
-  . (_) @parameter.inner @parameter.outer._start
-  . ","?  @parameter.outer._end
- )
-
-(arguments 
-  . (table
-    ","  @parameter.outer._start .
-    (_) @parameter.inner @parameter.outer._end
-   )
-  . ) 
-(arguments 
-  . (table
-    . (_) @parameter.inner @parameter.outer._start
-    . ","?  @parameter.outer._end
-   )
-  . ) 
+; comment
 
 (comment) @comment.outer
 
-((function
-  . (function_name) . (parameters) . (_)  @function.inner._start
-  (_)  @function.inner._end .)
- )
-((local_function
-  . (identifier) . (parameters) . (_)  @function.inner._start
-  (_)  @function.inner._end .)
- )
-((function_definition
-  . (parameters) . (_)  @function.inner._start
-  (_)  @function.inner._end .)
+; conditional
+
+(if_statement
+  alternative: (_ (_) @conditional.inner)?) @conditional.outer
+
+(if_statement
+  consequence: (block)? @conditional.inner)
+
+(if_statement
+  condition: (_) @conditional.inner)
+
+; frame
+
+; function
+
+[
+  (function_declaration)
+  (function_definition)
+] @function.outer
+
+(function_declaration body: (_) @function.inner)
+
+(function_definition body: (_) @function.inner)
+
+; loop
+
+[
+  (while_statement)
+  (for_statement)
+  (repeat_statement)
+] @loop.outer
+
+(while_statement body: (_) @loop.inner)
+
+(for_statement body: (_) @loop.inner)
+
+(repeat_statement body: (_) @loop.inner)
+
+; parameter
+
+(arguments
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+  )
+
+(parameters
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
  )
 
-((function
-  . (function_name) . (parameters) . (_) @function.inner .))
-((local_function
-  . (identifier) . (parameters) . (_) @function.inner .))
-((function_definition
-  . (parameters) . (_) @function.inner .))
+(arguments
+  ","  @parameter.outer._start
+  . (_) @parameter.inner @parameter.outer._end
+ )
+
+(parameters
+  ","  @parameter.outer._start
+  . (_) @parameter.inner @parameter.outer._end
+ )
+
+; scopename
+
+; statement
 
