@@ -68,9 +68,10 @@
 
 (defun evil-textobj-tree-sitter--nodes-before (nodes)
   "NODES which contain the current after them."
-  (cl-remove-if-not (lambda (x)
-                      (< (byte-to-position (car (last x))) (point)))
-                    nodes))
+  (srot (cl-remove-if-not (lambda (x)
+                            (< (byte-to-position (car (last x))) (point)))
+                          nodes)
+        (lambda (x y) (< (car (last x) (car (last y)))))))
 
 (defun evil-textobj-tree-sitter--nodes-within (nodes)
   "NODES which contain the current point inside them ordered inside out."
@@ -90,9 +91,11 @@
 
 (defun evil-textobj-tree-sitter--nodes-after (nodes)
   "NODES which contain the current point before them ordered top to bottom."
-  (cl-remove-if-not (lambda (x)
-                      (> (byte-to-position (nth 1 x)) (point)))
-                    nodes))
+  (sort (cl-remove-if-not (lambda (x)
+                            (> (byte-to-position (nth 1 x)) (point)))
+                          nodes)
+        (lambda (x y) (< (nth 1 x) (nth 1 y)))))
+
 
 (defun evil-textobj-tree-sitter--get-query (language top-level)
   "Get tree sitter query for LANGUAGE.
@@ -136,7 +139,6 @@ instead of the builtin query set."
          (all-captures '())
          (captures (tsc-query-captures query root-node #'tsc--buffer-substring-no-properties)))
     (progn
-      ;; TODO: seq-map may not be the right choice
       (seq-map (lambda (x)
                  (let* ((match-captures (cdr x))
                         (capture-start nil)
@@ -146,7 +148,10 @@ instead of the builtin query set."
                                 (pcase (car (last csplits))
                                   ("_end" (setq capture-end y))
                                   ("_start" (setq capture-start y))
-                                  (_ (push (list (car y) (car (tsc-node-byte-range (cdr y))) (cdr (tsc-node-byte-range (cdr y)))) all-captures)))))
+                                  (_ (push (list (car y)
+                                                 (car (tsc-node-byte-range (cdr y)))
+                                                 (cdr (tsc-node-byte-range (cdr y))))
+                                           all-captures)))))
                             match-captures)
                    (if (and capture-start capture-end)
                        (push (list (intern (string-join (butlast (split-string (symbol-name (car capture-start)) "\\.") 1) "."))
@@ -164,8 +169,7 @@ instead of the builtin query set."
 
 (defun evil-textobj-tree-sitter--get-within-and-after (group count query)
   "Given a `GROUP' `QUERY' find `COUNT' number of nodes within in and after current point."
-  (let* ((nodes (evil-textobj-tree-sitter--get-nodes group
-                                                     query))
+  (let* ((nodes (evil-textobj-tree-sitter--get-nodes group query))
          (nodes-within (evil-textobj-tree-sitter--nodes-within nodes))
          (nodes-after (evil-textobj-tree-sitter--nodes-after nodes))
          (filtered-nodes (append nodes-within nodes-after)))
@@ -181,8 +185,7 @@ are doing.  If a `QUERY' alist is provided, we make use of that
 instead of the builtin query set."
   (if (equal tree-sitter-mode nil)
       (message "tree-sitter-mode not enabled for buffer")
-    (let ((nodes (evil-textobj-tree-sitter--get-within-and-after
-                  ts-group count query)))
+    (let ((nodes (evil-textobj-tree-sitter--get-within-and-after ts-group count query)))
       (if (not (eq nodes nil))
           (let ((range-min (apply #'min
                                   (seq-map (lambda (x)
@@ -219,8 +222,7 @@ https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobje
     `(evil-define-text-object ,funsymbol
        ;; rest argument is named because of compiler warning `argument _ not left unused`
        (count &rest unused)
-       (let ((range (evil-textobj-tree-sitter--range count ',interned-groups
-                                                     ,query)))
+       (let ((range (evil-textobj-tree-sitter--range count ',interned-groups ,query)))
          (if (not (eq range nil))
              (evil-range (car range)
                          (cdr range))

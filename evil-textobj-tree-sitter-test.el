@@ -237,6 +237,28 @@ int main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
+(ert-deftest evil-textobj-tree-sitter-goto-next-start-simple2
+    ()
+  "Go to next start simple test.  This is to check if sorting is working."
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// mango
+func main(arg1, arg2) {
+	another_func(arg1)
+}")
+      (tree-sitter-mode)
+      (goto-char 1)
+      (should (equal (evil-textobj-tree-sitter--get-goto-location (mapcar #'intern
+                                                                          (list "parameter.outer"))
+                                                                  nil
+                                                                  nil
+                                                                  nil) 20)))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
 (ert-deftest evil-textobj-tree-sitter-goto-next-start-unicode
     ()
   "Go to next start with unicode in comment"
