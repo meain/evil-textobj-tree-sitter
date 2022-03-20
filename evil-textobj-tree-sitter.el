@@ -68,10 +68,10 @@
 
 (defun evil-textobj-tree-sitter--nodes-before (nodes)
   "NODES which contain the current after them."
-  (srot (cl-remove-if-not (lambda (x)
+  (sort (cl-remove-if-not (lambda (x)
                             (< (byte-to-position (car (last x))) (point)))
                           nodes)
-        (lambda (x y) (< (car (last x) (car (last y)))))))
+        (lambda (x y) (< (car (last x)) (car (last y))))))
 
 (defun evil-textobj-tree-sitter--nodes-within (nodes)
   "NODES which contain the current point inside them ordered inside out."
