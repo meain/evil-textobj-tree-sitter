@@ -66,6 +66,7 @@
                           (sh-mode . "bash")
                           (shell-script-mode . "bash")
                           (typescript-mode . "typescript")
+                          (verilog-mode . "verilog")
                           (zig-mode . "zig"))))
   (setf (map-elt evil-textobj-tree-sitter-major-mode-language-alist
                  major-mode) lang-symbol))
