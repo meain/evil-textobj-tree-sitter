@@ -29,7 +29,7 @@
 (require 'evil)
 (require 'tree-sitter)
 
-(defgroup evil-textobj-tree-sitter nil "Text objects based on tree-sitter for Evil"
+(defgroup evil-textobj-tree-sitter nil "Text objects based on tree-sitter for Evil."
   :group 'evil)
 
 (defconst evil-textobj-tree-sitter--dir (file-name-directory (locate-library "evil-textobj-tree-sitter.el"))
