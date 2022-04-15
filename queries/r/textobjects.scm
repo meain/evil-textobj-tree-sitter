@@ -53,10 +53,27 @@
 
 ; parameter
 
-(formal_parameters
-  (identifier) @parameter.inner) @parameter.outer
+((formal_parameters
+  ","  @parameter.outer._start .
+  (_) @parameter.inner @parameter.outer._end
+  )
+  )
+
+((formal_parameters
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+  )
+  )
 
 ((arguments
-  (identifier) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+  ","  @parameter.outer._start .
+  (_) @parameter.inner @parameter.outer._end
+  )
+  )
+
+((arguments
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+  )
   )
 
