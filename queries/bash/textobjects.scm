@@ -1,5 +1,8 @@
+(function_definition) @function.outer
+
 (function_definition
-  (_) @function.inner ) @function.outer
+  body: (compound_statement . "{" . (_)  @function.inner._start  @function.inner._end (_)?  @function.inner._end . "}"
+ ))
 
 (case_statement) @conditional.outer
 
