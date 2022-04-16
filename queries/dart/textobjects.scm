@@ -15,9 +15,14 @@
 (( 
   [(marker_annotation)? (annotation)?] @function.outer.start .
   [(method_signature) (function_signature)]  @function.outer._start .
-  (function_body)  @function.outer._end @function.inner
+  (function_body)  @function.outer._end
  )
  )
+
+(function_body
+  (block . "{" . (_)  @function.inner._start  @function.inner._end (_)?  @function.inner._end . "}"
+ ))
+
 (type_alias (function_type)? @function.inner) @function.outer
 
 ; parameter

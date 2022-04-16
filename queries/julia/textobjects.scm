@@ -28,7 +28,7 @@
 )) @class.outer
 
 ; Comments
-[(comment) (triple_string)]@comment.outer
+[(line_comment) (block_comment)] @comment.outer
 
 ; Conditionals
 ((if_statement condition: (_)
