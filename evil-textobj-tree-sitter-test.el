@@ -27,7 +27,7 @@ int main() {
       (tree-sitter-mode)
       (goto-char 31)
       (should (equal (evil-textobj-tree-sitter--range 1
-                                                      (list (intern "function.inner"))) (cons 22 45))))
+                                                      (list (intern "function.inner"))) (cons 28 43))))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
@@ -123,7 +123,7 @@ int main() {
       (tree-sitter-mode)
       (goto-char 31)
       (should (equal (evil-textobj-tree-sitter--range 1
-                                                      (list (intern "function.inner"))) (cons 22 45))))
+                                                      (list (intern "function.inner"))) (cons 28 43))))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
@@ -143,7 +143,7 @@ int main() {
       (tree-sitter-mode)
       (goto-char 1)
       (should (equal (evil-textobj-tree-sitter--range 1
-                                                      (list (intern "function.inner"))) (cons 22 45))))
+                                                      (list (intern "function.inner"))) (cons 28 43))))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
@@ -162,7 +162,7 @@ int main() {
       (tree-sitter-mode)
       (goto-char 10)
       (should (equal (evil-textobj-tree-sitter--range 1
-                                                      (list (intern "function.inner"))) (cons 22 45))))
+                                                      (list (intern "function.inner"))) (cons 28 43))))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
