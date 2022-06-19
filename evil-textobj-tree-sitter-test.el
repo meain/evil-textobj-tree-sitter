@@ -7,14 +7,9 @@
 (require 'tree-sitter-langs)
 (require 'evil-textobj-tree-sitter)
 
-(ert-deftest evil-textobj-tree-sitter-zero-test
-    ()
-  "Zero check blank test."
-  (should (equal 0 0)))
-
 (ert-deftest evil-textobj-tree-sitter-within-unicode-test
     ()
-  "Simple check with point inside the calling thigy and no unicode chars"
+  "Simple check with point inside the calling thigy and no unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -33,7 +28,7 @@ int main() {
 
 (ert-deftest evil-textobj-tree-sitter-within-unicode-test-outer
     ()
-  "Simple check with point inside the calling thigy and no unicode chars"
+  "Simple check with point inside the calling thigy and no unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -52,7 +47,7 @@ int main() {
 
 (ert-deftest evil-textobj-tree-sitter-within-unicode-test2
     ()
-  "Simple check with point inside the calling thigy and no unicode chars"
+  "Simple check with point inside the calling thigy and no unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -71,7 +66,7 @@ int main(int temp, int temp2) {
 
 (ert-deftest evil-textobj-tree-sitter-within-unicode-test3
     ()
-  "Simple check with point inside the calling thigy and no unicode chars"
+  "Simple check with point inside the calling thigy and no unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".go"))
          (filename (concat "/tmp/" bufname)))
@@ -91,7 +86,7 @@ func main(int Комментарий, int temp2) {
 
 (ert-deftest evil-textobj-tree-sitter-within-unicode-test4
     ()
-  "Check sorting of nested object in multibyte file"
+  "Check sorting of nested object in multibyte file."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -110,7 +105,7 @@ int main() {
 
 (ert-deftest evil-textobj-tree-sitter-within-test
     ()
-  "Simple check with point inside the calling thigy with unicode chars"
+  "Simple check with point inside the calling thigy with unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -130,7 +125,7 @@ int main() {
 
 (ert-deftest evil-textobj-tree-sitter-lookahed-test
     ()
-  "Check with lookahed"
+  "Check with lookahed."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -149,7 +144,7 @@ int main() {
 
 (ert-deftest evil-textobj-tree-sitter-right-at-start-test
     ()
-  "Checking for off by one errors at start"
+  "Checking for off by one errors at start."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -168,7 +163,7 @@ int main() {
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-simple
     ()
-  "Simple query read check"
+  "Simple query read check."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p ";; \"Classes\""
                              (evil-textobj-tree-sitter--get-query "zig"
@@ -176,7 +171,7 @@ int main() {
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nocomment
     ()
-  "Check a query file with no comment"
+  "Check a query file with no comment."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "(function_definition"
                              (evil-textobj-tree-sitter--get-query "bash"
@@ -184,7 +179,7 @@ int main() {
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nested
     ()
-  "Check a query with nested files to be loaded"
+  "Check a query with nested files to be loaded."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "; inherits: (jsx)"
                              (evil-textobj-tree-sitter--get-query "typescript"
@@ -192,7 +187,7 @@ int main() {
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nested-nofile
     ()
-  "Check a file pointing to a non existent file"
+  "Check a file pointing to a non existent file."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "; inherits: (jsx)"
                              (evil-textobj-tree-sitter--get-query "javascript"
@@ -200,7 +195,7 @@ int main() {
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nested-multi
     ()
-  "Check a query with multiple nesting items"
+  "Check a query with multiple nesting items."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "; inherits: (javascript)"
                              (evil-textobj-tree-sitter--get-query "tsx"
@@ -208,7 +203,7 @@ int main() {
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-non-top-level
     ()
-  "Check a non top level direct query"
+  "Check a non top level direct query."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "; inherits: (javascript)"
                              (evil-textobj-tree-sitter--get-query "typescript"
@@ -217,7 +212,7 @@ int main() {
 
 (ert-deftest evil-textobj-tree-sitter-goto-next-start-simple
     ()
-  "Go to next start simple test"
+  "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -261,7 +256,7 @@ func main(arg1, arg2) {
 
 (ert-deftest evil-textobj-tree-sitter-goto-next-start-unicode
     ()
-  "Go to next start with unicode in comment"
+  "Go to next start with unicode in comment."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -283,7 +278,7 @@ int main() {
 
 (ert-deftest evil-textobj-tree-sitter-goto-next-end-simple
     ()
-  "Go to next start simple test"
+  "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -311,7 +306,7 @@ int main2() {
 
 (ert-deftest evil-textobj-tree-sitter-goto-next-end-multi
     ()
-  "Go to next start simple test"
+  "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -338,7 +333,7 @@ int main2() {
 
 (ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi
     ()
-  "Go to next start simple test"
+  "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
          (filename (concat "/tmp/" bufname)))
@@ -498,7 +493,7 @@ int main3() {
 
 (ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested
     ()
-  "Go to next start simple test"
+  "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".go"))
          (filename (concat "/tmp/" bufname)))
@@ -524,7 +519,7 @@ func main() {
 
 (ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested-2
     ()
-  "Go to previous nested function test"
+  "Go to previous nested function test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".py"))
          (filename (concat "/tmp/" bufname)))
@@ -551,7 +546,7 @@ func main() {
 
 (ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested-3
     ()
-  "Go to previous nested complex test"
+  "Go to previous nested complex test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".py"))
          (filename (concat "/tmp/" bufname)))
@@ -582,7 +577,7 @@ func main() {
 
 (ert-deftest evil-textobj-tree-sitter-goto-next-end-nested-2
     ()
-  "Go to next nested function test"
+  "Go to next nested function test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".py"))
          (filename (concat "/tmp/" bufname)))
