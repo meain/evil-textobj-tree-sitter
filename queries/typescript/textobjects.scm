@@ -1,2 +1,2 @@
-; inherits: javascript
+; inherits: ecma
 
