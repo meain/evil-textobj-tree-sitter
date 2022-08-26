@@ -1,2 +1,2 @@
-; inherits: (ecma, jsx)
+; inherits: ecma
 

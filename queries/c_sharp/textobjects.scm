@@ -32,8 +32,10 @@
   body: (switch_body) @conditional.inner) @conditional.outer
 
 ;; calls
-(invocation_expression 
-  (argument_list) @call.inner) @call.outer
+(invocation_expression) @call.outer
+(invocation_expression
+  arguments: (argument_list . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
+  ))
 
 ;; blocks
 (_ (block) @block.inner) @block.outer

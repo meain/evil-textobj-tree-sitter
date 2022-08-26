@@ -31,7 +31,9 @@
 (block (_) @statement.outer)
 
 (call) @call.outer
-(call (_) @call.inner)
+(call
+  arguments: (argument_list . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
+  ))
 
 ;; Parameters
 

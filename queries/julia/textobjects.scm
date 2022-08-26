@@ -9,8 +9,10 @@
 ) @block.outer
 
 ; Calls
+(call_expression) @call.outer
 (call_expression
-  (argument_list) @call.inner) @call.outer
+  (argument_list . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
+  ))
 
 ; Objects (class)
 ((struct_definition

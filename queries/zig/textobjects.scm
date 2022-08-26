@@ -52,5 +52,8 @@
   )  @conditional.outer
 
 ;; calls
-(_ (FnCallArguments) @call.inner) @call.outer
+(_ (FnCallArguments)) @call.outer
+(_
+  (FnCallArguments . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
+  ))
 

@@ -19,9 +19,9 @@
 (parameters (_) @parameter.outer)
 
 ; call
-((list . [(multi_symbol) (symbol)] @call.inner) @call.outer
- (#not-any-of? @call.inner "if" "do" "while" "for" "let" "when"))
-
+((list . [(multi_symbol) (symbol)] @_sym . (_)  @call.inner._start . (_)* . (_)?  @call.inner._end .)
+ 
+ (#not-any-of? @_sym "if" "do" "while" "for" "let" "when")) @call.outer
 
 ; conditionals
 ((list . ((symbol) @_if (#any-of? @_if "if" "when")) . (_) .
