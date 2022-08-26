@@ -55,8 +55,18 @@
  )
 
 ; call
-(expression_statement
-  (selector) @call.inner) @call.outer
+(
+ (identifier)  @call.outer._start . (selector (argument_part)  @call.outer._end)
+ 
+)
+
+(
+ (identifier) .
+ (selector
+   (argument_part
+     (arguments . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
+     )))
+)
 
 ; block
 (block) @block.outer

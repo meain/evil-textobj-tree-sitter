@@ -41,7 +41,9 @@
 (comment) @comment.outer
 
 (call_expression) @call.outer
-(call_expression (_) @call.inner)
+(call_expression
+  arguments: (argument_list . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
+  ))
 
 ; Statements
 

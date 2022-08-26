@@ -45,6 +45,25 @@
   
 ) @function.outer
 
+(call 
+  target: ((identifier) @_identifier (#any-of? @_identifier 
+    "def" 
+    "defmacro" 
+    "defmacrop" 
+    "defn" 
+    "defnp" 
+    "defp"
+  ))
+  (arguments (call [
+    (arguments (_) @parameter.inner @parameter.outer._start . "," @_delimiter @parameter.outer._end)
+    (arguments ((_) @parameter.inner @parameter.outer._start) @_delimiter @parameter.outer._end .) 
+  ] )
+    (keywords
+      (pair
+        value: (_) @function.inner))
+  )
+) @function.outer
+
 ; Comment Objects
 (comment) @comment.outer
 

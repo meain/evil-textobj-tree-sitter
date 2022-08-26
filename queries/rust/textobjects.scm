@@ -68,7 +68,10 @@
 (unsafe_block (_)? @block.inner) @block.outer
 
 ;; calls
-(call_expression (_)? @call.inner) @call.outer
+(call_expression) @call.outer
+(call_expression
+  arguments: (arguments . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
+  ))
 
 ;; statements
 (block (_) @statement.outer)
