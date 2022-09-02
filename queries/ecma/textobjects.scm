@@ -16,7 +16,7 @@
   (function_declaration) @function.outer) @function.outer.start
 
 (arrow_function
-  . body: (_) @function.inner) @function.outer
+  body: (_) @function.inner) @function.outer
 
 (arrow_function
   body: (statement_block . "{" . (_)  @function.inner._start  @function.inner._end (_)?  @function.inner._end . "}"
