@@ -49,3 +49,5 @@
   . ","?  @parameter.outer._end
  )
 
+(comment) @comment.outer
+

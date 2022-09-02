@@ -4,3 +4,5 @@
 
 ; call
 
+(function_call) @call.outer
+
