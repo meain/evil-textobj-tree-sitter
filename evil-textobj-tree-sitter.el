@@ -132,13 +132,14 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
 (defun evil-textobj-tree-sitter--get-nodes (group query)
   "Get a list of viable nodes based on `GROUP' value.
 They will be order with captures with point inside them first then the
-ones that follow.  If a `QUERY' alist is provided, we make use of that
-instead of the builtin query set."
+ones that follow.  If a `QUERY' alist is provided and
+it contains a current `major-mode',
+we make use of that instead of the builtin query set."
   (let* ((lang-name (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
-         (debugging-query (if (eq query nil)
-                              (evil-textobj-tree-sitter--get-query lang-name
-                                                                   t)
-                            (alist-get major-mode query)))
+         (user-query (alist-get major-mode query))
+         (debugging-query (if (eq user-query nil)
+                              (evil-textobj-tree-sitter--get-query lang-name t)
+                            user-query))
          (root-node (tsc-root-node tree-sitter-tree))
          (query (tsc-make-query tree-sitter-language debugging-query))
          (matches (tsc-query-matches query root-node #'tsc--buffer-substring-no-properties))
@@ -213,8 +214,9 @@ any one of them is available, it will be picked.
 
 You can optionally pass in a alist mapping `major-mode' to their
 respective tree-sitter query in `QUERY' with named captures to use
-that instead of the default query list.  Check the README file in the
-repo to see how to use it.
+that instead of the default query list.  If `QUERY' does not contain
+current `major-mode', then the default queries are used.
+Check the README file in the repo to see how to use it.
 
 Check this url for builtin objects
 https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects"
