@@ -1,25 +1,32 @@
 ;; functions
 (function_item
-  (_) @function.inner) @function.outer
+  body: (block . "{" . (_)  @function.inner._start  @function.inner._end (_)?  @function.inner._end . "}"
+  )) @function.outer
 
 ;; quantifies as class(es)
 (struct_item
-  (_) @class.inner) @class.outer
+  body: (field_declaration_list . "{" . (_)  @class.inner._start [(_)","]?  @class.inner._end . "}"
+  )) @class.outer
 
 (enum_item
-  (_) @class.inner) @class.outer
+  body: (enum_variant_list . "{" . (_)  @class.inner._start [(_)","]?  @class.inner._end . "}"
+  )) @class.outer
 
 (union_item
-  (_) @class.inner) @class.outer
+  body: (field_declaration_list . "{" . (_)  @class.inner._start [(_)","]?  @class.inner._end . "}"
+  )) @class.outer
 
 (trait_item
-  (_) @class.inner) @class.outer
+  body: (declaration_list . "{" . (_)  @class.inner._start  @class.inner._end (_)?  @class.inner._end . "}"
+  )) @class.outer
 
 (impl_item
-  (_) @class.inner) @class.outer
+  body: (declaration_list . "{" . (_)  @class.inner._start  @class.inner._end (_)?  @class.inner._end . "}"
+  )) @class.outer
 
 (mod_item
-  (_) @class.inner) @class.outer
+  body: (declaration_list . "{" . (_)  @class.inner._start  @class.inner._end (_)?  @class.inner._end . "}"
+  )) @class.outer
 
 ;; conditionals
 (if_expression
