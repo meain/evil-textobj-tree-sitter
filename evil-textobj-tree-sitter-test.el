@@ -4,11 +4,12 @@
 ;; We can only use statically linked files here or libstdc++ screams at you.
 ;; C is an ideal candidate for this as it is builtin and is statically linked.
 
+;;; Code:
+
 (require 'tree-sitter-langs)
 (require 'evil-textobj-tree-sitter)
 
-(ert-deftest evil-textobj-tree-sitter-within-unicode-test
-    ()
+(ert-deftest evil-textobj-tree-sitter-within-unicode-test ()
   "Simple check with point inside the calling thigy and no unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -26,8 +27,7 @@ int main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-within-unicode-test-outer
-    ()
+(ert-deftest evil-textobj-tree-sitter-within-unicode-test-outer ()
   "Simple check with point inside the calling thigy and no unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -45,8 +45,7 @@ int main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-within-unicode-test2
-    ()
+(ert-deftest evil-textobj-tree-sitter-within-unicode-test2 ()
   "Simple check with point inside the calling thigy and no unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -64,8 +63,7 @@ int main(int temp, int temp2) {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-within-unicode-test3
-    ()
+(ert-deftest evil-textobj-tree-sitter-within-unicode-test3 ()
   "Simple check with point inside the calling thigy and no unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".go"))
@@ -84,8 +82,7 @@ func main(int Комментарий, int temp2) {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-within-unicode-test4
-    ()
+(ert-deftest evil-textobj-tree-sitter-within-unicode-test4 ()
   "Check sorting of nested object in multibyte file."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -103,8 +100,7 @@ int main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-within-test
-    ()
+(ert-deftest evil-textobj-tree-sitter-within-test ()
   "Simple check with point inside the calling thigy with unicode chars."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -123,8 +119,7 @@ int main() {
     (kill-buffer bufname)))
 
 
-(ert-deftest evil-textobj-tree-sitter-lookahed-test
-    ()
+(ert-deftest evil-textobj-tree-sitter-lookahed-test ()
   "Check with lookahed."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -142,8 +137,7 @@ int main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-right-at-start-test
-    ()
+(ert-deftest evil-textobj-tree-sitter-right-at-start-test ()
   "Checking for off by one errors at start."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -161,48 +155,42 @@ int main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textoj-tree-sitter-check-query-read-simple
-    ()
+(ert-deftest evil-textoj-tree-sitter-check-query-read-simple ()
   "Simple query read check."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p ";; \"Classes\""
                              (evil-textobj-tree-sitter--get-query "zig"
                                                                   t)))))
 
-(ert-deftest evil-textoj-tree-sitter-check-query-read-nocomment
-    ()
+(ert-deftest evil-textoj-tree-sitter-check-query-read-nocomment ()
   "Check a query file with no comment."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "(function_definition"
                              (evil-textobj-tree-sitter--get-query "bash"
                                                                   t)))))
 
-(ert-deftest evil-textoj-tree-sitter-check-query-read-nested
-    ()
+(ert-deftest evil-textoj-tree-sitter-check-query-read-nested ()
   "Check a query with nested files to be loaded."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "; inherits: (jsx)"
                              (evil-textobj-tree-sitter--get-query "typescript"
                                                                   t)))))
 
-(ert-deftest evil-textoj-tree-sitter-check-query-read-nested-nofile
-    ()
+(ert-deftest evil-textoj-tree-sitter-check-query-read-nested-nofile ()
   "Check a file pointing to a non existent file."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "; inherits: (jsx)"
                              (evil-textobj-tree-sitter--get-query "javascript"
                                                                   t)))))
 
-(ert-deftest evil-textoj-tree-sitter-check-query-read-nested-multi
-    ()
+(ert-deftest evil-textoj-tree-sitter-check-query-read-nested-multi ()
   "Check a query with multiple nesting items."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "; inherits: (javascript)"
                              (evil-textobj-tree-sitter--get-query "tsx"
                                                                   t)))))
 
-(ert-deftest evil-textoj-tree-sitter-check-query-read-non-top-level
-    ()
+(ert-deftest evil-textoj-tree-sitter-check-query-read-non-top-level ()
   "Check a non top level direct query."
   (let ((evil-textobj-tree-sitter--queries-dir "fixtures/"))
     (should (string-prefix-p "; inherits: (javascript)"
@@ -210,8 +198,7 @@ int main() {
                                                                   nil)))))
 
 
-(ert-deftest evil-textobj-tree-sitter-goto-next-start-simple
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-next-start-simple ()
   "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -232,8 +219,7 @@ int main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-goto-next-start-simple2
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-next-start-simple2 ()
   "Go to next start simple test.  This is to check if sorting is working."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -254,8 +240,7 @@ func main(arg1, arg2) {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-goto-next-start-unicode
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-next-start-unicode ()
   "Go to next start with unicode in comment."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -276,8 +261,7 @@ int main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-goto-next-end-simple
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-next-end-simple ()
   "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -304,8 +288,7 @@ int main2() {
     (kill-buffer bufname)))
 
 
-(ert-deftest evil-textobj-tree-sitter-goto-next-end-multi
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-next-end-multi ()
   "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -331,8 +314,7 @@ int main2() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi ()
   "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -362,8 +344,7 @@ int main3() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi-on-end
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi-on-end ()
   "Testing going to end of previous one while on end of current one."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -394,8 +375,7 @@ int main3() {
     (kill-buffer bufname)))
 
 
-(ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi-on-end-with-comment-at-end
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-previous-end-multi-on-end-with-comment-at-end ()
   "Testing going to end of previous one while on end of current one."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -426,8 +406,7 @@ int main3() {
     (kill-buffer bufname)))
 
 
-(ert-deftest evil-textobj-tree-sitter-goto-next-end-multi-on-end
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-next-end-multi-on-end ()
   "Testing going to end of previous one while on end of current one."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -459,8 +438,7 @@ int main3() {
     (kill-buffer bufname)))
 
 
-(ert-deftest evil-textobj-tree-sitter-goto-previous-start-multi-on-start
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-previous-start-multi-on-start ()
   "Testing going to start of previous one while on start of current one."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".c"))
@@ -491,8 +469,7 @@ int main3() {
     (kill-buffer bufname)))
 
 
-(ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested ()
   "Go to next start simple test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".go"))
@@ -517,8 +494,7 @@ func main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested-2
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested-2 ()
   "Go to previous nested function test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".py"))
@@ -544,8 +520,7 @@ func main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested-3
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-previous-start-nested-3 ()
   "Go to previous nested complex test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".py"))
@@ -575,8 +550,7 @@ func main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
-(ert-deftest evil-textobj-tree-sitter-goto-next-end-nested-2
-    ()
+(ert-deftest evil-textobj-tree-sitter-goto-next-end-nested-2 ()
   "Go to next nested function test."
   (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
                           ".py"))
