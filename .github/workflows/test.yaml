@@ -1,4 +1,4 @@
-name: test
+name: Run tests
 
 on:
   pull_request:
@@ -28,4 +28,5 @@ jobs:
     - run: make lint
     - run: make checkdoc
     - run: make test
+    - run: make test-queries
     - run: cd converter && go test -v
