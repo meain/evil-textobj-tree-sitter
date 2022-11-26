@@ -3,8 +3,14 @@
 (require 'tree-sitter-langs)
 (require 'evil-textobj-tree-sitter)
 
-(defun evil-textobj-tree-sitter--test-loading-with-comment (lang comment-prefix)
+(defun evil-textobj-tree-sitter--test-loading-with-comment-prefix (lang comment-prefix)
   "Try loading grammar for `LANG' and test with comment using `COMMENT-PREFIX'."
+  (evil-textobj-tree-sitter--test-loading-with-comment
+   lang
+   (concat comment-prefix " howdy!")))
+
+(defun evil-textobj-tree-sitter--test-loading-with-comment (lang text &optional region)
+  "Try loading grammar for `LANG' and test with comment provided in `TEXT' optionally passing in `REGION'."
   (let* ((bufname (make-temp-name "evil-textobj-tree-sitter-test--"))
          (filename (concat "/tmp/" bufname)))
 
@@ -13,111 +19,109 @@
     (with-current-buffer bufname
       (setq-local tree-sitter-major-mode-language-alist `((fundamental-mode . ,lang)))
       (setq-local evil-textobj-tree-sitter-major-mode-language-alist `((fundamental-mode . ,(symbol-name lang))))
-      (insert (concat comment-prefix " howdy!"))
-      ;; (comment-line 0)
+      (insert text)
       (tree-sitter-mode)
-      (tree-sitter-hl-mode)
       (goto-char 0)
       (should (equal
                (evil-textobj-tree-sitter--range
                 1
                 (list (intern "comment.outer")))
-               (cons 1 (+ 8 (length comment-prefix))))))
+               (if region region (cons 1 (+ 1 (length text)))))))
 
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
 
+;; TODO: Simplify code using macros and dolist
 
 ;; bash
 (ert-deftest evil-textobj-tree-sitter-try-bash ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'bash "#"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'bash "#"))
 
 ;; c
 (ert-deftest evil-textobj-tree-sitter-try-c ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'c "//"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'c "//"))
 
 ;; cpp
 (ert-deftest evil-textobj-tree-sitter-try-cpp ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'cpp "//"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'cpp "//"))
 
 ;; elixir
 (ert-deftest evil-textobj-tree-sitter-try-elixir ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'elixir "#"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'elixir "#"))
 
 ;; elm
 (ert-deftest evil-textobj-tree-sitter-try-elm ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'elm "--"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'elm "--"))
 
 ;; go
 (ert-deftest evil-textobj-tree-sitter-try-go ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'go "//"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'go "//"))
 
 ;; haskell
 (ert-deftest evil-textobj-tree-sitter-try-haskell ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'haskell "--"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'haskell "--"))
 
 ;; hcl
 (ert-deftest evil-textobj-tree-sitter-try-hcl ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'hcl "#"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'hcl "#"))
 
 ;; html <!--
-;; TODO: Cannot just prefix match
-;; (ert-deftest evil-textobj-tree-sitter-try-html ()
-;;   (evil-textobj-tree-sitter--test-loading-with-comment 'html "<!--"))
+(ert-deftest evil-textobj-tree-sitter-try-html ()
+  ;; TODO: Waiting for upstream changes to queries
+  ;; (evil-textobj-tree-sitter--test-loading-with-comment 'html "<!-- howdy -->")
+  )
 
 ;; java
 (ert-deftest evil-textobj-tree-sitter-try-java ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'java "//"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'java "//"))
 
 ;; javascript
 (ert-deftest evil-textobj-tree-sitter-try-javascript ()
   ;; TODO: Waiting for upstream changes to queries
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment 'javascript "//")
+  ;; (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'javascript "//")
   )
 
 ;; julia
 (ert-deftest evil-textobj-tree-sitter-try-julia ()
   ;; TODO: Needs grammar update
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment 'julia "#")
+  ;; (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'julia "#")
   )
 
 ;; php
 (ert-deftest evil-textobj-tree-sitter-try-php ()
-  ;; TODO: Figure out what the problem is
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment 'php "//")
-  )
+  (evil-textobj-tree-sitter--test-loading-with-comment 'php "<?php\n// howdy\n?>" (cons 7 15)))
 
 ;; python
 (ert-deftest evil-textobj-tree-sitter-try-python ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'python "#"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'python "#"))
 
 ;; r
 (ert-deftest evil-textobj-tree-sitter-try-r ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'r "#"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'r "#"))
 
 ;; ruby
 (ert-deftest evil-textobj-tree-sitter-try-ruby ()
   ;; TODO: Waiting for upstream changes to queries
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment 'ruby "#")
+  ;; (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'ruby "#")
   )
 
 ;; rust
 (ert-deftest evil-textobj-tree-sitter-try-rust ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'rust "//"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'rust "//"))
 
 ;; typescript
 (ert-deftest evil-textobj-tree-sitter-try-typescript ()
   ;; TODO: Waiting for upstream changes to queries
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment 'typescript "//")
+  ;; (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'typescript "//")
   )
 
 ;; verilog
 (ert-deftest evil-textobj-tree-sitter-try-verilog ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'verilog "//"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'verilog "//"))
 
 ;; zig
 (ert-deftest evil-textobj-tree-sitter-try-zig ()
-  (evil-textobj-tree-sitter--test-loading-with-comment 'zig "//"))
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'zig "//"))
 
 ;;; evil-textobj-tree-sitter-query-test.el ends here
