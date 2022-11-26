@@ -32,6 +32,10 @@ test: elpa
 	$(CASK) exec $(EMACS) -Q -batch $(LOADPATH) $(TESTPATH) \
     -l evil-textobj-tree-sitter-test.el -f ert-run-tests-batch-and-exit
 
+test-queries: elpa
+	$(CASK) exec $(EMACS) -Q -batch $(LOADPATH) $(TESTPATH) \
+    -l evil-textobj-tree-sitter-query-test.el -f ert-run-tests-batch-and-exit
+
 elpa: $(ELPA_DIR)
 $(ELPA_DIR): Cask
 	$(CASK) install
