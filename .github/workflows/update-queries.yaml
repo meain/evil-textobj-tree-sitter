@@ -23,5 +23,4 @@ jobs:
           body: Update tree-sitter queries to latest from nvim-treesitter/nvim-treesitter-textobjects
           branch: auto-update-queries
           base: master
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_PAT }}
+          token: ${{ secrets.REPO_SCOPED_PAT }}
