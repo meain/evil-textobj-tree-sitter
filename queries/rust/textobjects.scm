@@ -47,24 +47,11 @@
 
 (match_expression) @conditional.outer
 
-(if_let_expression
-  consequence: (block)?
-  @conditional.inner) @conditional.outer
-
-(if_let_expression
-  alternative: (else_clause (block) @conditional.inner))
-
-(if_let_expression
-  pattern: (_) @conditional.inner)
-
 ;; loops
 (loop_expression
   (_)? @loop.inner) @loop.outer
 
 (while_expression
-  (_)? @loop.inner) @loop.outer
-
-(while_let_expression
   (_)? @loop.inner) @loop.outer
 
 (for_expression
@@ -137,12 +124,3 @@
 ((type_arguments
   . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
  )
-
-((meta_arguments
-  ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
- )
-((meta_arguments
-  . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
- )
-
-

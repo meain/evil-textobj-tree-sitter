@@ -24,3 +24,5 @@
  (#match? @_tag "^(html|section|h[0-9]|header|title|head|body)$")
  )
 
+(comment) @comment.outer
+
