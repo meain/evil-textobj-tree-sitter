@@ -68,9 +68,7 @@
 
 ;; html <!--
 (ert-deftest evil-textobj-tree-sitter-try-html ()
-  ;; TODO: Waiting for upstream changes to queries
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment 'html "<!-- howdy -->")
-  )
+  (evil-textobj-tree-sitter--test-loading-with-comment 'html "<!-- howdy -->"))
 
 ;; java
 (ert-deftest evil-textobj-tree-sitter-try-java ()
@@ -78,15 +76,11 @@
 
 ;; javascript
 (ert-deftest evil-textobj-tree-sitter-try-javascript ()
-  ;; TODO: Waiting for upstream changes to queries
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'javascript "//")
-  )
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'javascript "//"))
 
-;; julia
-(ert-deftest evil-textobj-tree-sitter-try-julia ()
-  ;; TODO: Needs grammar update
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'julia "#")
-  )
+;; julia TODO: Needs grammar update
+;; (ert-deftest evil-textobj-tree-sitter-try-julia ()
+;;   (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'julia "#"))
 
 ;; php
 (ert-deftest evil-textobj-tree-sitter-try-php ()
@@ -102,9 +96,7 @@
 
 ;; ruby
 (ert-deftest evil-textobj-tree-sitter-try-ruby ()
-  ;; TODO: Waiting for upstream changes to queries
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'ruby "#")
-  )
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'ruby "#"))
 
 ;; rust
 (ert-deftest evil-textobj-tree-sitter-try-rust ()
@@ -112,9 +104,7 @@
 
 ;; typescript
 (ert-deftest evil-textobj-tree-sitter-try-typescript ()
-  ;; TODO: Waiting for upstream changes to queries
-  ;; (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'typescript "//")
-  )
+  (evil-textobj-tree-sitter--test-loading-with-comment-prefix 'typescript "//"))
 
 ;; verilog
 (ert-deftest evil-textobj-tree-sitter-try-verilog ()
