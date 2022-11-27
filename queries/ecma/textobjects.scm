@@ -97,3 +97,6 @@
   . ","?  @parameter.outer._end
  )
 
+;; comment
+(comment) @comment.outer
+

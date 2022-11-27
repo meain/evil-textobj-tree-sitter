@@ -1,14 +1,18 @@
 (class_declaration 
-  body: (declaration_list) @class.inner) @class.outer
+  body: (declaration_list . "{" . (_)  @class.inner._start  @class.inner._end (_)?  @class.inner._end . "}"
+  )) @class.outer
 
 (struct_declaration
-  body: (declaration_list) @class.inner) @class.outer
+  body: (declaration_list . "{" . (_)  @class.inner._start  @class.inner._end (_)?  @class.inner._end . "}"
+  )) @class.outer
 
 (method_declaration
-  body: (block) ? @function.inner) @function.outer
+  body: (block . "{" . (_)  @function.inner._start  @function.inner._end (_)?  @function.inner._end . "}"
+  )) @function.outer
 
 (lambda_expression 
-  body: (_) @function.inner) @function.outer
+  body: (block . "{" . (_)  @function.inner._start  @function.inner._end (_)?  @function.inner._end . "}"
+  )) @function.outer
 
 ;; loops
 (for_statement
