@@ -48,6 +48,7 @@
                           (csharp-mode . "csharp")
                           (elixir-mode . "elixir")
                           (elm-mode . "elm")
+                          (ess-r-mode . "r")
                           (go-mode . "go")
                           (haskell-mode . "haskell")
                           (html-mode . "html")
