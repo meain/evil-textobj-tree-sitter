@@ -16,3 +16,5 @@
 
 (comment) @comment.outer
 
+(regex) @regex.inner
+
