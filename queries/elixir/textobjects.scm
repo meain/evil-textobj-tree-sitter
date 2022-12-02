@@ -78,3 +78,6 @@
   )))
 ) @comment.outer
 
+; Regex Objects
+(sigil (quoted_content) @regex.inner) @regex.outer
+
