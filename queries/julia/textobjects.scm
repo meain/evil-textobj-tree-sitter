@@ -89,14 +89,9 @@
   ))
 
 ;; Parameters
-((index_expression
+((vector_expression
     ","  @parameter.outer._start . 
     (_) @parameter.inner @parameter.outer._end)
- ) 
-
-((index_expression
-    . (_) @parameter.inner @parameter.outer._start 
-    . ","?  @parameter.outer._end)
  ) 
 
 ((argument_list
