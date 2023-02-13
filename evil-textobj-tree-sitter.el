@@ -235,7 +235,9 @@ https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobje
          (if (not (eq range nil))
              (evil-range (car range)
                          (cdr range))
-           (message (concat "No '" ,group "' text object found")))))))
+           (mapc (lambda (g)
+                   (message (concat "No '" g "' text object found")))
+                 ,groups))))))
 
 (defun evil-textobj-tree-sitter--get-goto-location (groups previous end query)
   "Get the start/end of the textobj of type `GROUPS'.
@@ -294,7 +296,9 @@ you want to go to the end of the textobj instead.  You can pass in
                          interned-groups previous end query)))
     (if goto-position
         (goto-char goto-position)
-      (message (concat "No '" group "' text object found")))))
+      (mapc (lambda (g)
+              (message (concat "No '" g "' text object found")))
+            groups))))
 
 (provide 'evil-textobj-tree-sitter)
 ;;; evil-textobj-tree-sitter.el ends here
