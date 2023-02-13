@@ -211,7 +211,8 @@ instead of the builtin query set."
   "Log a message that `GROUPS' are not found."
   (let ((not-found (mapconcat (lambda (g)
                                 (concat "'" g "'"))
-                              groups)))
+                              groups
+                              " or ")))
     (message (concat "No " not-found " text object found"))))
 
 ;;;###autoload
