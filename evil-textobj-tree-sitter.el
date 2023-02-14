@@ -207,6 +207,14 @@ instead of the builtin query set."
             ;; We have to use `cl-callf byte-to-position` of the positioning might be off for unicode chars
             (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))))
 
+(defun evil-textobj-tree-sitter--message-not-found (groups)
+  "Log a message that `GROUPS' are not found."
+  (let ((not-found (mapconcat (lambda (g)
+                                (concat "'" g "'"))
+                              groups
+                              " or ")))
+    (message (concat "No " not-found " text object found"))))
+
 ;;;###autoload
 (defmacro evil-textobj-tree-sitter-get-textobj (group &optional query)
   "Macro to create a textobj function from `GROUP'.
@@ -235,7 +243,7 @@ https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobje
          (if (not (eq range nil))
              (evil-range (car range)
                          (cdr range))
-           (message (concat "No '" ,group "' text object found")))))))
+           (evil-textobj-tree-sitter--message-not-found ,groups))))))
 
 (defun evil-textobj-tree-sitter--get-goto-location (groups previous end query)
   "Get the start/end of the textobj of type `GROUPS'.
@@ -294,7 +302,7 @@ you want to go to the end of the textobj instead.  You can pass in
                          interned-groups previous end query)))
     (if goto-position
         (goto-char goto-position)
-      (message (concat "No '" group "' text object found")))))
+      (evil-textobj-tree-sitter--message-not-found groups))))
 
 (provide 'evil-textobj-tree-sitter)
 ;;; evil-textobj-tree-sitter.el ends here
