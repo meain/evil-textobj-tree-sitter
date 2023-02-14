@@ -243,7 +243,7 @@ https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobje
          (if (not (eq range nil))
              (evil-range (car range)
                          (cdr range))
-           (evil-textobj-tree-sitter--message-not-found ,groups))))))
+           (evil-textobj-tree-sitter--message-not-found ',groups))))))
 
 (defun evil-textobj-tree-sitter--get-goto-location (groups previous end query)
   "Get the start/end of the textobj of type `GROUPS'.
