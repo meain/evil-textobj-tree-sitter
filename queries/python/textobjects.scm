@@ -159,5 +159,17 @@
   )
   )
 
+[
+  (integer)
+  (float)
+] @number.inner
+
+(assignment
+ left: (_) @assignment.lhs
+ right: (_) @assignment.inner @assignment.rhs) @assignment.outer
+
+(assignment
+ left: (_) @assignment.inner)
+
 ; TODO: exclude comments using the future negate syntax from tree-sitter
 

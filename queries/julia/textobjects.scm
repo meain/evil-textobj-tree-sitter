@@ -51,7 +51,8 @@
 )) @class.outer
 
 ((struct_definition
-  name: (_) type_parameters: (_)
+  name: (_)
+  (type_parameter_list)*
   . (_)?  @class.inner._start
   (_)  @class.inner._end .
   "end"

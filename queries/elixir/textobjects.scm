@@ -5,6 +5,7 @@
 ] ) @block.outer
 
 ; Class Objects (Modules, Protocols)
+; multiple children
 (call
   target: ((identifier) @_identifier (#any-of? @_identifier 
     "defmodule" 
@@ -12,11 +13,19 @@
     "defimpl"
   ))
   (arguments (alias))
-  [
-    (do_block "do" . (_) @_do @class.inner._start (_)  @class.inner._end . "end")
-    (do_block "do" . ((_) @_do @class.inner._start)  @class.inner._end . "end")
-  ]
+  (do_block "do" . (_) @_do @class.inner._start (_)  @class.inner._end . "end")
   
+) @class.outer
+
+; single child match
+(call
+  target: ((identifier) @_identifier (#any-of? @_identifier 
+    "defmodule" 
+    "defprotocol" 
+    "defimpl"
+  ))
+  (arguments (alias))
+  (do_block "do" . (_) @class.inner . "end")
 ) @class.outer
 
 ; Function, Parameter, and Call Objects
@@ -70,12 +79,21 @@
 ; Documentation Objects
 (unary_operator 
   operator: "@"
-  operand: (call target: ((identifier) @_identifier (#any-of? @_identifier
-    "moduledoc" 
-    "typedoc" 
-    "shortdoc" 
-    "doc"
-  )))
+  operand: (
+    call target: ((identifier) @_identifier (#any-of? @_identifier
+      "moduledoc" 
+      "typedoc" 
+      "shortdoc" 
+      "doc"
+    ))
+  (arguments [
+    ; attributes style documentation
+    ; @doc deprecated: "...."
+    (keywords) @comment.inner
+    ; heredoc style documentation
+    ; @moduledoc """"""
+    (string (quoted_content) @comment.inner)
+  ]))
 ) @comment.outer
 
 ; Regex Objects

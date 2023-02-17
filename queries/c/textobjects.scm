@@ -79,3 +79,5 @@
   . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
  )
 
+(number_literal) @number.inner
+
