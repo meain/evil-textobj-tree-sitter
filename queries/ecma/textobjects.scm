@@ -106,3 +106,13 @@
 ;; regex
 (regex (regex_pattern) @regex.inner) @regex.outer
 
+;; number
+(number) @number.inner
+
+(variable_declarator
+ name: (_) @assignment.lhs
+ value: (_) @assignment.inner @assignment.rhs) @assignment.outer
+
+(variable_declarator
+ name: (_) @assignment.inner)
+

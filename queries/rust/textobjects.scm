@@ -1,32 +1,40 @@
 ;; functions
+(function_signature_item) @function.outer
+(function_item) @function.outer
 (function_item
   body: (block . "{" . (_)  @function.inner._start  @function.inner._end (_)?  @function.inner._end . "}"
-  )) @function.outer
+  ))
 
 ;; quantifies as class(es)
+(struct_item) @class.outer
 (struct_item
   body: (field_declaration_list . "{" . (_)  @class.inner._start [(_)","]?  @class.inner._end . "}"
-  )) @class.outer
+  ))
 
+(enum_item) @class.outer
 (enum_item
   body: (enum_variant_list . "{" . (_)  @class.inner._start [(_)","]?  @class.inner._end . "}"
-  )) @class.outer
+  ))
 
+(union_item) @class.outer
 (union_item
   body: (field_declaration_list . "{" . (_)  @class.inner._start [(_)","]?  @class.inner._end . "}"
-  )) @class.outer
+  ))
 
+(trait_item) @class.outer
 (trait_item
   body: (declaration_list . "{" . (_)  @class.inner._start  @class.inner._end (_)?  @class.inner._end . "}"
-  )) @class.outer
+  ))
 
+(impl_item) @class.outer
 (impl_item
   body: (declaration_list . "{" . (_)  @class.inner._start  @class.inner._end (_)?  @class.inner._end . "}"
-  )) @class.outer
+  ))
 
+(mod_item) @class.outer
 (mod_item
   body: (declaration_list . "{" . (_)  @class.inner._start  @class.inner._end (_)?  @class.inner._end . "}"
-  )) @class.outer
+  ))
 
 ;; conditionals
 (if_expression
@@ -104,6 +112,40 @@
   . (identifier) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
  )
 
+(tuple_expression
+  ","  @parameter.outer._start
+  . (_) @parameter.inner @parameter.outer._end
+ )
+
+(tuple_expression
+  . (_) @parameter.inner @parameter.outer._start
+  . ","?  @parameter.outer._end
+ )
+
+(struct_item
+  body: (field_declaration_list
+    ","  @parameter.outer._start
+    . (_) @parameter.inner @parameter.outer._end
+   ))
+
+(struct_item
+  body: (field_declaration_list
+    . (_) @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
+   ))
+
+(struct_expression
+  body: (field_initializer_list
+    ","  @parameter.outer._start
+    . (_) @parameter.inner @parameter.outer._end
+   ))
+
+(struct_expression
+  body: (field_initializer_list
+    . (_) @parameter.inner @parameter.outer._start
+    . ","?  @parameter.outer._end
+   ))
+
 ((closure_parameters
   ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
  )
@@ -124,3 +166,23 @@
 ((type_arguments
   . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
  )
+
+[
+  (integer_literal)
+  (float_literal)
+] @number.inner
+
+(let_declaration
+ pattern: (_) @assignment.lhs
+ value: (_) @assignment.inner @assignment.rhs) @assignment.outer
+
+(let_declaration
+ pattern: (_) @assignment.inner)
+
+(assignment_expression
+ left: (_) @assignment.lhs
+ right: (_) @assignment.inner @assignment.rhs) @assignment.outer
+
+(assignment_expression
+ left: (_) @assignment.inner)
+

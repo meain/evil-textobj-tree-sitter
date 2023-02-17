@@ -82,3 +82,6 @@
   )
   )
 
+; number
+(float) @number.inner
+

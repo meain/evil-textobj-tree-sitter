@@ -26,3 +26,8 @@
   (_) @conditional.inner
 ) @conditional.outer
 
+[
+  (integer_expression)
+  (float_expression)
+] @number.inner
+

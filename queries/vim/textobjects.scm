@@ -23,3 +23,15 @@
    (pattern) @regex.inner @regex.outer)
  (#offset! @regex.outer 0 -1 0 1))
 
+[
+  (integer_literal)
+  (float_literal)
+] @number.inner
+
+(let_statement
+  (_) @assignment.lhs
+  (_) @assignment.rhs @assignment.inner) @assignment.outer
+
+(let_statement
+  (_) @assignment.inner)
+

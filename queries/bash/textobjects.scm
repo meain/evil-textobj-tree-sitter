@@ -18,3 +18,6 @@
 
 (regex) @regex.inner
 
+((word) @number.inner
+ (#lua-match? @number.inner "^[0-9]+$"))
+
