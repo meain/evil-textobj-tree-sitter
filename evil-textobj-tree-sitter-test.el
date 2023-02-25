@@ -577,4 +577,41 @@ func main() {
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
+;;; `thing-at-point' tests
+(ert-deftest evil-textobj-tree-sitter-thing-at-point ()
+  "Simple check with point inside the calling thigy and no unicode chars."
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// Łukasz
+int main() {
+    printf(\"hello\")
+}")
+      (tree-sitter-mode)
+      (goto-char 31)
+      (should (equal (thing-at-point 'function t) "int main() {
+    printf(\"hello\")
+}")))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
+(ert-deftest evil-textobj-tree-sitter-thing-at-point-bounds ()
+  "Simple check with point inside the calling thigy and no unicode chars."
+  (let* ((bufname (concat (make-temp-name "evil-textobj-tree-sitter-test--")
+                          ".c"))
+         (filename (concat "/tmp/" bufname)))
+    (find-file filename)
+    (with-current-buffer bufname
+      (insert "// Łukasz
+int main() {
+    printf(\"hello\")
+}")
+      (tree-sitter-mode)
+      (goto-char 31)
+      (should (equal (bounds-of-thing-at-point 'function) (cons 11 45))))
+    (set-buffer-modified-p nil)
+    (kill-buffer bufname)))
+
 ;;; evil-textobj-tree-sitter-test.el ends here
