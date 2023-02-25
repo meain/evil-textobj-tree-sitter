@@ -3,27 +3,26 @@
 [![MELPA](https://melpa.org/packages/evil-textobj-tree-sitter-badge.svg)](https://melpa.org/#/evil-textobj-tree-sitter)
 [![test](https://github.com/meain/evil-textobj-tree-sitter/actions/workflows/test.yaml/badge.svg)](https://github.com/meain/evil-textobj-tree-sitter/actions/workflows/test.yaml)
 
-Tree-sitter powered textobjects for evil mode in Emacs.
+Tree-sitter powered textobjects for Emacs. You can use them with `evil-mode` or with `thing-at-point`.
 
 ![gif](https://meain.io/blog-videos/gifs/evil-textobj-treesitter.gif)
 
-> This is an Emacs port of [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects).
-
 This package will let you create evil textobjects using tree-sitter
 grammars. You can easily create function,class,comment etc textobjects
-in multiple languages.
+in multiple languages. It also make additional `things` available in
+`thing-at-point` like `function`, `class`, `loop`, `comment` etc.
 
-# Installation & Usage
+# Installation
 
 You can install `evil-textobj-tree-sitter` from melpa. Here is how you would do it using `use-package` and `package.el`:
 
-``` emacs-lisp
+```emacs-lisp
 (use-package evil-textobj-tree-sitter :ensure t)
 ```
 
 Or you can use `straight.el`:
 
-``` emacs-lisp
+```emacs-lisp
 (use-package evil-textobj-tree-sitter :straight t)
 ```
 
@@ -39,7 +38,21 @@ Or using `straight.el` and `el-get` to pull from source:
 
 > You will also have to setup [`tree-sitter`](https://github.com/emacs-tree-sitter/elisp-tree-sitter).
 
-# Mapping textobjects
+# Usage
+
+## `thing-at-point` additions
+
+The package adds more "things" to `thing-at-point`. You can find all
+the things that it adds in the
+[source](https://github.com/meain/evil-textobj-tree-sitter/blob/master/evil-textobj-tree-sitter-thing-at-point.el).
+
+You can use these like any other `thing-at-point` entries. For example
+in case of functions, we make the following available:
+
+- `(thing-at-point 'function)`
+- `(function-at-point)`
+
+## Mapping textobjects
 
 By default, the library does not provide any keybindings, but it
 should be relatively easy to add them.
@@ -63,18 +76,18 @@ does not yet support all the languages as of now. As for the list of
 languages that we support you can check the value of
 `evil-textobj-tree-sitter-major-mode-language-alist`.
 
-# Custom textobjects
+## Custom textobjects
 
 If you are not able to find the text object that you are looking for
 in the builtin list, you can create custom text objects by passing the
 a custom query with captures.
 
 For example if you want to create text object to select `import`
-statements, you can write something like below. *You will have to
+statements, you can write something like below. _You will have to
 provide the tree-sitter queries for all the languages that you want it
-to work for*
+to work for_
 
-``` emacs-lisp
+```emacs-lisp
 ;; The first arguemnt to `evil-textobj-tree-sitter-get-textobj' will be the capture group to use
 ;; and the second arg will be an alist mapping major-mode to the corresponding query to use.
 (define-key evil-outer-text-objects-map "m" (evil-textobj-tree-sitter-get-textobj "import"
@@ -82,7 +95,7 @@ to work for*
                                                 (rust-mode . [(use_declaration) @import]))))
 ```
 
-# Goto
+## Goto
 
 We have also added support for for a fancier version of
 `goto-char`. You can use this to go to the next function, previous
@@ -92,13 +105,13 @@ You can use the `evil-textobj-tree-sitter-goto-textobj` function to
 invoke goto. You can either use this in other function or just bound
 to a key. The first argument is the textobj that you want to use, the
 second one specifies if you want to search forward or backward and the
-last one is for specifying wheather to go to the start or end of the
+last one is for specifying weather to go to the start or end of the
 textobj.
 
 Below are some sample binding that you can do. You can use any textobj
 that is available here.
 
-``` emacs-lisp
+```emacs-lisp
 ;; Goto start of next function
 (define-key evil-normal-state-map (kbd "]f") (lambda ()
                                                   (interactive)
@@ -132,8 +145,8 @@ project.
 If you are adding a completely new language, there is two other things
 that you will have to do to make sure everything will work well.
 
-1) Make sure the lang is available in [emacs-tree-sitter/tree-sitter-langs](https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/master/queries)
-2) Make sure we have a `major-mode` mapping in [evil-textobj-tree-sitter-major-mode-language-alist](https://github.com/meain/evil-textobj-tree-sitter/blob/d416b3ab8610f179defadd58f5c20fdc65bf21e5/evil-textobj-tree-sitter.el#L40)
+1. Make sure the lang is available in [emacs-tree-sitter/tree-sitter-langs](https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/master/queries)
+2. Make sure we have a `major-mode` mapping in [evil-textobj-tree-sitter-major-mode-language-alist](https://github.com/meain/evil-textobj-tree-sitter/blob/d416b3ab8610f179defadd58f5c20fdc65bf21e5/evil-textobj-tree-sitter.el#L40)
 
 # License
 
