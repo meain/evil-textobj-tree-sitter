@@ -36,6 +36,9 @@
   arguments: (argument_list . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
   ))
 
+(return_statement
+  (_)? @return.inner) @return.outer
+
 ;; Parameters
 
 ((parameters
