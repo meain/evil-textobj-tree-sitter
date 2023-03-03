@@ -75,6 +75,10 @@
   arguments: (arguments . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
   ))
 
+;; returns
+(return_expression
+  (_)? @return.inner) @return.outer
+
 ;; statements
 (block (_) @statement.outer)
 
