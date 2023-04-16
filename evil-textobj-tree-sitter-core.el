@@ -75,6 +75,11 @@
   (setf (map-elt evil-textobj-tree-sitter-major-mode-language-alist
                  major-mode) lang-symbol))
 
+(defcustom evil-textobj-tree-sitter-use-next-if-not-within t
+  "When non-nil, use the next match if we are not within one."
+  :group 'evil-textobj-tree-sitter
+  :type 'boolean)
+
 (defun evil-textobj-tree-sitter--nodes-filter-before (nodes)
   "NODES which contain the current after them."
   (sort (cl-remove-if-not (lambda (x)
@@ -182,7 +187,10 @@ we make use of that instead of the builtin query set."
   (let* ((nodes (evil-textobj-tree-sitter--get-nodes group query))
          (nodes-within (evil-textobj-tree-sitter--nodes-filter-within nodes))
          (nodes-after (evil-textobj-tree-sitter--nodes-filter-after nodes))
-         (filtered-nodes (append nodes-within nodes-after)))
+         (filtered-nodes (if (and (equal 1 count)
+                                   (not evil-textobj-tree-sitter-use-next-if-not-within))
+                              nodes-within
+                            (append nodes-within nodes-after))))
     (if (> (length filtered-nodes) 0)
         (cl-subseq filtered-nodes 0 count))))
 
@@ -201,7 +209,7 @@ but we can only provide the start and end as of now which is what we
 are doing.  If a `QUERY' alist is provided, we make use of that
 instead of the builtin query set."
   (if (equal tree-sitter-mode nil)
-      (message "tree-sitter-mode not enabled for buffer")
+      (error "tree-sitter-mode not enabled for buffer")
     (let ((nodes (evil-textobj-tree-sitter--get-within-and-after ts-group count query)))
       (if (not (eq nodes nil))
           (let ((range-min (apply #'min
@@ -222,7 +230,7 @@ instead of the builtin query set."
                                 (concat "'" g "'"))
                               groups
                               " or ")))
-    (message (concat "No " not-found " text object found"))))
+    (error (concat "No " not-found " text object found"))))
 
 ;;;###autoload
 (defmacro evil-textobj-tree-sitter-get-textobj (group &optional query)
