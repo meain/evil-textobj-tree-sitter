@@ -148,6 +148,12 @@ that you will have to do to make sure everything will work well.
 1. Make sure the lang is available in [emacs-tree-sitter/tree-sitter-langs](https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/master/queries)
 2. Make sure we have a `major-mode` mapping in [evil-textobj-tree-sitter-major-mode-language-alist](https://github.com/meain/evil-textobj-tree-sitter/blob/d416b3ab8610f179defadd58f5c20fdc65bf21e5/evil-textobj-tree-sitter.el#L40)
 
+*If you would like to test out new textobjects, I would suggest using
+[custom textobjects](#custom-textobjects). If you want to edit the
+query files, you can edit them in
+`evil-textobj-tree-sitter--queries-dir` or by forking the repo, and
+using the forked version with your edits.*
+
 # License
 
 The primary codebase is licensed under `Apache-2.0`. The queries have
