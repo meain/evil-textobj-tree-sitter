@@ -171,6 +171,13 @@
   . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
  )
 
+(scoped_use_list
+  list: (use_list ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end
+    ))
+(scoped_use_list
+  list: (use_list . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end
+    ))
+
 [
   (integer_literal)
   (float_literal)
