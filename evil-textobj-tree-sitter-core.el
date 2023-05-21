@@ -151,8 +151,7 @@ we make use of that instead of the builtin query set."
          (root-node (tsc-root-node tree-sitter-tree))
          (query (tsc-make-query tree-sitter-language debugging-query))
          (matches (tsc-query-matches query root-node #'tsc--buffer-substring-no-properties))
-         (all-captures '())
-         (captures (tsc-query-captures query root-node #'tsc--buffer-substring-no-properties)))
+         (all-captures '()))
     (progn
       (seq-map (lambda (x)
                  (let* ((match-captures (cdr x))
