@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+HELIX_DIR="${1:-../helix}"
+
+find $HELIX_DIR/runtime/queries -name 'textobjects.scm' |
+    cut -d'/' -f5- |
+    while read -r file; do
+        dir="$(dirname "$file")"
+        filename="$(basename "$file")"
+
+        mkdir -p "treesit-queries/$dir"
+        # match? to match mapping is kinda hacky
+        sed 's|\(@[^\.]*\)\.inside|\1.inner|g;s|\(@[^\.]*\)\.around|\1.outer|g;s|#match? @\([^ ]*\) "\([^"]*\)"|#match "\2" @\1|g' \
+            "$HELIX_DIR/runtime/queries/$file" > "treesit-queries/$dir/$filename"
+    done
