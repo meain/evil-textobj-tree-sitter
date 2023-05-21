@@ -26,18 +26,54 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'tree-sitter)
+(require 'map)
+
+(defvar evil-textobj-tree-sitter--can-use-elisp-treesitter
+  (require 'tree-sitter nil t)
+  "If non-nil, we are can make use of elisp-tree-sitter instead of builtin.")
+(defvar evil-textobj-tree-sitter--can-use-builtin-treesit
+  (require 'treesit nil t)
+  "If non-nil, we are can make use of builtin treesit instead of elisp-tree-sitter.")
 
 (defvar evil-textobj-tree-sitter--evil-available (require 'evil nil t)
   "Specifies if we have `evil-mode' available to use in package.")
 
 (defgroup evil-textobj-tree-sitter nil "Text objects based on tree-sitter for Evil."
-  :group 'evil)
+  :group 'tools)
+
+;; Ignore warnings from optionally requiring tree-sitter and treesit
+(defvar tree-sitter-language)
+(defvar tree-sitter-tree)
+(declare-function tsc-node-byte-range "tsc" t t)
+(declare-function tsc--buffer-substring-no-properties "tsc")
+(declare-function tsc-query-matches "tsc")
+(declare-function tsc-root-node "tsc" t t)
+(declare-function tsc-make-query "tsc")
+(declare-function treesit-node-end "treesit.c")
+(declare-function treesit-node-start "treesit.c")
+(declare-function treesit-query-capture "treesit.c")
+(declare-function treesit-buffer-root-node "treesit")
 
 (defconst evil-textobj-tree-sitter--dir (file-name-directory (locate-library "evil-textobj-tree-sitter.el"))
   "The directory where the library `tree-sitter-langs' is located.")
 
-(defconst evil-textobj-tree-sitter--queries-dir (file-name-as-directory (concat evil-textobj-tree-sitter--dir "queries")))
+
+(defun evil-textobj-tree-sitter--use-builtin-treesitter ()
+  "Return non-nil if we should use builtin treesitter."
+  (and evil-textobj-tree-sitter--can-use-builtin-treesit
+       (string-suffix-p "-ts-mode" (symbol-name major-mode))))
+
+(defun evil-textobj-tree-sitter--get-queries-dir ()
+  "Get the queries directory.
+Currently treesit queries are different from queries for elisp-tree-sitter."
+  (if (evil-textobj-tree-sitter--use-builtin-treesitter)
+      (file-name-as-directory (concat evil-textobj-tree-sitter--dir "treesit-queries"))
+    (file-name-as-directory (concat evil-textobj-tree-sitter--dir "queries"))))
+
+(defcustom evil-textobj-tree-sitter--get-queries-dir-func  #'evil-textobj-tree-sitter--get-queries-dir
+  "Function to get location for the queries."
+  :group 'evil-textobj-tree-sitter
+  :type 'function)
 
 (defcustom evil-textobj-tree-sitter-major-mode-language-alist nil
   "Alist that maps major modes to tree-sitter language names."
@@ -46,31 +82,50 @@
                 :value-type string))
 (pcase-dolist (`(,major-mode . ,lang-symbol)
                (reverse '((c++-mode . "cpp")
+                          (c++-ts-mode . "cpp")
                           (c-mode . "c")
+                          (c-ts-mode . "c")
                           (csharp-mode . "csharp")
+                          (csharp-ts-mode . "csharp")
                           (elixir-mode . "elixir")
+                          (elixir-ts-mode . "elixir")
                           (elm-mode . "elm")
+                          (elm-ts-mode . "elm")
                           (ess-r-mode . "r")
                           (go-mode . "go")
+                          (go-ts-mode . "go")
                           (haskell-mode . "haskell")
+                          (haskell-ts-mode . "haskell")
                           (html-mode . "html")
+                          (html-ts-mode . "html")
                           (java-mode . "java")
+                          (java-ts-mode . "java")
                           (javascript-mode . "javascript")
+                          (javascript-ts-mode . "javascript")
                           (js-mode . "javascript")
+                          (js-ts-mode . "js")
                           (js2-mode . "javascript")
                           (js3-mode . "javascript")
                           (julia-mode . "julia")
+                          (julia-ts-mode . "julia")
                           (matlab-mode . "matlab")
                           (php-mode . "php")
+                          (php-ts-mode . "php")
                           (prisma-mode . "prisma")
+                          (prisma-ts-mode . "prisma")
                           (python-mode . "python")
+                          (python-ts-mode . "python")
                           (rjsx-mode . "javascript")
                           (ruby-mode . "ruby")
+                          (ruby-ts-mode . "ruby")
                           (rust-mode . "rust")
+                          (rust-ts-mode . "rust")
                           (rustic-mode . "rust")
                           (sh-mode . "bash")
+                          (bash-ts-mode . "sh")
                           (shell-script-mode . "bash")
                           (typescript-mode . "typescript")
+                          (typescript-ts-mode . "typescript")
                           (verilog-mode . "verilog")
                           (zig-mode . "zig"))))
   (setf (map-elt evil-textobj-tree-sitter-major-mode-language-alist
@@ -116,9 +171,9 @@
   "Get tree sitter query for LANGUAGE.
 TOP-LEVEL is used to mention if we should load optional inherits.
 https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
-  (with-temp-buffer
-    (let ((filename (concat evil-textobj-tree-sitter--queries-dir
-                            language "/textobjects.scm")))
+  (let ((filename (concat (funcall evil-textobj-tree-sitter--get-queries-dir-func)
+                          language "/textobjects.scm")))
+    (with-temp-buffer
       (if (file-exists-p filename)
           (progn
             (insert-file-contents filename)
@@ -138,19 +193,31 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
                                        "\n"))))
             (buffer-string))))))
 
-(defun evil-textobj-tree-sitter--get-nodes (group query)
-  "Get a list of viable nodes based on `GROUP' value.
-They will be order with captures with point inside them first then the
-ones that follow.  If a `QUERY' alist is provided and
-it contains a current `major-mode',
-we make use of that instead of the builtin query set."
+
+(defun evil-textobj-tree-sitter--treesit-get-nodes (query)
+  "Get nodes for `QUERY' using builtin `treesit'."
   (let* ((lang-name (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
          (user-query (alist-get major-mode query))
-         (debugging-query (if (eq user-query nil)
-                              (evil-textobj-tree-sitter--get-query lang-name t)
-                            user-query))
+         (f-query (if (eq user-query nil)
+                      (evil-textobj-tree-sitter--get-query lang-name t)
+                    user-query))
+         (root-node (treesit-buffer-root-node))
+         (captures (treesit-query-capture root-node f-query)))
+    (seq-map (lambda (x)
+               (list  (car x)
+                      (treesit-node-start (cdr x))
+                      (treesit-node-end (cdr x))))
+             captures)))
+
+(defun evil-textobj-tree-sitter--elisp-tree-sitter-get-nodes (query)
+  "Get nodes for `QUERY' using `elisp-tree-sitter'."
+  (let* ((lang-name (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
+         (user-query (alist-get major-mode query))
+         (f-query (if (eq user-query nil)
+                      (evil-textobj-tree-sitter--get-query lang-name t)
+                    user-query))
          (root-node (tsc-root-node tree-sitter-tree))
-         (query (tsc-make-query tree-sitter-language debugging-query))
+         (query (tsc-make-query tree-sitter-language f-query))
          (matches (tsc-query-matches query root-node #'tsc--buffer-substring-no-properties))
          (all-captures '()))
     (progn
@@ -174,28 +241,38 @@ we make use of that instead of the builtin query set."
                                    (cdr (tsc-node-byte-range (cdr capture-end))))
                              all-captures))))
                matches)
-      (cl-remove-duplicates (cl-remove-if-not (lambda (x)
-                                                (member (car x) group))
-                                              all-captures)
-                            :test (lambda (x y)
-                                    (and (eq (car x) (car y)) ;; names are equal
-                                         (= (nth 1 x) (nth 1 y))
-                                         (= (car (last x)) (car (last y)))))))))
+      all-captures)))
+
+(defun evil-textobj-tree-sitter--get-nodes (group query)
+  "Get a list of viable nodes based on `GROUP' value.
+They will be order with captures with point inside them first then the
+ones that follow.  If a `QUERY' alist is provided and
+it contains a current `major-mode',
+we make use of that instead of the builtin query set."
+  (cl-remove-duplicates (cl-remove-if-not (lambda (x)
+                                            (member (car x) group))
+                                          (if (evil-textobj-tree-sitter--use-builtin-treesitter)
+                                              (evil-textobj-tree-sitter--treesit-get-nodes query)
+                                            (evil-textobj-tree-sitter--elisp-tree-sitter-get-nodes query)))
+                        :test (lambda (x y)
+                                (and (eq (car x) (car y)) ;; names are equal
+                                     (= (nth 1 x) (nth 1 y))
+                                     (= (car (last x)) (car (last y)))))))
 
 (defun evil-textobj-tree-sitter--get-within-and-after (group count query)
-  "Given a `GROUP' `QUERY' find `COUNT' number of nodes within in and after current point."
+  "Given a `GROUP' `QUERY' find `COUNT' number of nodes within in and after point."
   (let* ((nodes (evil-textobj-tree-sitter--get-nodes group query))
          (nodes-within (evil-textobj-tree-sitter--nodes-filter-within nodes))
          (nodes-after (evil-textobj-tree-sitter--nodes-filter-after nodes))
          (filtered-nodes (if (and (equal 1 count)
-                                   (not evil-textobj-tree-sitter-use-next-if-not-within))
-                              nodes-within
-                            (append nodes-within nodes-after))))
+                                  (not evil-textobj-tree-sitter-use-next-if-not-within))
+                             nodes-within
+                           (append nodes-within nodes-after))))
     (if (> (length filtered-nodes) 0)
         (cl-subseq filtered-nodes 0 count))))
 
 (defun evil-textobj-tree-sitter--get-within (group count query)
-  "Given a `GROUP' `QUERY' find `COUNT' number of nodes within in and after current point."
+  "Given a `GROUP' `QUERY' find `COUNT' number of nodes within point."
   (let* ((nodes (evil-textobj-tree-sitter--get-nodes group query))
          (nodes-within (evil-textobj-tree-sitter--nodes-filter-within nodes)))
     (if (> (length nodes-within) 0)
@@ -208,21 +285,19 @@ most cases as if we do 3-in-func the selections will not be continues,
 but we can only provide the start and end as of now which is what we
 are doing.  If a `QUERY' alist is provided, we make use of that
 instead of the builtin query set."
-  (if (equal tree-sitter-mode nil)
-      (error "tree-sitter-mode not enabled for buffer")
-    (let ((nodes (evil-textobj-tree-sitter--get-within-and-after ts-group count query)))
-      (if (not (eq nodes nil))
-          (let ((range-min (apply #'min
-                                  (seq-map (lambda (x)
-                                             (nth 1 x))
-                                           nodes)))
-                (range-max (apply #'max
-                                  (seq-map (lambda (x)
-                                             (car (last x)))
-                                           nodes))))
-            ;; Have to compute min and max like this as we might have nested functions
-            ;; We have to use `cl-callf byte-to-position` of the positioning might be off for unicode chars
-            (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max)))))))
+  (let ((nodes (evil-textobj-tree-sitter--get-within-and-after ts-group count query)))
+    (if (not (eq nodes nil))
+        (let ((range-min (apply #'min
+                                (seq-map (lambda (x)
+                                           (nth 1 x))
+                                         nodes)))
+              (range-max (apply #'max
+                                (seq-map (lambda (x)
+                                           (car (last x)))
+                                         nodes))))
+          ;; Have to compute min and max like this as we might have nested functions
+          ;; We have to use `cl-callf byte-to-position` of the positioning might be off for unicode chars
+          (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max))))))
 
 (defun evil-textobj-tree-sitter--message-not-found (groups)
   "Log a message that `GROUPS' are not found."
