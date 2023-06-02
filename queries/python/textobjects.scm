@@ -30,7 +30,7 @@
 ; leave space after comment marker if there is one
 ((comment) @comment.inner @comment.outer
            (#offset! @comment.inner 0 2 0)
-           (#match? @comment.outer "# .*"))
+           (#lua-match? @comment.outer "# .*"))
 
 ; else remove everything accept comment marker
 ((comment) @comment.inner @comment.outer

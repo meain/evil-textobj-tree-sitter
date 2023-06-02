@@ -19,7 +19,7 @@
 (regex) @regex.inner
 
 ((word) @number.inner
- (#match? @number.inner "^[0-9]+$"))
+ (#lua-match? @number.inner "^[0-9]+$"))
 
 (variable_assignment) @assignment.outer
 (variable_assignment name: (_) @assignment.inner @assignment.lhs)
