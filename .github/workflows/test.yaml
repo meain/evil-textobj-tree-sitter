@@ -14,8 +14,9 @@ jobs:
       fail-fast: false
       matrix:
         emacs_version:
-          - 27.2
-          - 28.1
+          # - 27.2
+          # - 28.1
+          - snapshot # test only on snapshot as that has treesit
     steps:
     - uses: actions/checkout@v2
     - uses: purcell/setup-emacs@master
