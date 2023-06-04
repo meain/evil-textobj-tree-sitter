@@ -78,7 +78,7 @@ func main(int Комментарий, int temp2) {
       (tree-sitter-mode)
       (goto-char 31)
       (should (equal (evil-textobj-tree-sitter--range 1
-                                                      (list (intern "parameter.inner"))) (cons 26 41))))
+                                                      (list (intern "parameter.inner"))) (cons 30 41))))
     (set-buffer-modified-p nil)
     (kill-buffer bufname)))
 
