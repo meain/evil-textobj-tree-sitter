@@ -76,12 +76,12 @@
  )
 
 (parameter_declaration
-  (identifier)
-  (identifier) @parameter.inner)
+  name: (identifier)
+  type: (_) @parameter.inner)
 
 (parameter_declaration
-  (identifier) @parameter.inner
-  (identifier))
+  name: (identifier) @parameter.inner
+  type: (_))
 
 (parameter_list
   ","  @parameter.outer._start .
