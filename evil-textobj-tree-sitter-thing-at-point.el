@@ -20,7 +20,7 @@
   "Return the bounds of the `GROUP' at point."
   (when-let* ((entity (evil-textobj-tree-sitter--get-within (list (intern group)) 1 nil))
               (pos (cdr (car entity))))
-    (cons (byte-to-position (car pos)) (byte-to-position (cadr pos)))))
+    (cons (car pos) (cadr pos))))
 
 (put 'function 'bounds-of-thing-at-point (lambda () (evil-textobj-tree-sitter--thing-at-point-bounds "function.outer")))
 (put 'loop 'bounds-of-thing-at-point (lambda () (evil-textobj-tree-sitter--thing-at-point-bounds "loop.outer")))

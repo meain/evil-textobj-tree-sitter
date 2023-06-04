@@ -139,13 +139,13 @@ Currently treesit queries are different from queries for elisp-tree-sitter."
 (defun evil-textobj-tree-sitter--nodes-filter-before (nodes)
   "NODES which contain the current after them."
   (sort (cl-remove-if-not (lambda (x)
-                            (< (byte-to-position (car (last x))) (point)))
+                            (< (car (last x)) (point)))
                           nodes)
         (lambda (x y) (< (car (last x)) (car (last y))))))
 
 (defun evil-textobj-tree-sitter--nodes-filter-within (nodes)
   "NODES which contain the current point inside them ordered inside out."
-  (let ((byte-pos (position-bytes (point))))
+  (let ((byte-pos (point)))
     (sort (cl-remove-if-not (lambda (x)
                               (and (<= (nth 1 x) byte-pos)
                                    (< byte-pos (car (last x)))))
@@ -162,7 +162,7 @@ Currently treesit queries are different from queries for elisp-tree-sitter."
 (defun evil-textobj-tree-sitter--nodes-filter-after (nodes)
   "NODES which contain the current point before them ordered top to bottom."
   (sort (cl-remove-if-not (lambda (x)
-                            (> (byte-to-position (nth 1 x)) (point)))
+                            (> (nth 1 x) (point)))
                           nodes)
         (lambda (x y) (< (nth 1 x) (nth 1 y)))))
 
@@ -241,7 +241,11 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
                                    (cdr (tsc-node-byte-range (cdr capture-end))))
                              all-captures))))
                matches)
-      all-captures)))
+      (mapcar (lambda (c)
+                (list (car c)
+                      (byte-to-position (cadr c))
+                      (byte-to-position (caddr c))))
+              all-captures))))
 
 (defun evil-textobj-tree-sitter--get-nodes (group query)
   "Get a list of viable nodes based on `GROUP' value.
@@ -296,8 +300,7 @@ instead of the builtin query set."
                                            (car (last x)))
                                          nodes))))
           ;; Have to compute min and max like this as we might have nested functions
-          ;; We have to use `cl-callf byte-to-position` of the positioning might be off for unicode chars
-          (cons (cl-callf byte-to-position range-min) (cl-callf byte-to-position range-max))))))
+          (cons range-min range-max)))))
 
 (defun evil-textobj-tree-sitter--message-not-found (groups)
   "Log a message that `GROUPS' are not found."
@@ -348,18 +351,18 @@ you want to go to the end of the textobj instead.  You can pass in
          (usable-nodes (if previous
                            (if end
                                (cl-remove-if-not (lambda (x)
-                                                   (< (byte-to-position (car (last x))) (point)))
+                                                   (< (car (last x)) (point)))
                                                  nodes)
                              (cl-remove-if-not (lambda (x)
-                                                 (< (byte-to-position (nth 1 x)) (point)))
+                                                 (< (nth 1 x) (point)))
                                                nodes))
                          (if end
                              (cl-remove-if-not (lambda (x)
                                                  ;; -1 is needed as evil cannot select till end
-                                                 (> (- (byte-to-position (car (last x))) 1) (point)))
+                                                 (> (- (car (last x)) 1) (point)))
                                                nodes)
                            (cl-remove-if-not (lambda (x)
-                                               (> (byte-to-position (nth 1 x)) (point)))
+                                               (> (nth 1 x) (point)))
                                              nodes))))
          (node (car (sort usable-nodes
                           (lambda (x y)
@@ -371,10 +374,9 @@ you want to go to the end of the textobj instead.  You can pass in
                                   (< (car(last x)) (car (last y)))
                                 (< (nth 1 x) (nth 1 y)))))))))
     (if node
-        (let ((actual-position (cl-callf byte-to-position
-                                   (if end
-                                       (car (last node))
-                                     (nth 1 node)))))
+        (let ((actual-position (if end
+                                   (car (last node))
+                                 (nth 1 node))))
           (if end
               ;; tree sitter count + 1 kinda (probably have to look in other places as well)
               ;; This is a mess that evil creates (not really an issue in Emacs mode)
