@@ -60,6 +60,7 @@
                           (js2-mode . "javascript")
                           (js3-mode . "javascript")
                           (julia-mode . "julia")
+                          (matlab-mode . "matlab")
                           (php-mode . "php")
                           (prisma-mode . "prisma")
                           (python-mode . "python")
