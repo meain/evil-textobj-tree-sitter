@@ -3,7 +3,7 @@
 ;; URL: https://github.com/meain/evil-textobj-tree-sitter
 ;; Keywords: evil, tree-sitter, text-object, convenience
 ;; SPDX-License-Identifier: Apache-2.0
-;; Package-Requires: ((emacs "25.1") (tree-sitter "0.15.0"))
+;; Package-Requires: ((emacs "25.1"))
 ;; Version: 0.1
 
 ;;; Commentary:
@@ -25,6 +25,9 @@
 
 ;; This package also provides with thing-at-point functions for common
 ;; textobjects like functions, loops, conditionals etc.
+
+;; You need to either have elisp-tree-sitter installed or have Emacs
+;; version >=29 for this package to work.
 
 ;;; Code:
 
