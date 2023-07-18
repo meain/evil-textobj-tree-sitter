@@ -8,6 +8,20 @@
 
 (require 'tree-sitter-langs)
 (require 'evil-textobj-tree-sitter)
+(require 'go-mode)
+
+(setq treesit-language-source-alist
+      '((c . ("https://github.com/tree-sitter/tree-sitter-c"))
+        (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+        (python . ("https://github.com/tree-sitter/tree-sitter-python"))
+        (go . ("https://github.com/tree-sitter/tree-sitter-go"))
+        (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod.git"))))
+
+(treesit-install-language-grammar 'c)
+(treesit-install-language-grammar 'cpp)
+(treesit-install-language-grammar 'python)
+(treesit-install-language-grammar 'go)
+(treesit-install-language-grammar 'gomod)
 
 (defun evil-textobj-tree-sitter--range-test (mode treesit start textobj range content)
   "Check ranges of tree-sitter targets.
@@ -24,6 +38,7 @@
       (insert (alist-get content evil-textobj-tree-sitter--test-file-content))
       (funcall mode)
       (if (not treesit) (tree-sitter-mode))
+      (message "%s" major-mode)
       (goto-char start)
       (should (equal
                (evil-textobj-tree-sitter--range 1 (list (intern textobj)))
