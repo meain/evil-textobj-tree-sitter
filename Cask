@@ -9,4 +9,5 @@
  (depends-on "evil")
  (depends-on "tree-sitter")
  (depends-on "go-mode")
- (depends-on "tree-sitter-langs"))
+ (depends-on "tree-sitter-langs")
+ (depends-on "treesit-auto"))
