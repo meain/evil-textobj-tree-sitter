@@ -23,28 +23,6 @@
 (treesit-install-language-grammar 'go)
 (treesit-install-language-grammar 'gomod)
 
-(defun evil-textobj-tree-sitter--range-test (mode treesit start textobj range content)
-  "Check ranges of tree-sitter targets.
-
-`MODE' is the `major-mode' to be used.
-`TREESIT' non nil will use `treesit'.
-`CONTENT' is the content to be used.
-`START' is the starting position.
-`TEXTOBJ' is the textobject to check.
-`RANGE' is the range that should be returned."
-  (let* ((bufname (make-temp-name "evil-textobj-tree-sitter-test--"))
-         (buffer (get-buffer-create bufname)))
-    (with-current-buffer buffer
-      (insert (alist-get content evil-textobj-tree-sitter--test-file-content))
-      (funcall mode)
-      (if (not treesit) (tree-sitter-mode))
-      (message "%s" major-mode)
-      (goto-char start)
-      (should (equal
-               (evil-textobj-tree-sitter--range 1 (list (intern textobj)))
-               range)))
-    (kill-buffer buffer)))
-
 (defvar evil-textobj-tree-sitter--test-file-content
   '((c-simple . "// Lukasz
 int main() {
@@ -88,6 +66,29 @@ func main() {
         var4
     var5
 ")))
+
+
+(defun evil-textobj-tree-sitter--range-test (mode treesit start textobj range content)
+  "Check ranges of tree-sitter targets.
+
+`MODE' is the `major-mode' to be used.
+`TREESIT' non nil will use `treesit'.
+`CONTENT' is the content to be used.
+`START' is the starting position.
+`TEXTOBJ' is the textobject to check.
+`RANGE' is the range that should be returned."
+  (let* ((bufname (make-temp-name "evil-textobj-tree-sitter-test--"))
+         (buffer (get-buffer-create bufname)))
+    (with-current-buffer buffer
+      (insert (alist-get content evil-textobj-tree-sitter--test-file-content))
+      (funcall mode)
+      (if (not treesit) (tree-sitter-mode))
+      (message "%s" major-mode)
+      (goto-char start)
+      (should (equal
+               (evil-textobj-tree-sitter--range 1 (list (intern textobj)))
+               range)))
+    (kill-buffer buffer)))
 
 (ert-deftest evil-textobj-tree-sitter-within-unicode-test ()
   "Check inner range queries within unicode buffers."
