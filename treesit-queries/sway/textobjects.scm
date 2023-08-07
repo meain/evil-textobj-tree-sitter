@@ -49,4 +49,4 @@
  ; the test function
  (function_item
    body: (_) @test.inner) @test.outer
- (#eq? @_test_attribute "test"))
+ (#equal @_test_attribute "test"))

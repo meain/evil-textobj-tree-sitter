@@ -59,6 +59,6 @@
     provides: (type (nominal_type name: (identifier) @_provides))
     members: (members) @test.inner
   ) @test.outside
-  (#eq? @_provides "UnitTest")
+  (#equal @_provides "UnitTest")
 )
 
