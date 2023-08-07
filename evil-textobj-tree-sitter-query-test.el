@@ -2,6 +2,7 @@
 
 (require 'tree-sitter-langs)
 (require 'evil-textobj-tree-sitter)
+(require 'ert)
 
 (defun evil-textobj-tree-sitter--test-loading-with-comment-prefix (lang comment-prefix)
   "Try loading grammar for `LANG' and test with comment using `COMMENT-PREFIX'."
@@ -10,7 +11,8 @@
    (concat comment-prefix " howdy!")))
 
 (defun evil-textobj-tree-sitter--test-loading-with-comment (lang text &optional region)
-  "Try loading grammar for `LANG' and test with comment provided in `TEXT' optionally passing in `REGION'."
+  "Try loading grammar for `LANG'.
+And test with comment provided in `TEXT' optionally passing in `REGION'."
   (let* ((bufname (make-temp-name "evil-textobj-tree-sitter-test--"))
          (filename (concat "/tmp/" bufname)))
 
