@@ -12,6 +12,8 @@ grammars. You can easily create function,class,comment etc textobjects
 in multiple languages. It also make additional `things` available in
 `thing-at-point` like `function`, `class`, `loop`, `comment` etc.
 
+> It can work with either elisp-tree-sitter or the builtin treesit library.
+
 # Installation
 
 You can install `evil-textobj-tree-sitter` from melpa. Here is how you would do it using `use-package` and `package.el`:
@@ -67,15 +69,6 @@ should be relatively easy to add them.
 (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
 ```
 
-We support quite a few textobjects. You can find a list of available
-textobjects at
-[nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects).
-We might not have support for all of them as
-[emacs-tree-sitter](https://github.com/ubolonton/emacs-tree-sitter)
-does not yet support all the languages as of now. As for the list of
-languages that we support you can check the value of
-`evil-textobj-tree-sitter-major-mode-language-alist`.
-
 ## Custom textobjects
 
 If you are not able to find the text object that you are looking for
@@ -130,22 +123,29 @@ that is available here.
                                                   (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
 ```
 
-# Contributing new textobjects
+# Finding and contributing to textobjects
 
-As I have already mentioned, I pull the text objects from
+`evil-textobj-tree-sitter` work with both builtin `treesit` and
+`elisp-tree-sitter`. The queries in use are a bit different in both
+cases with the `elisp-tree-sitter` version currently being more feature
+complete. In both cases we pull the queries from external sources. For
+`elisp-tree-sitter`, we source them from
 [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects)
-project. This right now automatically happens every friday using a
-[Github Action](https://github.com/meain/evil-textobj-tree-sitter/blob/master/.github/workflows/update-queries.yaml)
-which will create a new PR on the repo. So if you would like to
-update/add the builtin tree-sitter objects, feel free to update them
-in the neovim project repository. Unless there is something Emacs
-specific I recommend everyone to just submit the new queries to that
-project.
+and is places into
+[queries](https://github.com/meain/evil-textobj-tree-sitter/tree/master/queries)
+directory. And for `treesit` queries, it is sourced from
+[helix](https://github.com/helix-editor/helix/tree/master/runtime/queries)
+and placed in
+[treesit-queries](https://github.com/meain/evil-textobj-tree-sitter/tree/master/treesit-queries).
+You can check these files to see what all is available. If you are
+interesting in contributing additional textobjects, you can do so by
+submitting to the respective projects. If there is enough interest, I
+don't mind starting to manage queries ourselves.
 
 If you are adding a completely new language, there is two other things
 that you will have to do to make sure everything will work well.
 
-1. Make sure the lang is available in [emacs-tree-sitter/tree-sitter-langs](https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/master/queries)
+1. Make sure the lang is available in [emacs-tree-sitter/tree-sitter-langs](https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/master/queries) or `treesit`.
 2. Make sure we have a `major-mode` mapping in [evil-textobj-tree-sitter-major-mode-language-alist](https://github.com/meain/evil-textobj-tree-sitter/blob/d416b3ab8610f179defadd58f5c20fdc65bf21e5/evil-textobj-tree-sitter.el#L40)
 
 *If you would like to test out new textobjects, I would suggest using
