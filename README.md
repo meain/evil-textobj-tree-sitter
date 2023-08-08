@@ -35,7 +35,7 @@ Or using `straight.el` and `el-get` to pull from source:
   :straight (evil-textobj-tree-sitter :type git
                       :host github
                       :repo "meain/evil-textobj-tree-sitter"
-                      :files (:defaults "queries")))
+                      :files (:defaults "queries" "treesit-queries")))
 ```
 
 > You will also have to setup [`tree-sitter`](https://github.com/emacs-tree-sitter/elisp-tree-sitter).
