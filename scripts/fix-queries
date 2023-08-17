@@ -5,6 +5,6 @@ set -e
 find queries -type f |
 	while read -r file; do
         echo "Processing $file"
-		go run converter/main.go "$file" > "$file.new"
+		go run converter/main.go "$file" | sed 's|#lua-match|#match|' > "$file.new"
         mv "$file.new" "$file"
 	done
