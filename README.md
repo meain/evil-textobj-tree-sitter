@@ -106,21 +106,32 @@ that is available here.
 
 ```emacs-lisp
 ;; Goto start of next function
-(define-key evil-normal-state-map (kbd "]f") (lambda ()
-                                                  (interactive)
-                                                  (evil-textobj-tree-sitter-goto-textobj "function.outer")))
+(define-key evil-normal-state-map
+            (kbd "]f")
+            (lambda ()
+              (interactive)
+              (evil-textobj-tree-sitter-goto-textobj "function.outer")))
+
 ;; Goto start of previous function
-(define-key evil-normal-state-map (kbd "[f") (lambda ()
-                                                  (interactive)
-                                                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
+(define-key evil-normal-state-map
+            (kbd "[f")
+            (lambda ()
+              (interactive)
+              (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
+
 ;; Goto end of next function
-(define-key evil-normal-state-map (kbd "]F") (lambda ()
-                                                  (interactive)
-                                                  (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
+(define-key evil-normal-state-map
+            (kbd "]F")
+            (lambda ()
+              (interactive)
+              (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
+
 ;; Goto end of previous function
-(define-key evil-normal-state-map (kbd "[F") (lambda ()
-                                                  (interactive)
-                                                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
+(define-key evil-normal-state-map
+            (kbd "[F")
+            (lambda ()
+              (interactive)
+              (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
 ```
 
 # Finding and contributing to textobjects
