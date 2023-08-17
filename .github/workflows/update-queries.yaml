@@ -13,7 +13,7 @@ jobs:
       - name: Update repos
         run: |
           git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter-textobjects /tmp/nts
-          rm -r queries && mv /tmp/nts/queries .
+          rm -r queries && cp -r /tmp/nts/queries .
           ./scripts/fix-queries
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
