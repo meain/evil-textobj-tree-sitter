@@ -6,7 +6,7 @@
    body: (block)? @test.inner) @test.outer
  (#match "^test" @_name))
 
-(fn_literal
+(function_literal
   body: (block)? @function.inner) @function.outer
 
 (parameter_list
@@ -17,9 +17,9 @@
     ((_) @parameter.inner) @parameter.outer))
 
 (struct_declaration
-  (struct_field_declaration_list) @class.inner) @class.outer
+    (struct_field_declaration) @class.inner) @class.outer
 
-(struct_field_declaration_list
+(struct_field_declaration
   ((_) @parameter.inner) @parameter.outer)
 
 (comment) @comment.inner

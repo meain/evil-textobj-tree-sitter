@@ -3,6 +3,7 @@
 set -e
 
 HELIX_DIR="${1:-../helix}"
+echo "Make sure you have the latest version of helix checked out in $HELIX_DIR"
 
 find $HELIX_DIR/runtime/queries -name 'textobjects.scm' |
     cut -d'/' -f5- |
