@@ -1,6 +1,6 @@
 ; class
 ((
-  [(marker_annotation)? (annotation)?] @class.outer.start .
+  (annotation)? @class.outer.start .
   (class_definition 
     body: (class_body)  @class.outer._end @class.inner)  @class.outer._start
  )
@@ -13,7 +13,7 @@
 
 ; function/method
 (( 
-  [(marker_annotation)? (annotation)?] @function.outer.start .
+  (annotation)? @function.outer.start .
   [(method_signature) (function_signature)]  @function.outer._start .
   (function_body)  @function.outer._end
  )

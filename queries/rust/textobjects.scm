@@ -95,6 +95,13 @@
   . (parameter) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
  )
 
+((parameters
+  ","  @parameter.outer._start . (type_identifier) @parameter.inner @parameter.outer._end)
+ )
+((parameters
+  . (type_identifier) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+ )
+
 ((type_parameters
   ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
  )
@@ -126,6 +133,13 @@
   . ","?  @parameter.outer._end
  )
 
+((tuple_type
+  ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
+ )
+((tuple_type
+  . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+ )
+
 (struct_item
   body: (field_declaration_list
     ","  @parameter.outer._start
@@ -168,6 +182,13 @@
   ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
  )
 ((type_arguments
+  . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+ )
+
+((token_tree
+  ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
+ )
+((token_tree
   . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
  )
 
