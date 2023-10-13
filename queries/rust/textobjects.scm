@@ -185,12 +185,13 @@
   . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
  )
 
-((token_tree
-  ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
- )
-((token_tree
-  . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
- )
+;; Disabled as not available in upstream language grammar repo (will need rust lang update)
+;; ((token_tree
+;;   ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
+;;  )
+;; ((token_tree
+;;   . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+;;  )
 
 (scoped_use_list
   list: (use_list ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end
