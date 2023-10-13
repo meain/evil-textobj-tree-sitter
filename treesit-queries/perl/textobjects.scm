@@ -1,17 +1,14 @@
-(function_definition 
-  (identifier) (_) @function.inner) @function.outer
+(subroutine_declaration_statement
+  body: (_) @function.inner) @function.outer
+(anonymous_subroutine_expression
+  body: (_) @function.inner) @function.outer
 
-(anonymous_function 
-  (_) @function.inner) @function.outer
+(package_statement) @class.outer
+(package_statement
+  (block) @class.inner)
 
-(argument 
+(list_expression
   (_) @parameter.inner)
 
-[
-  (comments)
-  (pod_statement)
-] @comment.inner
-
-(comments)+ @comment.outer
-
-(pod_statement) @comment.outer
+(comment) @comment.outer
+(pod) @comment.outer

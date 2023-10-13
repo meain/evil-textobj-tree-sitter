@@ -1,5 +1,8 @@
 (function_item
-  body: (_) @function.inner) @function.outer(closure_expression body: (_) @function.inner) @function.outer
+  body: (_) @function.inner) @function.outer
+
+(closure_expression
+  body: (_) @function.inner) @function.outer
 
 (struct_item
   body: (_) @class.inner) @class.outer
