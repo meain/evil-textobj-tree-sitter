@@ -166,6 +166,22 @@ Currently treesit queries are different from queries for elisp-tree-sitter."
                           nodes)
         (lambda (x y) (< (nth 1 x) (nth 1 y)))))
 
+(defun evil-textobj-tree-sitter--get-inherits-line (language)
+  "Get the inherits line for `LANGUAGE'.
+
+It might not be on the fist line and so we cannot just get the first line."
+  (let ((filename (concat (funcall evil-textobj-tree-sitter--get-queries-dir-func)
+                          language "/textobjects.scm")))
+    (with-temp-buffer
+      (if (file-exists-p filename)
+          (progn
+            (insert-file-contents filename)
+            (goto-char (point-min))
+            (search-forward "; inherits: " nil t)
+            (let ((line (thing-at-point 'line t)))
+              (if (string-match "^; inherits: \\([a-z_,()]+\\)$" line)
+                  (match-string 1 line))))))))
+
 
 (defun evil-textobj-tree-sitter--get-query (language top-level)
   "Get tree sitter query for LANGUAGE.
@@ -178,18 +194,15 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
           (progn
             (insert-file-contents filename)
             (goto-char (point-min))
-            (let* ((first-line (thing-at-point 'line t))
-                   (first-line-matches (save-match-data (when (string-match "^; *inherits *:? *\\([a-z_,()]+\\) *$"
-                                                                            first-line)
-                                                          (match-string 1 first-line)))))
-              (if first-line-matches
+            (let ((inherits-line (evil-textobj-tree-sitter--get-inherits-line language)))
+              (if inherits-line
                   (insert (string-join (mapcar (lambda (x)
                                                  (if (string-prefix-p "(" x)
                                                      (if top-level
                                                          (evil-textobj-tree-sitter--get-query (substring x 1 -1)
                                                                                               nil))
                                                    (evil-textobj-tree-sitter--get-query x nil)))
-                                               (split-string first-line-matches ","))
+                                               (split-string inherits-line ","))
                                        "\n"))))
             (buffer-string))))))
 
