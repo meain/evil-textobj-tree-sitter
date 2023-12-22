@@ -19,23 +19,32 @@
 (enum_specifier
   body: (_) @class.inner) @class.outer
 
-; conditional
+; conditionals
 (if_statement
-  consequence: (_)? @conditional.inner
-  alternative: (_)? @conditional.inner
-  ) @conditional.outer
+  consequence: (compound_statement . "{" . (_)  @conditional.inner._start  @conditional.inner._end (_)?  @conditional.inner._end . "}"
+  )) @conditional.outer
 
 (if_statement
-  condition: (_) @conditional.inner)
+  alternative: (else_clause (compound_statement . "{" . (_)  @conditional.inner._start  @conditional.inner._end (_)?  @conditional.inner._end . "}"
+  ))) @conditional.outer
+
+(if_statement) @conditional.outer
 
 ; loops
-(for_statement
-  (_)? @loop.inner) @loop.outer
+(while_statement) @loop.outer
 (while_statement
-  (_)? @loop.inner) @loop.outer
-(do_statement
-  (_)? @loop.inner) @loop.outer
+  body: (compound_statement . "{" . (_)  @loop.inner._start  @loop.inner._end (_)?  @loop.inner._end . "}"
+  )) @loop.outer
 
+(for_statement) @loop.outer
+(for_statement
+  body: (compound_statement . "{" . (_)  @loop.inner._start  @loop.inner._end (_)?  @loop.inner._end . "}"
+  )) @loop.outer
+
+(do_statement) @loop.outer
+(do_statement
+  body: (compound_statement . "{" . (_)  @loop.inner._start  @loop.inner._end (_)?  @loop.inner._end . "}"
+  )) @loop.outer
 
 (compound_statement) @block.outer
 (comment) @comment.outer
