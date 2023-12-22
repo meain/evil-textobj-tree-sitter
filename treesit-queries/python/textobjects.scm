@@ -21,3 +21,12 @@
    name: (identifier) @_name
    body: (block)? @test.inner) @test.outer
  (#match "^test_" @_name))
+
+(for_statement
+ body: (_) @loop.inner) @loop.outer
+
+(while_statement
+ body: (_) @loop.inner) @loop.outer
+
+(if_statement
+ consequence: (_) @conditional.inner) @conditional.outer
