@@ -166,53 +166,51 @@ Currently treesit queries are different from queries for elisp-tree-sitter."
                           nodes)
         (lambda (x y) (< (nth 1 x) (nth 1 y)))))
 
-(defun evil-textobj-tree-sitter--get-inherits-line (language)
-  "Get the inherits line for `LANGUAGE'.
-
+(defun evil-textobj-tree-sitter--get-inherits-line (filename)
+  "Get the inherits line from `FILENAME'.
 It might not be on the fist line and so we cannot just get the first line."
-  (let ((filename (concat (funcall evil-textobj-tree-sitter--get-queries-dir-func)
-                          language "/textobjects.scm")))
-    (with-temp-buffer
-      (if (file-exists-p filename)
-          (progn
-            (insert-file-contents filename)
-            (goto-char (point-min))
-            (search-forward "; inherits: " nil t)
-            (let ((line (thing-at-point 'line t)))
-              (if (string-match "^; inherits: \\([a-z_,()]+\\)$" line)
-                  (match-string 1 line))))))))
+  (with-temp-buffer
+    (if (file-exists-p filename)
+        (progn
+          (insert-file-contents filename)
+          (goto-char (point-min))
+          (search-forward "; inherits: " nil t)
+          (let ((line (thing-at-point 'line t)))
+            (if (string-match "^; inherits: \\([a-z_,()]+\\)$" line)
+                (match-string 1 line)))))))
 
-
-(defun evil-textobj-tree-sitter--get-query (language top-level)
-  "Get tree sitter query for LANGUAGE.
-TOP-LEVEL is used to mention if we should load optional inherits.
+(defun evil-textobj-tree-sitter--get-query-from-dir (language queries-dir top-level)
+  "Get tree sitter query for `LANGUAGE' from `QUERIES-DIR'.
+`TOP-LEVEL' is used to mention if we should load optional inherits.
 https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
-  (let ((filename (concat (funcall evil-textobj-tree-sitter--get-queries-dir-func)
-                          language "/textobjects.scm")))
+  (let ((filename (concat queries-dir language "/textobjects.scm")))
     (with-temp-buffer
       (if (file-exists-p filename)
           (progn
             (insert-file-contents filename)
             (goto-char (point-min))
-            (let ((inherits-line (evil-textobj-tree-sitter--get-inherits-line language)))
+            (let ((inherits-line (evil-textobj-tree-sitter--get-inherits-line filename)))
               (if inherits-line
                   (insert (string-join (mapcar (lambda (x)
                                                  (if (string-prefix-p "(" x)
                                                      (if top-level
-                                                         (evil-textobj-tree-sitter--get-query (substring x 1 -1)
-                                                                                              nil))
-                                                   (evil-textobj-tree-sitter--get-query x nil)))
+                                                         (evil-textobj-tree-sitter--get-query-from-dir (substring x 1 -1)
+                                                                                                       queries-dir nil))
+                                                   (evil-textobj-tree-sitter--get-query-from-dir x queries-dir nil)))
                                                (split-string inherits-line ","))
                                        "\n"))))
             (buffer-string))))))
 
+(defun evil-textobj-tree-sitter--get-query (language)
+  "Get tree sitter query for `LANGUAGE'."
+  (evil-textobj-tree-sitter--get-query-from-dir language (funcall evil-textobj-tree-sitter--get-queries-dir-func) t))
 
 (defun evil-textobj-tree-sitter--treesit-get-nodes (query)
   "Get nodes for `QUERY' using builtin `treesit'."
   (let* ((lang-name (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
          (user-query (alist-get major-mode query))
          (f-query (if (eq user-query nil)
-                      (evil-textobj-tree-sitter--get-query lang-name t)
+                      (evil-textobj-tree-sitter--get-query lang-name)
                     user-query))
          (root-node (treesit-buffer-root-node))
          (captures (treesit-query-capture root-node f-query)))
@@ -227,7 +225,7 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
   (let* ((lang-name (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
          (user-query (alist-get major-mode query))
          (f-query (if (eq user-query nil)
-                      (evil-textobj-tree-sitter--get-query lang-name t)
+                      (evil-textobj-tree-sitter--get-query lang-name)
                     user-query))
          (root-node (tsc-root-node tree-sitter-tree))
          (query (tsc-make-query tree-sitter-language f-query))

@@ -132,32 +132,31 @@ func main() {
 (ert-deftest evil-textoj-tree-sitter-check-query-read-simple ()
   "Simple query read check."
   (let ((evil-textobj-tree-sitter--get-queries-dir-func (lambda () "fixtures/")))
-    (should (string-prefix-p ";; \"Classes\"" (evil-textobj-tree-sitter--get-query "zig" t)))))
+    (should (string-prefix-p ";; \"Classes\"" (evil-textobj-tree-sitter--get-query "zig")))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nocomment ()
   "Check a query file with no comment."
   (let ((evil-textobj-tree-sitter--get-queries-dir-func (lambda () "fixtures/")))
-    (should (string-prefix-p "(function_definition" (evil-textobj-tree-sitter--get-query "bash" t)))))
+    (should (string-prefix-p "(function_definition" (evil-textobj-tree-sitter--get-query "bash")))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nested ()
   "Check a query with nested files to be loaded."
   (let ((evil-textobj-tree-sitter--get-queries-dir-func (lambda () "fixtures/")))
-    (should (string-prefix-p "; inherits: (jsx)" (evil-textobj-tree-sitter--get-query "typescript" t)))))
+    (should (string-prefix-p "; inherits: (jsx)" (evil-textobj-tree-sitter--get-query "typescript")))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nested-nofile ()
   "Check a file pointing to a non existent file."
   (let ((evil-textobj-tree-sitter--get-queries-dir-func (lambda () "fixtures/")))
-    (should (string-prefix-p "; inherits: (jsx)" (evil-textobj-tree-sitter--get-query "javascript" t)))))
+    (should (string-prefix-p "; inherits: (jsx)" (evil-textobj-tree-sitter--get-query "javascript")))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-nested-multi ()
   "Check a query with multiple nesting items."
   (let ((evil-textobj-tree-sitter--get-queries-dir-func (lambda () "fixtures/")))
-    (should (string-prefix-p "; inherits: (javascript)" (evil-textobj-tree-sitter--get-query "tsx" t)))))
+    (should (string-prefix-p "; inherits: (javascript)" (evil-textobj-tree-sitter--get-query "tsx")))))
 
 (ert-deftest evil-textoj-tree-sitter-check-query-read-non-top-level ()
   "Check a non top level direct query."
-  (let ((evil-textobj-tree-sitter--get-queries-dir-func (lambda () "fixtures/")))
-    (should (string-prefix-p "; inherits: (javascript)" (evil-textobj-tree-sitter--get-query "typescript" nil)))))
+    (should (string-prefix-p "; inherits: (javascript)" (evil-textobj-tree-sitter--get-query-from-dir "typescript" "fixtures/" nil))))
 
 (defun evil-textobj-tree-sitter--goto-test (mode treesit start textobj pos prev end content)
   "Check for location of goto actions.
