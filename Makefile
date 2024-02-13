@@ -15,6 +15,7 @@ compile:
 lint:
 	$(CASK) exec $(EMACS) -Q -batch	\
 	--eval "(require 'package)"	\
+	--eval "(require 'compat)"	\
 	--eval "(push '(\"melpa\" . \"http://melpa.org/packages/\") package-archives)" \
 	--eval "(package-initialize)" \
 	--eval "(package-refresh-contents)" \
