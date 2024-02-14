@@ -13,7 +13,7 @@ jobs:
       matrix:
         emacs_version:
           - 29.1
-          # - snapshot # causing issues with compat
+          - snapshot
     steps:
     - uses: actions/checkout@v2
     - uses: purcell/setup-emacs@master
