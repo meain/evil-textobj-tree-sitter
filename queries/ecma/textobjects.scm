@@ -1,14 +1,14 @@
 (function_declaration
   body: (statement_block)) @function.outer
 
-(function
+(function_expression
   body: (statement_block)) @function.outer
 
 (function_declaration
   body: (statement_block . "{" . (_)  @function.inner._start  @function.inner._end (_)?  @function.inner._end . "}"
  ))
 
-(function
+(function_expression
   body: (statement_block . "{" . (_)  @function.inner._start  @function.inner._end (_)?  @function.inner._end . "}"
  ))
 
@@ -55,6 +55,12 @@
   consequence: (statement_block . "{" . (_)  @conditional.inner._start  @conditional.inner._end (_)?  @conditional.inner._end . "}"
   )) @conditional.outer
 
+(if_statement
+  alternative: (else_clause (statement_block . "{" . (_)  @conditional.inner._start  @conditional.inner._end (_)?  @conditional.inner._end . "}"
+  ))) @conditional.outer
+
+(if_statement) @conditional.outer
+
 (switch_statement
   body: (_)? @conditional.inner) @conditional.outer
 
@@ -62,6 +68,12 @@
 (call_expression
   arguments: (arguments . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
   ))
+
+((new_expression
+  constructor: (identifier) @_cons
+  arguments: (arguments . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")") @_args)
+ 
+ )
 
 ;; blocks
 (_ (statement_block) @block.inner) @block.outer
@@ -119,4 +131,9 @@
 
 (variable_declarator
  name: (_) @assignment.inner)
+
+(object
+  (pair
+    key: (_) @assignment.lhs
+    value: (_) @assignment.inner @assignment.rhs) @assignment.outer)
 
