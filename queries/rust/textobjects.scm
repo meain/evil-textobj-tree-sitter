@@ -57,19 +57,25 @@
 
 ;; loops
 (loop_expression
-  (_)? @loop.inner) @loop.outer
+  body: (block . "{" . (_)  @loop.inner._start [(_)","]?  @loop.inner._end . "}"
+  )) @loop.outer
 
 (while_expression
-  (_)? @loop.inner) @loop.outer
+  body: (block . "{" . (_)  @loop.inner._start [(_)","]?  @loop.inner._end . "}"
+  )) @loop.outer
 
 (for_expression
-  body: (block)? @loop.inner) @loop.outer
+  body: (block . "{" . (_)  @loop.inner._start [(_)","]?  @loop.inner._end . "}"
+  )) @loop.outer
 
 ;; blocks
 (_ (block) @block.inner) @block.outer
 (unsafe_block (_)? @block.inner) @block.outer
 
 ;; calls
+(macro_invocation) @call.outer
+(macro_invocation (token_tree . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
+  ))
 (call_expression) @call.outer
 (call_expression
   arguments: (arguments . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
@@ -185,13 +191,12 @@
   . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
  )
 
-;; Disabled as not available in upstream language grammar repo (will need rust lang update)
-;; ((token_tree
-;;   ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
-;;  )
-;; ((token_tree
-;;   . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
-;;  )
+((token_tree
+  ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
+ )
+((token_tree
+  . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
+ )
 
 (scoped_use_list
   list: (use_list ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end

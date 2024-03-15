@@ -6,8 +6,10 @@
   type: (enum_specifier)
   default_value: (initializer_list) @class.inner) @class.outer
 
-(for_range_loop 
-  (_)? @loop.inner) @loop.outer
+(for_range_loop)@loop.outer
+(for_range_loop
+  body: (compound_statement . "{" . (_)  @loop.inner._start  @loop.inner._end (_)?  @loop.inner._end . "}"
+  ))
 
 (template_declaration
   (function_definition) @function.outer) @function.outer.start
