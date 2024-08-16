@@ -1,13 +1,23 @@
-;; "Classes"
-(VarDecl 
-  (_ (_ (ContainerDecl) @class.inner))) @class.outer
+; "Classes"
+(VarDecl
+  (_
+    (_
+      (ContainerDecl) @class.inner))) @class.outer
 
-;; functions
-(_ 
+; functions
+(_
   (FnProto)
-  (Block) @function.inner) @function.outer
+  ((Block
+    .
+    "{"
+    .
+    (_)  @function.inner._start  @function.inner._end
+    (_)?  @function.inner._end
+    .
+    "}")
+    )) @function.outer
 
-;; loops
+; loops
 (_
   (ForPrefix)
   (_) @loop.inner) @loop.outer
@@ -16,44 +26,68 @@
   (WhilePrefix)
   (_) @loop.inner) @loop.outer
 
-;; blocks
-(_ (Block) @block.inner) @block.outer
+; blocks
+(_
+  (Block) @block.inner) @block.outer
 
-;; statements
+; statements
 (Statement) @statement.outer
 
-;; parameters
-((ParamDeclList 
-  ","  @parameter.outer._start . (ParamDecl) @parameter.inner @parameter.outer._end)
- ) 
+; parameters
 ((ParamDeclList
-  . (ParamDecl) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
- ) 
+  ","  @parameter.outer._start
+  .
+  (ParamDecl) @parameter.inner @parameter.outer._end)
+  )
 
-;; arguments
-((FnCallArguments
-  ","  @parameter.outer._start . (_) @parameter.inner @parameter.outer._end)
- ) 
-((FnCallArguments
-  . (_) @parameter.inner @parameter.outer._start . ","?  @parameter.outer._end)
- ) 
+((ParamDeclList
+  .
+  (ParamDecl) @parameter.inner @parameter.outer._start
+  .
+  ","?  @parameter.outer._end)
+  )
 
-;; comments
+; arguments
+((FnCallArguments
+  ","  @parameter.outer._start
+  .
+  (_) @parameter.inner @parameter.outer._end)
+  )
+
+((FnCallArguments
+  .
+  (_) @parameter.inner @parameter.outer._start
+  .
+  ","?  @parameter.outer._end)
+  )
+
+; comments
 (doc_comment) @comment.outer
+
 (line_comment) @comment.outer
 
-;; conditionals
+; conditionals
 (_
   (IfPrefix)
   (_) @conditional.inner) @conditional.outer
 
 ((SwitchExpr
-  "{"  @conditional.inner._start "}"  @conditional.inner._end)
-  )  @conditional.outer
+  "{"  @conditional.inner._start
+  "}"  @conditional.inner._end)
+  ) @conditional.outer
 
-;; calls
-(_ (FnCallArguments)) @call.outer
+; calls
 (_
-  (FnCallArguments . "(" . (_)  @call.inner._start (_)?  @call.inner._end . ")"
-  ))
+  (FnCallArguments)) @call.outer
+
+(_
+  (FnCallArguments
+    .
+    "("
+    .
+    (_)  @call.inner._start
+    (_)?  @call.inner._end
+    .
+    ")"
+    ))
 

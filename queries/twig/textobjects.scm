@@ -1,26 +1,33 @@
-;; comments
+; comments
 (comment) @comment.outer
 
-;; statement
+; statement
 (statement_directive) @statement.outer
 
-;; @parameter
+; @parameter
 (arguments
-  ","  @parameter.outer._start .
+  ","  @parameter.outer._start
+  .
   (_) @parameter.inner @parameter.outer._end
   )
+
 (arguments
-  . (_) @parameter.inner @parameter.outer._start
-  . ","?  @parameter.outer._end
+  .
+  (_) @parameter.inner @parameter.outer._start
+  .
+  ","?  @parameter.outer._end
   )
 
 (parameters
-  ","  @parameter.outer._start .
+  ","  @parameter.outer._start
+  .
   (_) @parameter.inner @parameter.outer._end
   )
-(parameters
-  . (_) @parameter.inner @parameter.outer._start
-  . ","?  @parameter.outer._end
-  )
 
+(parameters
+  .
+  (_) @parameter.inner @parameter.outer._start
+  .
+  ","?  @parameter.outer._end
+  )
 
