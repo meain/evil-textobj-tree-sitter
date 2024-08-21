@@ -11,8 +11,8 @@
 (type_declaration
   (type_spec (type_identifier) (struct_type (field_declaration_list (_)?) @class.inner))) @class.outer
 
-(type_declaration
-  (type_spec (type_identifier) (interface_type (method_spec)+ @class.inner))) @class.outer
+;; (type_declaration
+;;   (type_spec (type_identifier) (interface_type (method_spec)+ @class.inner))) @class.outer
 
 (type_parameter_list
   ((_) @parameter.inner . ","? @parameter.outer) @parameter.outer)
