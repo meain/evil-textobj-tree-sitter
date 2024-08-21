@@ -2,11 +2,13 @@
 
 set -e
 
-HELIX_DIR="${1:-../helix}"
-echo "Make sure you have the latest version of helix checked out in $HELIX_DIR"
+tmpdir="$(mktemp -d)"
+git clone --depth 1 https://github.com/helix-editor/helix "$tmpdir"
+
+HELIX_DIR="$tmpdir"
 
 find $HELIX_DIR/runtime/queries -name 'textobjects.scm' |
-    cut -d'/' -f5- |
+    sed "s|$HELIX_DIR/runtime/queries/||" |
     while read -r file; do
         dir="$(dirname "$file")"
         filename="$(basename "$file")"
