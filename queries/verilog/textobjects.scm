@@ -14,7 +14,5 @@
 
 (always_construct) @block.outer
 
-[
-  (module_declaration)
-] @class.outer
+(module_declaration) @class.outer
 
