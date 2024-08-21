@@ -34,6 +34,9 @@
 (arguments
   ((_) @parameter.inner . ","? @parameter.outer) @parameter.outer)
 
+(field_initializer_list  
+  ((_) @parameter.inner . ","? @parameter.outer) @parameter.outer)
+
 [
   (line_comment)
   (block_comment)
@@ -57,14 +60,26 @@
    body: (_) @test.inner) @test.outer
  (#equal @_test_attribute "test"))
 
-(loop_expression
-  body: (_) @loop.inner) @loop.outer
+(array_expression
+  (_) @entry.outer)
 
-(while_expression
-  body: (_) @loop.inner) @loop.outer
+(tuple_expression
+  (_) @entry.outer)
 
-(for_expression
-  body: (_) @loop.inner) @loop.outer
+(tuple_pattern
+  (_) @entry.outer)
 
-(if_expression
-  consequence: (_) @conditional.inner) @conditional.outer
+; Commonly used vec macro intializer is special cased
+(macro_invocation
+  (identifier) @_id (token_tree (_) @entry.outer)
+  (#equal @_id "vec"))
+
+(enum_variant) @entry.outer
+
+(field_declaration
+  (_) @entry.inner) @entry.outer
+
+(field_initializer
+  (_) @entry.inner) @entry.outer
+
+(shorthand_field_initializer) @entry.outer
