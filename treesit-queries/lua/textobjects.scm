@@ -13,3 +13,6 @@
 (comment) @comment.inner
 
 (comment)+ @comment.outer
+
+(table_constructor
+  (field (_) @entry.inner) @entry.outer)

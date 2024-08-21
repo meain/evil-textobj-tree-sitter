@@ -38,3 +38,15 @@
 (comment) @comment.inner
 
 (comment)+ @comment.outer
+
+(array_creation_expression
+  (array_element_initializer
+    (_) @entry.inner
+  ) @entry.outer @entry.movement)
+
+(list_literal
+  (_) @entry.inner @entry.outer @entry.movement)
+
+[
+  (enum_case)
+] @entry.outer @entry.movement
