@@ -1,79 +1,58 @@
-((apply
+((exp_apply
   .
-  function: (_)
+  (exp_name)
   .
-  (_)  @call.inner._start
+  (_) @_start
   .
   (_)*
   .
-  (_)?  @call.inner._end .)
-  ) @call.outer
+  (_)? @_end .)
+  (#make-range! "call.inner" @_start @_end)) @call.outer
 
-(infix
+(exp_infix
   (_)
-  [
-    (infix_id
-      (variable)) ; x `plus` y
-    (operator) ; x + y
-  ]
+  (variable)
   (_)) @call.outer
 
-(decl/function) @function.outer
-
-(decl/function
-  patterns: (_)
-  .
-  match: (_)  @function.inner._start
-  match: (_)?  @function.inner._end
-  .
-  )
+(function
+  rhs: (_) @function.inner) @function.outer
 
 ; also treat function signature as @function.outer
 (signature) @function.outer
 
-; treat signature with function as @function.outer
-(((decl/signature
-  name: (_) @_sig_name)  @function.outer._start
-  .
-  (decl/function
-    name: (_) @_func_name)  @function.outer._end)
-  (#eq? @_sig_name @_func_name)
-  )
-
 (class) @class.outer
 
 (class
-  "where"
-  _ @class.inner)
+  (class_body
+    (where)
+    _ @class.inner))
 
 (instance
-  "where"?
+  (where)?
   .
   _ @class.inner) @class.outer
 
 (comment) @comment.outer
 
-(haddock) @comment.outer
+(exp_cond) @conditional.outer
 
-(expression/conditional) @conditional.outer
-
-(expression/conditional
+(exp_cond
   (_) @conditional.inner)
 
 ; e.g. forM [1..10] $ \i -> do...
-(infix
-  (apply
-    (name) @_name
+(exp_infix
+  (exp_apply
+    (exp_name) @_name
     (#any-of? @_name "for" "for_" "forM" "forM_"))
   (operator) @_op
   (#eq? @_op "$")
-  (lambda
+  (exp_lambda
     (_)
     (_) @loop.inner)) @loop.outer
 
 ; e.g. forM [1..10] print
-(apply
-  (name) @_name
+(exp_apply
+  (exp_name) @_name
   (#any-of? @_name "for" "for_" "forM" "forM_")
   (_)
   (_) @loop.inner) @loop.outer
@@ -86,36 +65,35 @@
 ; e.g. func mb@(Just x)
 (function
   (patterns
-    (parens
+    (pat_parens
       (_) @parameter.inner)))
 
 (function
   (patterns
-    (as
-      (parens
+    (pat_as
+      (pat_parens
         (_) @parameter.inner))))
 
 (signature
   (context
-    (function
-      (type/apply) @parameter.inner)))
+    (fun
+      (type_apply) @parameter.inner)))
 
 (signature
   (context
-    (function
-      (type/name) @parameter.inner)))
+    (fun
+      (type_name) @parameter.inner)))
 
 (signature
-  (function
-    (type/apply) @parameter.inner))
+  (fun
+    (type_apply) @parameter.inner))
 
 (signature
-  (function
-    (type/name) @parameter.inner))
+  (fun
+    (type_name) @parameter.inner))
 
 (signature
-  (type/apply) @parameter.inner)
+  (type_apply) @parameter.inner)
 
 (signature
-  (type/name) @parameter.inner)
-
+  (type_name) @parameter.inner)
