@@ -1,101 +1,121 @@
-(
- (exp_apply . (exp_name) . (_)  @call.inner._start . (_)* . (_)?  @call.inner._end .)
- 
-) @call.outer
-(exp_infix 
-(_)
-(variable)
-(_)
-) @call.outer
+((apply
+  .
+  function: (_)
+  .
+  (_)  @call.inner._start
+  .
+  (_)*
+  .
+  (_)?  @call.inner._end .)
+  ) @call.outer
 
-(function rhs: (_) @function.inner) @function.outer
-;; also treat function signature as @function.outer
+(infix
+  (_)
+  [
+    (infix_id
+      (variable)) ; x `plus` y
+    (operator) ; x + y
+  ]
+  (_)) @call.outer
+
+(decl/function) @function.outer
+
+(decl/function
+  patterns: (_)
+  .
+  match: (_)  @function.inner._start
+  match: (_)?  @function.inner._end
+  .
+  )
+
+; also treat function signature as @function.outer
 (signature) @function.outer
 
+; treat signature with function as @function.outer
+(((decl/signature
+  name: (_) @_sig_name)  @function.outer._start
+  .
+  (decl/function
+    name: (_) @_func_name)  @function.outer._end)
+  (#eq? @_sig_name @_func_name)
+  )
+
 (class) @class.outer
-(class (class_body (where) _ @class.inner))
-(instance (where)? . _ @class.inner) @class.outer
+
+(class
+  "where"
+  _ @class.inner)
+
+(instance
+  "where"?
+  .
+  _ @class.inner) @class.outer
 
 (comment) @comment.outer
 
-(exp_cond) @conditional.outer
+(haddock) @comment.outer
 
-(exp_cond
-  (_) @conditional.inner
-  ) 
+(expression/conditional) @conditional.outer
 
-;; e.g. forM [1..10] $ \i -> do...
-(exp_infix
-  (exp_apply
-    (exp_name)@_name
-    (#any-of? @_name "for" "for_" "forM" "forM_")
-  ) 
+(expression/conditional
+  (_) @conditional.inner)
+
+; e.g. forM [1..10] $ \i -> do...
+(infix
+  (apply
+    (name) @_name
+    (#any-of? @_name "for" "for_" "forM" "forM_"))
   (operator) @_op
   (#eq? @_op "$")
-  (exp_lambda
+  (lambda
     (_)
-    (_) @loop.inner
-  )
-) @loop.outer
-;; e.g. forM [1..10] print
-(exp_apply
-  (exp_name)@_name
+    (_) @loop.inner)) @loop.outer
+
+; e.g. forM [1..10] print
+(apply
+  (name) @_name
   (#any-of? @_name "for" "for_" "forM" "forM_")
   (_)
-  (_) @loop.inner
-) @loop.outer
+  (_) @loop.inner) @loop.outer
 
-;; e.g. func x
+; e.g. func x
 (function
   (patterns
-    (_) @parameter.outer
-  )
-)
-;; e.g. func mb@(Just x)
+    (_) @parameter.outer))
+
+; e.g. func mb@(Just x)
 (function
   (patterns
-    (pat_parens
-      (_) @parameter.inner
-    )
-  )
-)
+    (parens
+      (_) @parameter.inner)))
+
 (function
   (patterns
-    (pat_as
-      (pat_parens
-        (_) @parameter.inner
-      )
-    )
-  )
-)
+    (as
+      (parens
+        (_) @parameter.inner))))
+
 (signature
   (context
-    (fun
-      (type_apply) @parameter.inner
-    ) 
-  )
-)
+    (function
+      (type/apply) @parameter.inner)))
+
 (signature
   (context
-    (fun
-      (type_name) @parameter.inner
-    ) 
-  )
-)
+    (function
+      (type/name) @parameter.inner)))
+
 (signature
-  (fun
-    (type_apply) @parameter.inner
-  )
-)
+  (function
+    (type/apply) @parameter.inner))
+
 (signature
-  (fun
-    (type_name) @parameter.inner
-  )
-)
+  (function
+    (type/name) @parameter.inner))
+
 (signature
-  (type_apply) @parameter.inner
-)
+  (type/apply) @parameter.inner)
+
 (signature
-  (type_name) @parameter.inner
-)
+  (type/name) @parameter.inner)
 
