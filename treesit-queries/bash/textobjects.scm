@@ -7,3 +7,6 @@
 (comment) @comment.inner
 
 (comment)+ @comment.outer
+
+(array
+  (_) @entry.outer)

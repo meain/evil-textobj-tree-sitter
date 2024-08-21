@@ -42,3 +42,15 @@
 ; Comments
 (comment) @comment.inner 
 (comment)+ @comment.outer
+
+(pair
+  (_) @entry.inner) @entry.outer
+
+(array
+  (_) @entry.outer)
+
+(string_array
+  (_) @entry.outer)
+
+(symbol_array
+  (_) @entry.outer)

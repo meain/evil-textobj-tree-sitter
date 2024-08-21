@@ -1,4 +1,7 @@
 (method_declaration
+  body: (_)? @function.inner) @function.outer
+
+(constructor_declaration
   body: (_) @function.inner) @function.outer
 
 (interface_declaration
@@ -33,3 +36,9 @@
 (line_comment)+ @comment.outer
 
 (block_comment) @comment.outer
+
+(array_initializer
+  (_) @entry.outer)
+
+(enum_body
+  (enum_constant) @entry.outer)

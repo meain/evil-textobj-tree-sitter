@@ -34,3 +34,12 @@
 (comment) @comment.inner
 
 (comment)+ @comment.outer
+
+(array 
+  (_) @entry.outer)
+
+(pair
+  (_) @entry.inner) @entry.outer
+
+(pair_pattern
+  (_) @entry.inner) @entry.outer
