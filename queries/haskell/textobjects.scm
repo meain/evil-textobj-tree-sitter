@@ -2,12 +2,12 @@
   .
   (exp_name)
   .
-  (_) @_start
+  (_)  @call.inner._start
   .
   (_)*
   .
-  (_)? @_end .)
-  (#make-range! "call.inner" @_start @_end)) @call.outer
+  (_)?  @call.inner._end .)
+  ) @call.outer
 
 (exp_infix
   (_)

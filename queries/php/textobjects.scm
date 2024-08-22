@@ -4,11 +4,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @function.inner._start  @function.inner._end
+    (_)?  @function.inner._end
     .
     "}"
-    (#make-range! "function.inner" @_start @_end)))
+    ))
 
 (function_definition) @function.outer
 
@@ -17,11 +17,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @function.inner._start  @function.inner._end
+    (_)?  @function.inner._end
     .
     "}"
-    (#make-range! "function.inner" @_start @_end)))
+    ))
 
 (anonymous_function_creation_expression) @function.outer
 
@@ -31,11 +31,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @function.inner._start  @function.inner._end
+    (_)?  @function.inner._end
     .
     "}"
-    (#make-range! "function.inner" @_start @_end)))
+    ))
 
 (method_declaration) @function.outer
 
@@ -45,11 +45,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @class.inner._start  @class.inner._end
+    (_)?  @class.inner._end
     .
     "}"
-    (#make-range! "class.inner" @_start @_end)))
+    ))
 
 (trait_declaration) @class.outer
 
@@ -59,11 +59,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @class.inner._start  @class.inner._end
+    (_)?  @class.inner._end
     .
     "}"
-    (#make-range! "class.inner" @_start @_end)))
+    ))
 
 (interface_declaration) @class.outer
 
@@ -73,11 +73,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @class.inner._start  @class.inner._end
+    (_)?  @class.inner._end
     .
     "}"
-    (#make-range! "class.inner" @_start @_end)))
+    ))
 
 (enum_declaration) @class.outer
 
@@ -87,11 +87,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @class.inner._start  @class.inner._end
+    (_)?  @class.inner._end
     .
     "}"
-    (#make-range! "class.inner" @_start @_end)))
+    ))
 
 (class_declaration) @class.outer
 
@@ -101,11 +101,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @loop.inner._start  @loop.inner._end
+    (_)?  @loop.inner._end
     .
     "}"
-    (#make-range! "loop.inner" @_start @_end)))
+    ))
 
 (for_statement) @loop.outer
 
@@ -114,11 +114,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @loop.inner._start  @loop.inner._end
+    (_)?  @loop.inner._end
     .
     "}"
-    (#make-range! "loop.inner" @_start @_end)))
+    ))
 
 (foreach_statement) @loop.outer
 
@@ -127,11 +127,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @loop.inner._start  @loop.inner._end
+    (_)?  @loop.inner._end
     .
     "}"
-    (#make-range! "loop.inner" @_start @_end)))
+    ))
 
 (while_statement) @loop.outer
 
@@ -140,11 +140,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @loop.inner._start  @loop.inner._end
+    (_)?  @loop.inner._end
     .
     "}"
-    (#make-range! "loop.inner" @_start @_end)))
+    ))
 
 (do_statement) @loop.outer
 
@@ -154,11 +154,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @conditional.inner._start  @conditional.inner._end
+    (_)?  @conditional.inner._end
     .
     "}"
-    (#make-range! "conditional.inner" @_start @_end)))
+    ))
 
 (switch_statement) @conditional.outer
 
@@ -167,11 +167,11 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @conditional.inner._start  @conditional.inner._end
+    (_)?  @conditional.inner._end
     .
     "}"
-    (#make-range! "conditional.inner" @_start @_end)))
+    ))
 
 (if_statement) @conditional.outer
 
@@ -180,22 +180,22 @@
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @conditional.inner._start  @conditional.inner._end
+    (_)?  @conditional.inner._end
     .
     "}"
-    (#make-range! "conditional.inner" @_start @_end)))
+    ))
 
 (else_if_clause
   body: (compound_statement
     .
     "{"
     .
-    (_) @_start @_end
-    (_)? @_end
+    (_)  @conditional.inner._start  @conditional.inner._end
+    (_)?  @conditional.inner._end
     .
     "}"
-    (#make-range! "conditional.inner" @_start @_end)))
+    ))
 
 ; blocks
 (_
@@ -203,30 +203,30 @@
 
 ; parameters
 (arguments
-  "," @_start
+  ","  @parameter.outer._start
   .
-  (_) @parameter.inner
-  (#make-range! "parameter.outer" @_start @parameter.inner))
+  (_) @parameter.inner @parameter.outer._end
+  )
 
 (arguments
   .
-  (_) @parameter.inner
+  (_) @parameter.inner @parameter.outer._start
   .
-  ","? @_end
-  (#make-range! "parameter.outer" @parameter.inner @_end))
+  ","?  @parameter.outer._end
+  )
 
 (formal_parameters
-  "," @_start
+  ","  @parameter.outer._start
   .
-  (_) @parameter.inner
-  (#make-range! "parameter.outer" @_start @parameter.inner))
+  (_) @parameter.inner @parameter.outer._end
+  )
 
 (formal_parameters
   .
-  (_) @parameter.inner
+  (_) @parameter.inner @parameter.outer._start
   .
-  ","? @_end
-  (#make-range! "parameter.outer" @parameter.inner @_end))
+  ","?  @parameter.outer._end
+  )
 
 ; comments
 (comment) @comment.outer
@@ -245,44 +245,44 @@
     .
     "("
     .
-    (_) @_start
-    (_)? @_end
+    (_)  @call.inner._start
+    (_)?  @call.inner._end
     .
     ")"
-    (#make-range! "call.inner" @_start @_end)))
+    ))
 
 (member_call_expression
   arguments: (arguments
     .
     "("
     .
-    (_) @_start
-    (_)? @_end
+    (_)  @call.inner._start
+    (_)?  @call.inner._end
     .
     ")"
-    (#make-range! "call.inner" @_start @_end)))
+    ))
 
 (nullsafe_member_call_expression
   arguments: (arguments
     .
     "("
     .
-    (_) @_start
-    (_)? @_end
+    (_)  @call.inner._start
+    (_)?  @call.inner._end
     .
     ")"
-    (#make-range! "call.inner" @_start @_end)))
+    ))
 
 (scoped_call_expression
   arguments: (arguments
     .
     "("
     .
-    (_) @_start
-    (_)? @_end
+    (_)  @call.inner._start
+    (_)?  @call.inner._end
     .
     ")"
-    (#make-range! "call.inner" @_start @_end)))
+    ))
 
 ; statement
 [
