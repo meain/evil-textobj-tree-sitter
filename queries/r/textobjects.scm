@@ -57,30 +57,30 @@
 
 ; parameter
 ((formal_parameters
-  "," @_start
+  ","  @parameter.outer._start
   .
-  (_) @parameter.inner)
-  (#make-range! "parameter.outer" @_start @parameter.inner))
+  (_) @parameter.inner @parameter.outer._end)
+  )
 
 ((formal_parameters
   .
-  (_) @parameter.inner
+  (_) @parameter.inner @parameter.outer._start
   .
-  ","? @_end)
-  (#make-range! "parameter.outer" @parameter.inner @_end))
+  ","?  @parameter.outer._end)
+  )
 
 ((arguments
-  "," @_start
+  ","  @parameter.outer._start
   .
-  (_) @parameter.inner)
-  (#make-range! "parameter.outer" @_start @parameter.inner))
+  (_) @parameter.inner @parameter.outer._end)
+  )
 
 ((arguments
   .
-  (_) @parameter.inner
+  (_) @parameter.inner @parameter.outer._start
   .
-  ","? @_end)
-  (#make-range! "parameter.outer" @parameter.inner @_end))
+  ","?  @parameter.outer._end)
+  )
 
 ; number
 (float) @number.inner
