@@ -4,7 +4,7 @@
 ;; Keywords: evil, tree-sitter, text-object, convenience
 ;; SPDX-License-Identifier: Apache-2.0
 ;; Package-Requires: ((emacs "25.1"))
-;; Version: 0.1
+;; Version: 0.5
 
 ;;; Commentary:
 ;; This package is a port of nvim-treesitter/nvim-treesitter-textobjects.

@@ -4,7 +4,7 @@
 ;; Keywords: evil, tree-sitter, text-object, convenience
 ;; SPDX-License-Identifier: Apache-2.0
 ;; Package-Requires: ((emacs "25.1"))
-;; Version: 0.1
+;; Version: 0.5
 
 ;;; Commentary:
 ;; This adds `thing-at-point' things powered by tree-sitter.
