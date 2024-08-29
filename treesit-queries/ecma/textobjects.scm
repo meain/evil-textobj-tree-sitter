@@ -1,8 +1,10 @@
 (function_declaration
   body: (_) @function.inner) @function.outer
 
-(function
-  body: (_) @function.inner) @function.outer
+;; Javascript grammar no more has a function node
+;; TODO: remove from upstream
+;; (function
+;;   body: (_) @function.inner) @function.outer
 
 (arrow_function
   body: (_) @function.inner) @function.outer
