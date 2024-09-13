@@ -9,68 +9,56 @@
 (comment) @comment.outer
 
 ; conditional
-(if
+(if_statement
   condition: (_)? @conditional.inner) @conditional.outer
 
 ; function
-[
-  (function_definition)
-  (lambda_function)
-] @function.outer
-
 (function_definition
   [
     (call)
-    (binary)
-    (brace_list)
-  ] @function.inner) @function.outer
-
-(lambda_function
-  [
-    (call)
-    (binary)
-    (brace_list)
+    (binary_operator)
+    (braced_expression)
   ] @function.inner) @function.outer
 
 ; loop
 [
-  (while)
-  (repeat)
-  (for)
+  (while_statement)
+  (repeat_statement)
+  (for_statement)
 ] @loop.outer
 
-(while
+(while_statement
   body: (_) @loop.inner)
 
-(repeat
+(repeat_statement
   body: (_) @loop.inner)
 
-(for
+(for_statement
   body: (_) @loop.inner)
 
 ; statement
-(brace_list
+(braced_expression
   (_) @statement.outer)
 
 (program
   (_) @statement.outer)
 
 ; parameter
-((formal_parameters
-  ","  @parameter.outer._start
+((parameters
+  (comma)  @parameter.outer._start
   .
   (_) @parameter.inner @parameter.outer._end)
   )
 
-((formal_parameters
+((parameters
   .
   (_) @parameter.inner @parameter.outer._start
   .
-  ","?  @parameter.outer._end)
+  (comma)?  @parameter.outer._end)
   )
 
 ((arguments
-  ","  @parameter.outer._start
+  (comma)?  @parameter.outer._start
   .
   (_) @parameter.inner @parameter.outer._end)
   )
@@ -79,44 +67,14 @@
   .
   (_) @parameter.inner @parameter.outer._start
   .
-  ","?  @parameter.outer._end)
+  (comma)?  @parameter.outer._end)
   )
 
 ; number
 (float) @number.inner
 
 ; assignment
-(left_assignment
-  name: (_) @assignment.lhs
-  value: (_) @assignment.inner @assignment.rhs) @assignment.outer
+(binary_operator
+  lhs: (_) @assignment.inner @assignment.lhs
+  rhs: (_) @assignment.rhs) @assignment.outer
 
-(left_assignment
-  name: (_) @assignment.inner)
-
-(right_assignment
-  value: (_) @assignment.inner @assignment.lhs
-  name: (_) @assignment.rhs) @assignment.outer
-
-(right_assignment
-  name: (_) @assignment.inner)
-
-(equals_assignment
-  name: (_) @assignment.lhs
-  value: (_) @assignment.inner @assignment.rhs) @assignment.outer
-
-(equals_assignment
-  name: (_) @assignment.inner)
-
-(super_assignment
-  name: (_) @assignment.lhs
-  value: (_) @assignment.inner @assignment.rhs) @assignment.outer
-
-(super_assignment
-  name: (_) @assignment.inner)
-
-(super_right_assignment
-  value: (_) @assignment.inner @assignment.lhs
-  name: (_) @assignment.rhs) @assignment.outer
-
-(super_right_assignment
-  name: (_) @assignment.inner)
