@@ -217,10 +217,23 @@
   )
 
 ; Assignment
-(assignment
-  .
-  (_) @assignment.lhs
-  (_) @assignment.inner @assignment.rhs .) @assignment.outer
+(local_statement
+  (assignment
+    .
+    (_) @assignment.lhs
+    (_) @assignment.inner @assignment.rhs .)) @assignment.outer
+
+(const_statement
+  (assignment
+    .
+    (_) @assignment.lhs
+    (_) @assignment.inner @assignment.rhs .)) @assignment.outer
+
+(global_statement
+  (assignment
+    .
+    (_) @assignment.lhs
+    (_) @assignment.inner @assignment.rhs .)) @assignment.outer
 
 (assignment
   .

@@ -1,4 +1,10 @@
-(function_definition) @function.outer
+; assignment
+(command
+  name: (word) @_command
+  argument: (word) @_varname @assignment.lhs @assignment.inner
+  argument: (_)* @assignment.rhs
+  (#not-lua-match? @_varname "[-].*")
+  (#eq? @_command "set")) @assignment.outer
 
 (command
   name: (word) @_name

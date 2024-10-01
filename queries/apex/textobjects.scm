@@ -99,7 +99,13 @@
 ] @comment.outer
 
 ; assignment
-(variable_declarator
-  name: (identifier) @assignment.lhs
-  value: (_) @assignment.rhs) @assignment.inner @assignment.outer
+(field_declaration
+  (variable_declarator
+    name: (identifier) @assignment.lhs
+    value: (_) @assignment.rhs) @assignment.inner) @assignment.outer
+
+(local_variable_declaration
+  (variable_declarator
+    name: (identifier) @assignment.lhs
+    value: (_) @assignment.rhs) @assignment.inner) @assignment.outer
 
