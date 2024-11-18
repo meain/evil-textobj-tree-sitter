@@ -103,7 +103,7 @@ Currently treesit queries are different from queries for elisp-tree-sitter."
                           (javascript-mode . "javascript")
                           (javascript-ts-mode . "javascript")
                           (js-mode . "javascript")
-                          (js-ts-mode . "js")
+                          (js-ts-mode . "javascript")
                           (js2-mode . "javascript")
                           (js3-mode . "javascript")
                           (julia-mode . "julia")
