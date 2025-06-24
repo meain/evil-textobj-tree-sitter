@@ -61,7 +61,11 @@
 (defun evil-textobj-tree-sitter--use-builtin-treesitter ()
   "Return non-nil if we should use builtin treesitter."
   (and evil-textobj-tree-sitter--can-use-builtin-treesit
-       (string-suffix-p "-ts-mode" (symbol-name major-mode))))
+       (let ((major-mode-name (symbol-name major-mode)))
+         (or (string-suffix-p "-ts-mode" major-mode-name)
+             (and (boundp 'rust-mode-treesitter-derive)
+                  rust-mode-treesitter-derive
+                  (string= "rustic-mode" major-mode-name))))))
 
 (defun evil-textobj-tree-sitter--get-queries-dir ()
   "Get the queries directory.
