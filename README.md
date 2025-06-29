@@ -166,6 +166,11 @@ query files, you can edit them in
 `evil-textobj-tree-sitter--queries-dir` or by forking the repo, and
 using the forked version with your edits.*
 
+> For cases where upstream does not consider the queries (only in case
+> of treesit queries, ie the ones from helix), you can add them to
+> `additional-queries` directory. They will get appended with the
+> treesit queries during the build step(`./scripts/get-helix-queries`).
+
 # License
 
 The primary codebase is licensed under `Apache-2.0`. The queries have
