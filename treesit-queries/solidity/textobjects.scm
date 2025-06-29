@@ -17,7 +17,7 @@
   ((parameter) @parameter.inner . ","? @parameter.outer) @parameter.outer)
 
 (return_type_definition 
-  ((parameter) @parameter.inner . ","? @parameter.outer) @parameter.outer)
+  ((parameter) @entry.inner . ","? @entry.outer) @entry.outer)
 
 (modifier_definition 
   ((parameter) @parameter.inner . ","? @parameter.outer) @parameter.outer)
@@ -29,13 +29,13 @@
   ((error_parameter) @parameter.inner . ","? @parameter.outer) @parameter.outer)
 
 (call_argument
-  ((call_struct_argument) @parameter.inner . ","? @parameter.outer) @parameter.outer)
+  ((call_struct_argument) @entry.inner . ","? @entry.outer) @entry.outer)
 
 (call_expression
   ((call_argument) @parameter.inner . ","? @parameter.outer) @parameter.outer)
 
 (variable_declaration_tuple
-  ((variable_declaration) @parameter.inner . ","? @parameter.outer) @parameter.outer)
+  ((variable_declaration) @entry.inner . ","? @entry.outer) @entry.outer)
 
 (emit_statement
   ((call_argument) @parameter.inner . ","? @parameter.outer) @parameter.outer)
@@ -52,3 +52,4 @@
 (comment) @comment.inner
 
 (comment)+ @comment.outer
+

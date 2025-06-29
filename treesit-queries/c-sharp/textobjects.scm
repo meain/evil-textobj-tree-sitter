@@ -5,7 +5,6 @@
   (enum_declaration body: (_) @class.inner)
   (delegate_declaration)
   (record_declaration body: (_) @class.inner)
-  (record_struct_declaration body: (_) @class.inner)
 ] @class.outer
 
 (constructor_declaration body: (_) @function.inner) @function.outer

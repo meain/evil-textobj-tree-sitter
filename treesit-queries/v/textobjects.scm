@@ -22,6 +22,6 @@
 (struct_field_declaration
   ((_) @parameter.inner) @parameter.outer)
 
-(comment) @comment.inner
-(comment)+ @comment.outer
+[(line_comment) (block_comment)] @comment.inner
+[(line_comment)+ (block_comment)+] @comment.outer
 

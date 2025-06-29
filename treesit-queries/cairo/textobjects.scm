@@ -1,6 +1,9 @@
 (function_item
   body: (_) @function.inner) @function.outer
 
+(closure_expression
+  body: (_) @function.inner) @function.outer
+
 (struct_item
   body: (_) @class.inner) @class.outer
 
@@ -14,6 +17,9 @@
   body: (_) @class.inner) @class.outer
 
 (parameters 
+  ((_) @parameter.inner . ","? @parameter.outer) @parameter.outer)
+
+(closure_parameters
   ((_) @parameter.inner . ","? @parameter.outer) @parameter.outer)
 
 (type_parameters
@@ -57,7 +63,7 @@
 (tuple_pattern
   (_) @entry.outer)
 
-; Commonly used vec macro intializer is special cased
+; Commonly used vec macro initializer is special cased
 (macro_invocation
   (identifier) @_id (token_tree (_) @entry.outer)
   (#equal @_id "array"))

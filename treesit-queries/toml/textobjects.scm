@@ -3,3 +3,5 @@
 
 (array
   (_) @entry.outer)
+
+(comment)+ @comment.outer

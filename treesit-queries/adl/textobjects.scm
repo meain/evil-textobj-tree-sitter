@@ -1,1 +1,1 @@
-(struct (_) @function.inner) @funtion.outer
+(struct (_) @function.inner) @function.outer

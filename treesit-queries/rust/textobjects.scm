@@ -69,7 +69,7 @@
 (tuple_pattern
   (_) @entry.outer)
 
-; Commonly used vec macro intializer is special cased
+; Commonly used vec macro initializer is special cased
 (macro_invocation
   (identifier) @_id (token_tree (_) @entry.outer)
   (#equal @_id "vec"))
