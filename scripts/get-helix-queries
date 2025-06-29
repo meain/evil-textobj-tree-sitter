@@ -18,3 +18,5 @@ find $HELIX_DIR/runtime/queries -name 'textobjects.scm' |
         sed 's|\(@[^\.]*\)\.inside|\1.inner|g;s|\(@[^\.]*\)\.around|\1.outer|g;s|#match? @\([^ ]*\) "\([^"]*\)"|#match "\2" @\1|g;s/#eq?/#equal/g' \
             "$HELIX_DIR/runtime/queries/$file" > "treesit-queries/$dir/$filename"
     done
+
+./scripts/append-additional-helix-queries

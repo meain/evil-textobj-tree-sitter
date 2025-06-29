@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+ls additional-queries/**/*.scm |
+    while read -r file; do
+        language="$(dirname "$file" | xargs basename)"
+        echo "Processing $language"
+        printf "\n;; Additional queries\n\n" >>"treesit-queries/$language/textobjects.scm"
+        cat "$file" >>"treesit-queries/$language/textobjects.scm"
+    done
