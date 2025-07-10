@@ -20,3 +20,7 @@ find $HELIX_DIR/runtime/queries -name 'textobjects.scm' |
     done
 
 ./scripts/append-additional-helix-queries
+
+# method_spec was removed from upstream go grammar, but helix still uses it
+sed -ibk 's|method_spec|method_elem|g' treesit-queries/go/textobjects.scm
+rm treesit-queries/go/textobjects.scmbk
