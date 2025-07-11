@@ -9,14 +9,14 @@
 ;;   (_)?  @call.inner._end .)
 ;;   ) @call.outer
 
-(infix
-  (_)
-  [
-    (infix_id
-      (variable)) ; x `plus` y
-    (operator) ; x + y
-  ]
-  (_)) @call.outer
+;; (infix
+;;   (_)
+;;   [
+;;     (infix_id
+;;       (variable)) ; x `plus` y
+;;     (operator) ; x + y
+;;   ]
+;;   (_)) @call.outer
 
 (decl/function) @function.outer
 
