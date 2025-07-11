@@ -49,22 +49,51 @@
 (type_declaration
   (type_spec
     (type_identifier)
-    (struct_type
-      (field_declaration_list
-        (_)?) @class.inner))) @class.outer
+    (struct_type))) @class.outer
 
 (type_declaration
   (type_spec
     (type_identifier)
-    (interface_type) @class.inner)) @class.outer
+    (struct_type
+      (field_declaration_list
+        "{"
+        .
+        _  @class.inner._start  @class.inner._end
+        _?  @class.inner._end
+        .
+        "}"
+        ))))
+
+(type_declaration
+  (type_spec
+    (type_identifier)
+    (interface_type))) @class.outer
+
+(type_declaration
+  (type_spec
+    (type_identifier)
+    (interface_type
+      "{"
+      .
+      _  @class.inner._start  @class.inner._end
+      _?  @class.inner._end
+      .
+      "}"
+      )))
 
 ; struct literals as class textobject
 (composite_literal
-  (type_identifier)?
-  (struct_type
-    (_))?
+  (literal_value)) @class.outer
+
+(composite_literal
   (literal_value
-    (_)) @class.inner) @class.outer
+    "{"
+    .
+    _  @class.inner._start  @class.inner._end
+    _?  @class.inner._end
+    .
+    "}")
+  )
 
 ; conditionals
 (if_statement
@@ -72,14 +101,31 @@
     (_) @conditional.inner)?) @conditional.outer
 
 (if_statement
-  consequence: (block)? @conditional.inner)
+  consequence: (block
+    "{"
+    .
+    _  @conditional.inner._start  @conditional.inner._end
+    _?  @conditional.inner._end
+    .
+    "}"
+    ))
 
 (if_statement
   condition: (_) @conditional.inner)
 
 ; loops
+(for_statement) @loop.outer
+
 (for_statement
-  body: (block)? @loop.inner) @loop.outer
+  body: (block
+    .
+    "{"
+    .
+    _  @loop.inner._start  @loop.inner._end
+    _?  @loop.inner._end
+    .
+    "}"
+    ))
 
 ; blocks
 (_
@@ -157,19 +203,23 @@
   left: (_) @assignment.lhs
   right: (_) @assignment.rhs @assignment.inner) @assignment.outer
 
-(var_spec
-  name: (_) @assignment.lhs
-  value: (_) @assignment.rhs @assignment.inner) @assignment.outer
+(var_declaration
+  (var_spec
+    name: (_) @assignment.lhs
+    value: (_) @assignment.rhs @assignment.inner)) @assignment.outer
 
-(var_spec
-  name: (_) @assignment.inner
-  type: (_)) @assignment.outer
+(var_declaration
+  (var_spec
+    name: (_) @assignment.inner
+    type: (_))) @assignment.outer
 
-(const_spec
-  name: (_) @assignment.lhs
-  value: (_) @assignment.rhs @assignment.inner) @assignment.outer
+(const_declaration
+  (const_spec
+    name: (_) @assignment.lhs
+    value: (_) @assignment.rhs @assignment.inner)) @assignment.outer
 
-(const_spec
-  name: (_) @assignment.inner
-  type: (_)) @assignment.outer
+(const_declaration
+  (const_spec
+    name: (_) @assignment.inner
+    type: (_))) @assignment.outer
 

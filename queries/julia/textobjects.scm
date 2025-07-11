@@ -80,7 +80,7 @@
 (struct_definition) @class.outer
 
 ((struct_definition
-  name: (_)
+  (type_head)
   .
   (_)  @class.inner._start
   (_)?  @class.inner._end .)
@@ -101,7 +101,7 @@
   (operator)
   (_) @function.inner) @function.outer
 
-(function_expression
+(arrow_function_expression
   [
     (identifier)
     (argument_list)
@@ -217,10 +217,23 @@
   )
 
 ; Assignment
-(assignment
-  .
-  (_) @assignment.lhs
-  (_) @assignment.inner @assignment.rhs .) @assignment.outer
+(local_statement
+  (assignment
+    .
+    (_) @assignment.lhs
+    (_) @assignment.inner @assignment.rhs .)) @assignment.outer
+
+(const_statement
+  (assignment
+    .
+    (_) @assignment.lhs
+    (_) @assignment.inner @assignment.rhs .)) @assignment.outer
+
+(global_statement
+  (assignment
+    .
+    (_) @assignment.lhs
+    (_) @assignment.inner @assignment.rhs .)) @assignment.outer
 
 (assignment
   .

@@ -12,7 +12,7 @@
 
 (function_definition) @function.outer
 
-(anonymous_function_creation_expression
+(anonymous_function
   body: (compound_statement
     .
     "{"
@@ -23,7 +23,7 @@
     "}"
     ))
 
-(anonymous_function_creation_expression) @function.outer
+(anonymous_function) @function.outer
 
 ; methods
 (method_declaration
@@ -313,3 +313,4 @@
   (global_declaration)
   (function_static_declaration)
 ] @statement.outer
+

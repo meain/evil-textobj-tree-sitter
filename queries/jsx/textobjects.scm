@@ -1,6 +1,9 @@
 ; inherits: ecma
 
+(jsx_attribute) @attribute.outer
+
 (jsx_attribute
   (property_identifier)
-  (_) @parameter.inner) @parameter.outer
+  (_
+    (_) @attribute.inner))
 
