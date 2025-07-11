@@ -1,13 +1,13 @@
-((apply
-  .
-  function: (_)
-  .
-  (_)  @call.inner._start
-  .
-  (_)*
-  .
-  (_)?  @call.inner._end .)
-  ) @call.outer
+;; ((apply
+;;   .
+;;   function: (_)
+;;   .
+;;   (_)  @call.inner._start
+;;   .
+;;   (_)*
+;;   .
+;;   (_)?  @call.inner._end .)
+;;   ) @call.outer
 
 (infix
   (_)

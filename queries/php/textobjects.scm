@@ -12,18 +12,18 @@
 
 (function_definition) @function.outer
 
-(anonymous_function
-  body: (compound_statement
-    .
-    "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+;; (anonymous_function
+;;   body: (compound_statement
+;;     .
+;;     "{"
+;;     .
+;;     (_)  @function.inner._start  @function.inner._end
+;;     (_)?  @function.inner._end
+;;     .
+;;     "}"
+;;     ))
 
-(anonymous_function) @function.outer
+;; (anonymous_function) @function.outer
 
 ; methods
 (method_declaration
