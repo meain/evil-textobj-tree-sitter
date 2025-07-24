@@ -24,3 +24,7 @@ find $HELIX_DIR/runtime/queries -name 'textobjects.scm' |
 # method_spec was removed from upstream go grammar, but helix still uses it
 sed -ibk 's|method_spec|method_elem|g' treesit-queries/go/textobjects.scm
 rm treesit-queries/go/textobjects.scmbk
+
+# function was removed from javascript/typescript grammar
+sed -ibk '/^(function$/,+1d' treesit-queries/ecma/textobjects.scm
+rm treesit-queries/ecma/textobjects.scmbk
