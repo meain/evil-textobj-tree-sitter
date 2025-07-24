@@ -1,8 +1,6 @@
 (function_declaration
   body: (_) @function.inner) @function.outer
 
-(function
-  body: (_) @function.inner) @function.outer
 
 (arrow_function
   body: (_) @function.inner) @function.outer

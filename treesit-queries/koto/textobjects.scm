@@ -11,10 +11,6 @@
 (call_args
   ((call_arg) @parameter.inner . ","? @parameter.outer) @parameter.outer)
 
-(chain
-  call: (tuple
-    ((element) @parameter.inner . ","? @parameter.outer) @parameter.outer))
-
 (map
   ((entry_inline) @entry.inner . ","? @entry.outer) @entry.outer)
 
