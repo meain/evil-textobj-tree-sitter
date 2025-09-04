@@ -128,6 +128,8 @@ Currently treesit queries are different from queries for elisp-tree-sitter."
                           (sh-mode . "bash")
                           (bash-ts-mode . "sh")
                           (shell-script-mode . "bash")
+                          (tsx-mode . "tsx")
+                          (tsx-ts-mode . "tsx")
                           (typescript-mode . "typescript")
                           (typescript-ts-mode . "typescript")
                           (verilog-mode . "verilog")
