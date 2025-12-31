@@ -112,6 +112,7 @@ Currently treesit queries are different from queries for elisp-tree-sitter."
                           (julia-mode . "julia")
                           (julia-ts-mode . "julia")
                           (matlab-mode . "matlab")
+                          (tuareg-mode . "ocaml")
                           (php-mode . "php")
                           (php-ts-mode . "php")
                           (prisma-mode . "prisma")
