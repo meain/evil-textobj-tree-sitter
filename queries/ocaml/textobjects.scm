@@ -1,6 +1,15 @@
 (value_definition
   (let_binding
+    (parameter)+
     body: (_) @function.inner)) @function.outer
+
+(value_definition
+  (let_binding
+    body: (function_expression) @function.inner)) @function.outer
+
+(value_definition
+  (let_binding
+    body: (fun_expression) @function.inner)) @function.outer
 
 (method_definition
   body: (_) @function.inner) @function.outer
@@ -55,4 +64,3 @@
   (_)  @block.inner._start  @block.inner._end
   (_)?  @block.inner._end
   ) @block.outer
-
