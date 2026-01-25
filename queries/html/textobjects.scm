@@ -11,14 +11,10 @@
 
 (attribute) @attribute.outer
 
-((element
+(element
   (start_tag)
-  .
-  (_)  @function.inner._start
-  (_)  @function.inner._end
-  .
+  _+ @function.inner
   (end_tag))
-  )
 
 (script_element) @function.outer
 
@@ -55,13 +51,9 @@
 ((element
   (start_tag
     (tag_name) @_tag)
-  .
-  (_)  @class.inner._start
-  (_)  @class.inner._end
-  .
+  _+ @class.inner
   (end_tag))
-  (#match? @_tag "^(html|section|h[0-9]|header|title|head|body)$")
-  )
+  (#match? @_tag "^(html|section|h[0-9]|header|title|head|body)$"))
 
 (comment) @comment.outer
 

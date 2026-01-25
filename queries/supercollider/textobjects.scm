@@ -29,35 +29,31 @@
   (_) @function.inner) @function.outer
 
 ;parameters
-((parameter_call_list
-  ","  @parameter.outer._start
+(parameter_call_list
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((parameter_call_list
+(parameter_call_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-(((symbol)?
+((symbol)?
   (identifier)
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
   ((method_name)
     (function_call
-      (_))) @parameter.inner @parameter.outer._end)
-  )
+      (_))) @parameter.inner @parameter.outer)
 
-(((symbol)?
+((symbol)?
   (identifier)
   .
   ((method_name)
     (function_call
-      (_))) @parameter.inner @parameter.outer._start
+      (_))) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 

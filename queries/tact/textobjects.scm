@@ -9,12 +9,8 @@
   body: (function_body
     .
     "{"
-    .
-    (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    "}")
-  )
+    _+ @function.inner
+    "}"))
 
 ; init
 (init_function
@@ -24,12 +20,8 @@
   body: (function_body
     .
     "{"
-    .
-    (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    "}")
-  )
+    _+ @function.inner
+    "}"))
 
 ; bounced
 (bounced_function
@@ -39,12 +31,8 @@
   body: (function_body
     .
     "{"
-    .
-    (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    "}")
-  )
+    _+ @function.inner
+    "}"))
 
 ; receive
 (receive_function
@@ -54,12 +42,8 @@
   body: (function_body
     .
     "{"
-    .
-    (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    "}")
-  )
+    _+ @function.inner
+    "}"))
 
 ; external
 (external_function
@@ -69,12 +53,8 @@
   body: (function_body
     .
     "{"
-    .
-    (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    "}")
-  )
+    _+ @function.inner
+    "}"))
 
 ; contract/trait function
 (storage_function
@@ -84,12 +64,8 @@
   body: (function_body
     .
     "{"
-    .
-    (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    "}")
-  )
+    _+ @function.inner
+    "}"))
 
 ; class.inner & outer
 ; -------------------
@@ -99,12 +75,8 @@
   body: (struct_body
     .
     "{"
-    .
-    (_)  @class.inner._start
-    (_)?  @class.inner._end
-    .
-    "}")
-  )
+    _+ @class.inner
+    "}"))
 
 (message) @class.outer
 
@@ -112,12 +84,8 @@
   body: (message_body
     .
     "{"
-    .
-    (_)  @class.inner._start
-    (_)?  @class.inner._end
-    .
-    "}")
-  )
+    _+ @class.inner
+    "}"))
 
 (contract) @class.outer
 
@@ -125,12 +93,8 @@
   body: (contract_body
     .
     "{"
-    .
-    (_)  @class.inner._start
-    (_)?  @class.inner._end
-    .
-    "}")
-  )
+    _+ @class.inner
+    "}"))
 
 (trait) @class.outer
 
@@ -138,12 +102,8 @@
   body: (trait_body
     .
     "{"
-    .
-    (_)  @class.inner._start
-    (_)?  @class.inner._end
-    .
-    "}")
-  )
+    _+ @class.inner
+    "}"))
 
 ; attribute.inner & outer
 ; -----------------------
@@ -178,12 +138,8 @@
   body: (block_statement
     .
     "{"
-    .
-    (_)  @loop.inner._start
-    (_)?  @loop.inner._end
-    .
-    "}"
-    ))
+    _+ @loop.inner
+    "}"))
 
 (repeat_statement) @loop.outer
 
@@ -191,12 +147,8 @@
   body: (block_statement
     .
     "{"
-    .
-    (_)  @loop.inner._start
-    (_)?  @loop.inner._end
-    .
-    "}"
-    ))
+    _+ @loop.inner
+    "}"))
 
 (do_until_statement) @loop.outer
 
@@ -204,12 +156,8 @@
   body: (block_statement
     .
     "{"
-    .
-    (_)  @loop.inner._start
-    (_)?  @loop.inner._end
-    .
-    "}"
-    ))
+    _+ @loop.inner
+    "}"))
 
 (foreach_statement) @loop.outer
 
@@ -217,12 +165,8 @@
   body: (block_statement
     .
     "{"
-    .
-    (_)  @loop.inner._start
-    (_)?  @loop.inner._end
-    .
-    "}"
-    ))
+    _+ @loop.inner
+    "}"))
 
 ; conditional.inner & outer
 ; -------------------------
@@ -232,24 +176,16 @@
   consequence: (block_statement
     .
     "{"
-    .
-    (_)  @conditional.inner._start
-    (_)?  @conditional.inner._end
-    .
-    "}"
-    ))
+    _+ @conditional.inner
+    "}"))
 
 (if_statement
   alternative: (else_clause
     (block_statement
       .
       "{"
-      .
-      (_)  @conditional.inner._start
-      (_)?  @conditional.inner._end
-      .
-      "}"
-      )))
+      _+ @conditional.inner
+      "}")))
 
 ; block.inner & outer
 ; -------------------
@@ -264,12 +200,8 @@
   arguments: (argument_list
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 (static_call_expression) @call.outer
 
@@ -277,12 +209,8 @@
   arguments: (argument_list
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 (instance_expression) @call.outer
 
@@ -290,25 +218,16 @@
   arguments: (instance_argument_list
     .
     "{"
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    "}"
-    ))
+    _+ @call.inner
+    "}"))
 
-((initOf
-  name: (identifier) @_name
+(initOf
+  name: (identifier) @call.outer
   arguments: (argument_list
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")") @_args)
-  
-  )
+    _+ @call.inner
+    ")") @call.outer)
 
 ; return.inner & outer
 ; --------------------
@@ -323,48 +242,42 @@
 ; -----------------------
 ; second and following
 (parameter_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 ; first
 (parameter_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; second and following
 (argument_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 ; first
 (argument_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; second and following
 (instance_argument_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 ; first
 (instance_argument_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; single parameter
 (receive_function

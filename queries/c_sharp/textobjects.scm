@@ -2,131 +2,152 @@
   body: (declaration_list
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    )) @class.outer
-
-(class_declaration
-  body: (declaration_list
-    .
-    "{"
-    .
+    _* @class.inner
     "}")) @class.outer
 
 (struct_declaration
   body: (declaration_list
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    )) @class.outer
-
-(struct_declaration
-  body: (declaration_list
-    .
-    "{"
-    .
+    _* @class.inner
     "}")) @class.outer
 
 (record_declaration
   body: (declaration_list
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    )) @class.outer
-
-(record_declaration
-  body: (declaration_list
-    .
-    "{"
-    .
-    "}")?) @class.outer
+    _* @class.inner
+    "}")) @class.outer
 
 (interface_declaration
   body: (declaration_list
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    )) @class.outer
-
-(interface_declaration
-  body: (declaration_list
-    .
-    "{"
-    .
+    _+ @class.inner
     "}")) @class.outer
 
 (enum_declaration
   body: (enum_member_declaration_list
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    )) @class.outer
-
-(enum_declaration
-  body: (enum_member_declaration_list
-    .
-    "{"
-    .
+    _* @class.inner
     "}")) @class.outer
 
 (method_declaration
   body: (block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    )) @function.outer
+    _* @function.inner
+    "}")) @function.outer
 
 (method_declaration
   body: (arrow_expression_clause
+    "=>"
+    _+ @function.inner)) @function.outer
+
+; method without body(abstract method/decompiled metadata)
+(method_declaration
+  _+
+  ";") @function.outer
+
+(property_declaration
+  accessors: (accessor_list
+    (accessor_declaration
+      body: (block
+        .
+        "{"
+        _* @function.inner
+        "}")) @function.outer))
+
+(property_declaration
+  accessors: (accessor_list
+    (accessor_declaration
+      body: (arrow_expression_clause
+        "=>"
+        _* @function.inner)) @function.outer))
+
+(indexer_declaration
+  accessors: (accessor_list
+    (accessor_declaration
+      body: (arrow_expression_clause
+        "=>"
+        _+ @function.inner)) @function.outer))
+
+(indexer_declaration
+  accessors: (accessor_list
+    (accessor_declaration
+      body: (block
+        .
+        "{"
+        _* @function.inner
+        "}")) @function.outer))
+
+(conversion_operator_declaration
+  body: (block
     .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    )) @function.outer
+    "{"
+    _* @function.inner
+    "}")) @function.outer
+
+(conversion_operator_declaration
+  body: (arrow_expression_clause
+    "=>"
+    _+ @function.inner)) @function.outer
+
+(operator_declaration
+  body: (block
+    .
+    "{"
+    _* @function.inner
+    "}")) @function.outer
+
+; operator without body(abstract/decompiled metadata)
+(operator_declaration
+  _+
+  ";") @function.outer
+
+(operator_declaration
+  body: (arrow_expression_clause
+    "=>"
+    _+ @function.inner)) @function.outer
 
 (constructor_declaration
   body: (block
     .
     "{"
+    _* @function.inner
+    "}")) @function.outer
+
+; constructor without body(metadata)
+(constructor_declaration
+  _+
+  ";") @function.outer
+
+(local_function_statement
+  body: (block
     .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
+    "{"
+    _* @function.inner
+    "}")) @function.outer
+
+(local_function_statement
+  body: (arrow_expression_clause
+    "=>"
+    _+ @function.inner)) @function.outer
+
+(anonymous_method_expression
+  (block
     .
-    "}"
-    )) @function.outer
+    "{"
+    _* @function.inner
+    "}")) @function.outer
 
 (lambda_expression
   body: (block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    )) @function.outer
+    _+ @function.inner
+    "}")) @function.outer
 
 ; loops
 (for_statement
@@ -156,43 +177,35 @@
   arguments: (argument_list
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 ; blocks
 (_
   (block) @block.inner) @block.outer
 
 ; parameters
-((parameter_list
-  ","  @parameter.outer._start
+(parameter_list
+  "," @parameter.outer
   .
-  (parameter) @parameter.inner @parameter.outer._end)
-  )
+  (parameter) @parameter.inner @parameter.outer)
 
-((parameter_list
+(parameter_list
   .
-  (parameter) @parameter.inner @parameter.outer._start
+  (parameter) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((argument_list
-  ","  @parameter.outer._start
+(argument_list
+  "," @parameter.outer
   .
-  (argument) @parameter.inner @parameter.outer._end)
-  )
+  (argument) @parameter.inner @parameter.outer)
 
-((argument_list
+(argument_list
   .
-  (argument) @parameter.inner @parameter.outer._start
+  (argument) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
 ; comments
 (comment) @comment.outer

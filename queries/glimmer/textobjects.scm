@@ -30,23 +30,15 @@
   .
   (block_statement_end))
 
-((element_node
+(element_node
   (element_node_start)
-  .
-  (_)  @function.inner._start
-  (_)  @function.inner._end
-  .
+  _+ @function.inner
   (element_node_end))
-  )
 
-((block_statement
+(block_statement
   (block_statement_start)
-  .
-  (_)  @function.inner._start
-  (_)  @function.inner._end
-  .
+  _+ @function.inner
   (block_statement_end))
-  )
 
 (mustache_statement
   .

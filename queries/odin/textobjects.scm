@@ -4,12 +4,8 @@
     (block
       .
       "{"
-      .
-      (_)  @function.inner._start  @function.inner._end
-      (_)?  @function.inner._end
-      .
-      "}"
-      ))) @function.outer
+      _+ @function.inner
+      "}"))) @function.outer
 
 ; returns
 (return_statement
@@ -19,75 +15,35 @@
 (member_expression
   (call_expression)) @call.outer
 
-; plain call
-((_
-  (call_expression) @call.outer) @_parent
-  (#not-kind-eq? @_parent "member_expression"))
-
 ; call arguments
-((call_expression
+(call_expression
   function: (_)
   .
-  argument: (_) @_first @call.inner._start
-  argument: (_) @_last @call.inner._end .)
-  )
+  argument: (_) @call.inner
+  argument: (_) @call.inner .)
 
 ; block
 (block
   .
   "{"
-  .
-  (_)  @block.inner._start  @block.inner._end
-  (_)?  @block.inner._end
-  .
-  "}"
-  ) @block.outer
+  _+ @block.inner
+  "}") @block.outer
 
 ; classes
 (struct_declaration
-  .
-  (identifier)
-  .
-  (tag)*
-  .
   "{"
-  .
-  (_) @_first @class.inner._start @_last @class.inner._end
-  (_)?
-  "," @_last @class.inner._end
-  .
-  "}"
-  ) @class.outer
+  _+ @class.inner
+  "}") @class.outer
 
 (union_declaration
-  .
-  (identifier)
-  .
-  (tag)*
-  .
   "{"
-  .
-  (_) @_first @class.inner._start @_last @class.inner._end
-  (_)?
-  "," @_last @class.inner._end
-  .
-  "}"
-  ) @class.outer
+  _+ @class.inner
+  "}") @class.outer
 
 (enum_declaration
-  .
-  (identifier)
-  .
-  (tag)*
-  .
   "{"
-  .
-  (_) @_first @class.inner._start @_last @class.inner._end
-  (_)?
-  "," @_last @class.inner._end
-  .
-  "}"
-  ) @class.outer
+  _+ @class.inner
+  "}") @class.outer
 
 ; comments
 (comment) @comment.outer
@@ -96,13 +52,12 @@
 
 ; assignment
 ; works also for multiple targets in lhs. ex. 'res, ok := get_res()'
-((assignment_statement
+(assignment_statement
   .
-  (_) @_first @assignment.lhs._start
-  (_) @_prelast @assignment.lhs._end
+  (_) @assignment.lhs
+  (_) @assignment.lhs
   .
-  (_) @assignment.rhs @assignment.inner .)
-  ) @assignment.outer
+  (_) @assignment.rhs @assignment.inner .) @assignment.outer
 
 ; attribute
 (attribute
@@ -112,31 +67,27 @@
 (number) @number.inner
 
 ; parameters
-((parameters
-  ","  @parameter.outer._start
+(parameters
+  "," @parameter.outer
   .
-  (parameter) @parameter.inner @parameter.outer._end)
-  )
+  (parameter) @parameter.inner @parameter.outer)
 
-((parameters
+(parameters
   .
-  (parameter) @parameter.inner @parameter.outer._start
+  (parameter) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((call_expression
+(call_expression
   function: (_)
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  argument: (_) @parameter.inner @parameter.outer._end)
-  )
+  argument: (_) @parameter.inner @parameter.outer)
 
-((call_expression
+(call_expression
   function: (_)
   .
-  argument: (_) @parameter.inner @parameter.outer._start
+  argument: (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 

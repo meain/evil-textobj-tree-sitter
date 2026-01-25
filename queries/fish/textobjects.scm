@@ -1,4 +1,10 @@
-(function_definition) @function.outer
+; assignment
+(command
+  name: (word) @_command
+  argument: (word) @_varname @assignment.lhs @assignment.inner
+  argument: (_)* @assignment.rhs
+  (#not-lua-match? @_varname "[-].*")
+  (#eq? @_command "set")) @assignment.outer
 
 (command
   name: (word) @_name
@@ -22,12 +28,12 @@
 ; comment
 ; leave space after comment marker if there is one
 ((comment) @comment.inner @comment.outer
-  (#offset! @comment.inner 0 2 0)
+  (#offset! @comment.inner 0 2 0 0)
   (#match? @comment.outer "# .*"))
 
 ; else remove everything accept comment marker
 ((comment) @comment.inner @comment.outer
-  (#offset! @comment.inner 0 1 0))
+  (#offset! @comment.inner 0 1 0 0))
 
 ; conditional
 (if_statement

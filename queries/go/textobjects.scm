@@ -3,36 +3,24 @@
   body: (block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 ; inner function literals
 (func_literal
   body: (block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 ; method as inner function textobject
 (method_declaration
   body: (block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 ; outer function textobject
 (function_declaration) @function.outer
@@ -49,51 +37,22 @@
 (type_declaration
   (type_spec
     (type_identifier)
-    (struct_type))) @class.outer
-
-(type_declaration
-  (type_spec
-    (type_identifier)
     (struct_type
       (field_declaration_list
-        "{"
-        .
-        _  @class.inner._start  @class.inner._end
-        _?  @class.inner._end
-        .
-        "}"
-        ))))
+        (_)?) @class.inner))) @class.outer
 
 (type_declaration
   (type_spec
     (type_identifier)
-    (interface_type))) @class.outer
-
-(type_declaration
-  (type_spec
-    (type_identifier)
-    (interface_type
-      "{"
-      .
-      _  @class.inner._start  @class.inner._end
-      _?  @class.inner._end
-      .
-      "}"
-      )))
+    (interface_type) @class.inner)) @class.outer
 
 ; struct literals as class textobject
 (composite_literal
-  (literal_value)) @class.outer
-
-(composite_literal
+  (type_identifier)?
+  (struct_type
+    (_))?
   (literal_value
-    "{"
-    .
-    _  @class.inner._start  @class.inner._end
-    _?  @class.inner._end
-    .
-    "}")
-  )
+    (_)) @class.inner) @class.outer
 
 ; conditionals
 (if_statement
@@ -101,31 +60,14 @@
     (_) @conditional.inner)?) @conditional.outer
 
 (if_statement
-  consequence: (block
-    "{"
-    .
-    _  @conditional.inner._start  @conditional.inner._end
-    _?  @conditional.inner._end
-    .
-    "}"
-    ))
+  consequence: (block)? @conditional.inner)
 
 (if_statement
   condition: (_) @conditional.inner)
 
 ; loops
-(for_statement) @loop.outer
-
 (for_statement
-  body: (block
-    .
-    "{"
-    .
-    _  @loop.inner._start  @loop.inner._end
-    _?  @loop.inner._end
-    .
-    "}"
-    ))
+  body: (block)? @loop.inner) @loop.outer
 
 ; blocks
 (_
@@ -145,26 +87,20 @@
   arguments: (argument_list
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 ; parameters
 (parameter_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (parameter_declaration) @parameter.inner @parameter.outer._end
-  )
+  (parameter_declaration) @parameter.inner @parameter.outer)
 
 (parameter_list
   .
-  (parameter_declaration) @parameter.inner @parameter.outer._start
+  (parameter_declaration) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 (parameter_declaration
   name: (identifier)
@@ -175,24 +111,21 @@
   type: (_)) @parameter.inner
 
 (parameter_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (variadic_parameter_declaration) @parameter.inner @parameter.outer._end
-  )
+  (variadic_parameter_declaration) @parameter.inner @parameter.outer)
 
 ; arguments
 (argument_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (argument_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; assignments
 (short_var_declaration
@@ -203,23 +136,19 @@
   left: (_) @assignment.lhs
   right: (_) @assignment.rhs @assignment.inner) @assignment.outer
 
-(var_declaration
-  (var_spec
-    name: (_) @assignment.lhs
-    value: (_) @assignment.rhs @assignment.inner)) @assignment.outer
+(var_spec
+  name: (_) @assignment.lhs
+  value: (_) @assignment.rhs @assignment.inner) @assignment.outer
 
-(var_declaration
-  (var_spec
-    name: (_) @assignment.inner
-    type: (_))) @assignment.outer
+(var_spec
+  name: (_) @assignment.inner
+  type: (_)) @assignment.outer
 
-(const_declaration
-  (const_spec
-    name: (_) @assignment.lhs
-    value: (_) @assignment.rhs @assignment.inner)) @assignment.outer
+(const_spec
+  name: (_) @assignment.lhs
+  value: (_) @assignment.rhs @assignment.inner) @assignment.outer
 
-(const_declaration
-  (const_spec
-    name: (_) @assignment.inner
-    type: (_))) @assignment.outer
+(const_spec
+  name: (_) @assignment.inner
+  type: (_)) @assignment.outer
 

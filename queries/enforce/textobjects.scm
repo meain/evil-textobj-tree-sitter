@@ -32,28 +32,24 @@
 (invokation) @call.outer
 
 (formal_parameters
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (formal_parameter) @parameter.inner @parameter.outer._end
-  )
+  (formal_parameter) @parameter.inner @parameter.outer)
 
 (formal_parameters
   .
-  (formal_parameter) @parameter.inner @parameter.outer._start
+  (formal_parameter) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 (actual_parameters
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (actual_parameter) @parameter.inner @parameter.outer._end
-  )
+  (actual_parameter) @parameter.inner @parameter.outer)
 
 (actual_parameters
   .
-  (actual_parameter) @parameter.inner @parameter.outer._start
+  (actual_parameter) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 

@@ -1,44 +1,33 @@
-;; ((apply
-;;   .
-;;   function: (_)
-;;   .
-;;   (_)  @call.inner._start
-;;   .
-;;   (_)*
-;;   .
-;;   (_)?  @call.inner._end .)
-;;   ) @call.outer
+(apply
+  .
+  function: (_)
+  _+ @call.inner) @call.outer
 
-;; (infix
-;;   (_)
-;;   [
-;;     (infix_id
-;;       (variable)) ; x `plus` y
-;;     (operator) ; x + y
-;;   ]
-;;   (_)) @call.outer
+(infix
+  (_)
+  [
+    (infix_id
+      (variable)) ; x `plus` y
+    (operator) ; x + y
+  ]
+  (_)) @call.outer
 
 (decl/function) @function.outer
 
 (decl/function
   patterns: (_)
-  .
-  match: (_)  @function.inner._start
-  match: (_)?  @function.inner._end
-  .
-  )
+  match: _+ @function.inner)
 
 ; also treat function signature as @function.outer
 (signature) @function.outer
 
 ; treat signature with function as @function.outer
 (((decl/signature
-  name: (_) @_sig_name)  @function.outer._start
+  name: (_) @_sig_name) @function.outer
   .
   (decl/function
-    name: (_) @_func_name)  @function.outer._end)
-  (#eq? @_sig_name @_func_name)
-  )
+    name: (_) @_func_name) @function.outer)
+  (#eq? @_sig_name @_func_name))
 
 (class) @class.outer
 

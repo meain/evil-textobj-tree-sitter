@@ -1,9 +1,8 @@
 ; class
-(((annotation)? @class.outer
+((annotation)? @class.outer
   .
   (class_definition
-    body: (class_body)  @class.outer._end @class.inner)  @class.outer._start)
-  )
+    body: (class_body) @class.inner) @class.outer)
 
 (mixin_declaration
   (class_body) @class.inner) @class.outer
@@ -15,26 +14,21 @@
   body: (extension_body) @class.inner) @class.outer
 
 ; function/method
-(((annotation)? @function.outer
+((annotation)? @function.outer
   .
   [
     (method_signature)
     (function_signature)
-  ]  @function.outer._start
+  ] @function.outer
   .
-  (function_body)  @function.outer._end)
-  )
+  (function_body) @function.outer)
 
 (function_body
   (block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (type_alias
   (function_type)? @function.inner) @function.outer
@@ -46,44 +40,39 @@
   (type_parameter)
 ] @parameter.inner
 
-(","  @parameter.outer._start
+("," @parameter.outer
   .
   [
     (formal_parameter)
     (normal_parameter_type)
     (type_parameter)
-  ] @_par @parameter.outer._end
-  )
+  ] @parameter.outer)
 
 ([
   (formal_parameter)
   (normal_parameter_type)
   (type_parameter)
-] @_par @parameter.outer._start
+] @parameter.outer
   .
-  ","  @parameter.outer._end
-  )
+  "," @parameter.outer)
 
 ; TODO: (_)* not supported yet -> for now this works correctly only with simple arguments
-((arguments
+(arguments
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((arguments
-  ","  @parameter.outer._start
+(arguments
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
 ; call
-((identifier)  @call.outer._start
+((identifier) @call.outer
   .
   (selector
-    (argument_part)  @call.outer._end)
-  )
+    (argument_part) @call.outer))
 
 ((identifier)
   .
@@ -92,12 +81,8 @@
       (arguments
         .
         "("
-        .
-        (_)  @call.inner._start
-        (_)?  @call.inner._end
-        .
-        ")"
-        ))))
+        _+ @call.inner
+        ")"))))
 
 ; block
 (block) @block.outer

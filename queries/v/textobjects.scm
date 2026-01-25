@@ -27,12 +27,8 @@
   (block
     .
     "{"
-    .
-    (_)  @block.inner._start  @block.inner._end
-    (_)?  @block.inner._end
-    .
-    "}")
-  ) @block.outer
+    _+ @block.inner
+    "}")) @block.outer
 
 ; call
 (call_expression) @call.outer
@@ -41,34 +37,26 @@
   arguments: (argument_list
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 ; class: structs
 (struct_declaration
   ("{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 (struct_declaration) @class.outer
 
 ; comment
 ; leave space after comment marker if there is one
 ((line_comment) @comment.inner @comment.outer
-  (#offset! @comment.inner 0 3 0)
+  (#offset! @comment.inner 0 3 0 0)
   (#match? @comment.outer "// .*"))
 
 ; else remove everything accept comment marker
 ((line_comment) @comment.inner @comment.outer
-  (#offset! @comment.inner 0 2 0))
+  (#offset! @comment.inner 0 2 0 0))
 
 (block_comment) @comment.inner @comment.outer
 
@@ -77,24 +65,16 @@
   block: (block
     .
     "{"
-    .
-    (_)  @conditional.inner._start  @conditional.inner._end
-    (_)?  @conditional.inner._end
-    .
-    "}"
-    )?) @conditional.outer
+    _+ @conditional.inner
+    "}")?) @conditional.outer
 
 ; function
 (function_declaration
   body: (block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (function_declaration) @function.outer
 
@@ -103,12 +83,8 @@
   body: (block
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    )?) @loop.outer
+    _+ @loop.inner
+    "}")?) @loop.outer
 
 [
   (int_literal)
@@ -117,17 +93,15 @@
 
 ; parameter
 (parameter_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (parameter_declaration) @parameter.inner @parameter.outer._end
-  )
+  (parameter_declaration) @parameter.inner @parameter.outer)
 
 (parameter_list
   .
-  (parameter_declaration) @parameter.inner @parameter.outer._start
+  (parameter_declaration) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; return
 (return_statement

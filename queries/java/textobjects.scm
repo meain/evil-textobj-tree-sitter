@@ -7,12 +7,8 @@
   body: (block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (constructor_declaration) @function.outer
 
@@ -20,12 +16,11 @@
   body: (constructor_body
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
+
+(return_statement
+  (_)? @return.inner) @return.outer
 
 (for_statement
   body: (_)? @loop.inner) @loop.outer
@@ -59,39 +54,31 @@
   arguments: (argument_list
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 ; parameters
 (formal_parameters
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (formal_parameter) @parameter.inner @parameter.outer._end
-  )
+  (formal_parameter) @parameter.inner @parameter.outer)
 
 (formal_parameters
   .
-  (formal_parameter) @parameter.inner @parameter.outer._start
+  (formal_parameter) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 (argument_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (argument_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 [
   (line_comment)
@@ -105,4 +92,10 @@
   (binary_integer_literal)
   (octal_integer_literal)
 ] @number.inner
+
+; scopename
+; statement
+(statement) @statement.outer
+
+(return_statement) @statement.outer
 

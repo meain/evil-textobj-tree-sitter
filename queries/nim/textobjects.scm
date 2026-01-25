@@ -109,9 +109,8 @@
 ] @loop.outer
 
 (for
-  left: (_)  @loop.inner._start
-  right: (_)  @loop.inner._end
-  )
+  left: (_) @loop.inner
+  right: (_) @loop.inner)
 
 (for
   body: (statement_list) @loop.inner)
@@ -134,85 +133,48 @@
 ; @block.outer
 (case
   ":"
-  .
-  (_)  @block.inner._start
-  (_)  @block.inner._end
-  .
-  ) @block.outer
+  _+ @block.inner) @block.outer
 
 (object_declaration
   (field_declaration_list) @block.inner) @block.outer
 
 (tuple_type
-  .
-  (field_declaration)  @block.inner._start
-  (field_declaration)?  @block.inner._end
-  .
-  ) @block.outer
+  (field_declaration_list
+    .
+    "["
+    _+ @block.inner
+    "]" .)) @block.outer
 
-; BUG: @_end anchor not working correctly in all cases
 (enum_declaration
   .
-  (enum_field_declaration)  @block.inner._start
-  (enum_field_declaration)?  @block.inner._end
-  .
-  ) @block.outer
+  "enum"
+  _+ @block.inner) @block.outer
 
-; BUG: @_end anchor not working correctly in all cases
-; using_section
-; const_section
-; let_section
-; var_section
-(_
+(using_section
   .
-  (variable_declaration)  @block.inner._start
-  (variable_declaration)  @block.inner._end
-  .
-  ) @block.outer
+  "using"
+  _+ @block.inner) @block.outer
 
-; BUG: @_end anchor not working correctly in all cases
+(const_section
+  .
+  "const"
+  _+ @block.inner) @block.outer
+
+(let_section
+  .
+  "let"
+  _+ @block.inner) @block.outer
+
+(var_section
+  .
+  "var"
+  _+ @block.inner) @block.outer
+
 (type_section
   .
-  (type_declaration)  @block.inner._start
-  (type_declaration)  @block.inner._end
-  .
-  ) @block.outer
+  "type"
+  _+ @block.inner)
 
-; BUG: @_end anchor not working correctly in all cases
-; (pragma_statement)
-;
-; (while)
-; (static_statement)
-; (defer)
-;
-; (block)
-; (if)
-; (when)
-; (case)
-; (try)
-; (for)
-;
-; (proc_declaration)
-; (func_declaration)
-; (method_declaration)
-; (iterator_declaration)
-; (macro_declaration)
-; (template_declaration)
-; (converter_declaration)
-;
-; (proc_expression)
-; (func_expression)
-; (iterator_expression)
-;
-; (concept_declaration)
-; (of_branch)
-; (elif_branch)
-; (else_branch)
-; (except_branch)
-; (finally_branch)
-;
-; (do_block)
-; (call)
 (_
   (statement_list) @block.inner) @block.outer
 
@@ -224,106 +186,92 @@
   [
     ","
     ";"
-  ]  @parameter.outer._start
+  ] @parameter.outer
   .
-  (parameter_declaration) @parameter.inner @parameter.outer._end
-  )
+  (parameter_declaration) @parameter.inner @parameter.outer)
 
 (parameter_declaration_list
   .
-  (parameter_declaration) @parameter.inner @parameter.outer._start
+  (parameter_declaration) @parameter.inner @parameter.outer
   .
   [
     ","
     ";"
-  ]?  @parameter.outer._end
-  )
+  ]? @parameter.outer)
 
 ; generic parameters when declaring
 (generic_parameter_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (parameter_declaration) @parameter.inner @parameter.outer._end
-  )
+  (parameter_declaration) @parameter.inner @parameter.outer)
 
 (generic_parameter_list
   .
-  (parameter_declaration) @parameter.inner @parameter.outer._start
+  (parameter_declaration) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; arguments when calling
 (argument_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (argument_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; containers
 (array_construction
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (array_construction
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 (tuple_construction
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (tuple_construction
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 (curly_construction
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (curly_construction
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; generic arguments when calling
 ; subscript operator
 ; generic types
 (bracket_expression
   right: (argument_list
-    ","  @parameter.outer._start
+    "," @parameter.outer
     .
-    (_) @parameter.inner @parameter.outer._end)
-  )
+    (_) @parameter.inner @parameter.outer))
 
 (bracket_expression
   right: (argument_list
     .
-    (_) @parameter.inner @parameter.outer._start
+    (_) @parameter.inner @parameter.outer
     .
-    ","?  @parameter.outer._end)
-  )
+    ","? @parameter.outer))
 
 ; import x,x
 ; import except x,x
@@ -334,148 +282,128 @@
 ; case of x,x
 ; try except x,x
 (expression_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (expression_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; pragmas
 (pragma_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (pragma_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; variable_declaration
 ; for
 ; identifier_declaration `x,y: type = value`
 (symbol_declaration_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (symbol_declaration_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; infix_expression
 (infix_expression
-  operator: (_)  @parameter.outer._start
-  right: (_) @parameter.inner @parameter.outer._end
-  )
+  operator: (_) @parameter.outer
+  right: (_) @parameter.inner @parameter.outer)
 
 (infix_expression
-  left: (_) @parameter.inner @parameter.outer._start
-  operator: (_)  @parameter.outer._end
-  )
+  left: (_) @parameter.inner @parameter.outer
+  operator: (_) @parameter.outer)
 
 ; tuple_type inline
 (field_declaration_list
   [
     ","
     ";"
-  ]  @parameter.outer._start
+  ] @parameter.outer
   .
-  (field_declaration) @parameter.inner @parameter.outer._end
-  )
+  (field_declaration) @parameter.inner @parameter.outer)
 
 (field_declaration_list
   .
-  (field_declaration) @parameter.inner @parameter.outer._start
+  (field_declaration) @parameter.inner @parameter.outer
   .
   [
     ","
     ";"
-  ]?  @parameter.outer._end
-  )
+  ]? @parameter.outer)
 
 ; enum
 (enum_declaration
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (enum_field_declaration) @parameter.inner @parameter.outer._end
-  )
+  (enum_field_declaration) @parameter.inner @parameter.outer)
 
 (enum_declaration
   .
-  (enum_field_declaration) @parameter.inner @parameter.outer._start
+  (enum_field_declaration) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; tuple_deconstruct_declaration
 (tuple_deconstruct_declaration
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (tuple_deconstruct_declaration
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; concept parameter list
 ; concept refinement list
 (parameter_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (parameter_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 (refinement_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (refinement_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; dot_generic_call `v.call[:type, type]()
 (generic_argument_list
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (generic_argument_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; ==============================================================================
 ; @regex.inner
@@ -501,10 +429,9 @@
 ; @assignment.lhs
 ; @assignment.rhs
 (variable_declaration
-  (symbol_declaration_list) @_symbols @assignment.lhs._start
-  type: (type_expression)? @_type @assignment.lhs._end
-  value: (_) @assignment.rhs @assignment.inner
-  ) @assignment.outer
+  (symbol_declaration_list) @assignment.lhs
+  type: (type_expression)? @assignment.lhs
+  value: (_) @assignment.rhs @assignment.inner) @assignment.outer
 
 (type_declaration
   (type_symbol_declaration) @assignment.lhs
@@ -534,10 +461,9 @@
 ; object declaration fields
 ; tuple declaration fields
 (field_declaration
-  (symbol_declaration_list) @_symbols @assignment.lhs._start
-  type: (type_expression)? @_type @assignment.lhs._end
-  value: (_)? @assignment.rhs @assignment.inner
-  ) @assignment.outer
+  (symbol_declaration_list) @assignment.lhs
+  type: (type_expression)? @assignment.lhs
+  value: (_)? @assignment.rhs @assignment.inner) @assignment.outer
 
 ; enum types
 (enum_field_declaration
