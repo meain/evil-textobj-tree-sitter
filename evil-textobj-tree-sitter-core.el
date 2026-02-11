@@ -157,13 +157,10 @@ Currently treesit queries are different from queries for elisp-tree-sitter."
                                    (< byte-pos (car (last x)))))
                             nodes)
           (lambda (x y)
-            (< (+ (abs (- byte-pos
-                          (nth 1 x)))
-                  (abs (- byte-pos
-                          (car (last x))))) (+ (abs (- byte-pos
-                          (nth 1 y)))
-                  (abs (- byte-pos
-                          (car (last x))))))))))
+            (< (+ (abs (- byte-pos (nth 1 x)))
+                  (abs (- byte-pos (car (last x)))))
+               (+ (abs (- byte-pos (nth 1 y)))
+                  (abs (- byte-pos (car (last y))))))))))
 
 (defun evil-textobj-tree-sitter--nodes-filter-after (nodes)
   "NODES which contain the current point before them ordered top to bottom."
