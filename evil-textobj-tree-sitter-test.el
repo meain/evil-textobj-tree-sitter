@@ -256,4 +256,26 @@ func main() {
     (evil-textobj-tree-sitter--thing-at-point-test 'c-mode nil 31 'function 'c-unicode selection (cons 11 45))
     (evil-textobj-tree-sitter--thing-at-point-test 'c-ts-mode t 31 'function 'c-unicode selection (cons 11 45))))
 
+(ert-deftest evil-textobj-tree-sitter-within-leaf-selects-smallest ()
+  "Check that leaf text object selects smallest node when multiple overlap.
+Uses the treesit path where the bug manifests: treesit returns nodes
+outermost-first, so the buggy comparator (which ignored end positions)
+preserved the wrong order and selected the block (71,126) instead of
+the identifier (71,75)."
+  (let* ((bufname (make-temp-name "evil-textobj-tree-sitter-test--"))
+         (buffer (get-buffer-create bufname))
+         (leaf-query '((python-ts-mode . "(_) @leaf"))))
+    (with-current-buffer buffer
+      (insert (alist-get 'py-complex evil-textobj-tree-sitter--test-file-content))
+      (python-ts-mode)
+      ;; Position 71 is the start of `var2` inside `nested()`.  Both the
+      ;; identifier node (71,75) and the enclosing block node (71,126) share
+      ;; the same start position, which exercises the sort comparator bug
+      ;; where (car (last x)) was used for both operands.  The expected
+      ;; range (71 . 75) is the smallest node — the `var2` identifier.
+      (goto-char 71)
+      (should (equal (evil-textobj-tree-sitter--range 1 '(leaf) leaf-query)
+                     (cons 71 75))))
+    (kill-buffer buffer)))
+
 ;;; evil-textobj-tree-sitter-test.el ends here
