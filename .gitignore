@@ -1,2 +1,4 @@
 __debug_bin
 .cask/
+.eask/
+*.elc

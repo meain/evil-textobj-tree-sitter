@@ -49,3 +49,6 @@ The correct query directory is selected at runtime based on whether the current 
 - Node selection priority: nodes containing point (innermost first), then nodes after point
 - `evil-textobj-tree-sitter-use-next-if-not-within` controls whether to fall through to next match when not inside one
 - Tests run against both `elisp-tree-sitter` and `treesit` backends (e.g., `c-mode` and `c-ts-mode`)
+
+### Notes
+- This repo is maintained using jj and not git (do not try to run any jj commands).

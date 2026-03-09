@@ -19,7 +19,9 @@ And test with comment provided in `TEXT' optionally passing in `REGION'."
     (find-file filename)
     (fundamental-mode)
     (with-current-buffer bufname
-      (setq-local tree-sitter-major-mode-language-alist `((fundamental-mode . ,lang)))
+      (when (null tree-sitter-major-mode-language-table)
+        (setq tree-sitter-major-mode-language-table (make-hash-table :test 'eq)))
+      (puthash 'fundamental-mode lang tree-sitter-major-mode-language-table)
       (setq-local evil-textobj-tree-sitter-major-mode-language-alist `((fundamental-mode . ,(symbol-name lang))))
       (insert text)
       (tree-sitter-mode)

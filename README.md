@@ -135,6 +135,26 @@ that is available here.
               (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
 ```
 
+# Development
+
+A Nix flake is provided for development. Enter the dev shell with:
+
+```sh
+nix develop
+```
+
+This gives you `emacs`, `eask`, `go`, and `gcc`. Then run:
+
+```sh
+make install-deps  # install Emacs package dependencies
+make test          # run core tests
+make test-queries  # run per-language query loading tests
+make compile       # byte-compile
+make lint          # package-lint
+make checkdoc      # checkdoc
+cd converter && go test -v  # converter tests
+```
+
 # Finding and contributing to textobjects
 
 `evil-textobj-tree-sitter` work with both builtin `treesit` and

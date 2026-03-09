@@ -15,14 +15,14 @@ jobs:
           - 30.1
           # - snapshot # causing issues with compat
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: purcell/setup-emacs@master
       with:
         version: ${{ matrix.emacs_version }}
-    - uses: cask/setup-cask@master
+    - uses: emacs-eask/setup-eask@master
       with:
-        version: snapshot
-    - run: cask install
+        version: 'snapshot'
+    - run: make install-deps
     - run: make compile
     - run: make lint
     - run: make checkdoc

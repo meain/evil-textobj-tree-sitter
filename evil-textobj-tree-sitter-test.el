@@ -17,6 +17,11 @@
         (go . ("https://github.com/tree-sitter/tree-sitter-go"))
         (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod.git"))))
 
+;; Unset GIT_DIR/GIT_WORK_TREE so treesit-install-language-grammar can git
+;; clone into temp directories (these may be set for jj repo compatibility)
+(setenv "GIT_DIR" nil)
+(setenv "GIT_WORK_TREE" nil)
+
 (treesit-install-language-grammar 'c)
 (treesit-install-language-grammar 'cpp)
 (treesit-install-language-grammar 'python)
