@@ -1,30 +1,16 @@
-((generic_environment
-  begin: (_)
-  .
-  (_)  @block.inner._start
-  (_)?  @block.inner._end
-  .
-  end: (_)) @block.outer
-  )
-
-((math_environment
-  begin: (_)
-  .
-  (_)  @block.inner._start
-  (_)?  @block.inner._end
-  .
-  end: (_)) @block.outer
-  )
-
 (generic_environment
-  begin: (begin
-    name: (curly_group_text
-      text: (text) @frame.inner))) @frame.outer
+  .
+  (_)
+  _+ @block.inner
+  (_) .) @block.outer
 
-(math_environment
-  begin: (begin
+((generic_environment
+  (begin
     name: (curly_group_text
-      text: (text) @frame.inner))) @frame.outer
+      (text) @_frame))
+  _+ @frame.inner
+  (_) .) @frame.outer
+  (#eq? @_frame "frame"))
 
 [
   (generic_command)
@@ -34,69 +20,61 @@
 (text_mode
   (curly_group
     "{"
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    "}")
-  )
+    _+ @call.inner
+    "}"))
 
 (generic_command
   (curly_group
     "{"
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    "}")
-  )
+    _+ @call.inner
+    "}"))
 
-((part
+(part
   text: (_)
-  .
-  (_)  @class.inner._start
-  (_)?  @class.inner._end .) @class.outer
-  )
+  _+ @class.inner)
 
-((chapter
-  text: (_)
-  .
-  (_)  @class.inner._start
-  (_)?  @class.inner._end .) @class.outer
-  )
+(part
+  text: (_)) @class.outer
 
-((section
+(chapter
   text: (_)
-  .
-  (_)  @class.inner._start
-  (_)?  @class.inner._end .) @class.outer
-  )
+  _+ @class.inner)
 
-((subsection
-  text: (_)
-  .
-  (_)  @class.inner._start
-  (_)?  @class.inner._end .) @class.outer
-  )
+(chapter
+  text: (_)) @class.outer
 
-((subsubsection
+(section
   text: (_)
-  .
-  (_)  @class.inner._start
-  (_)?  @class.inner._end .) @class.outer
-  )
+  _+ @class.inner)
 
-((paragraph
-  text: (_)
-  .
-  (_)  @class.inner._start
-  (_)?  @class.inner._end .) @class.outer
-  )
+(section
+  text: (_)) @class.outer
 
-((subparagraph
+(subsection
   text: (_)
-  .
-  (_)  @class.inner._start
-  (_)?  @class.inner._end .) @class.outer
-  )
+  _+ @class.inner)
+
+(subsection
+  text: (_)) @class.outer
+
+(subsubsection
+  text: (_)
+  _+ @class.inner)
+
+(subsubsection
+  text: (_)) @class.outer
+
+(paragraph
+  text: (_)
+  _+ @class.inner)
+
+(paragraph
+  text: (_)) @class.outer
+
+(subparagraph
+  text: (_)
+  _+ @class.inner)
+
+(subparagraph
+  text: (_)) @class.outer
 

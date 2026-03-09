@@ -11,34 +11,22 @@
   body: (statement_block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (generator_function_declaration
   body: (statement_block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (function_expression
   body: (statement_block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (export_statement
   (function_declaration)) @function.outer
@@ -50,12 +38,8 @@
   body: (statement_block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (method_definition
   body: (statement_block)) @function.outer
@@ -64,12 +48,8 @@
   body: (statement_block
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (class_declaration
   body: (class_body)) @class.outer
@@ -78,12 +58,8 @@
   body: (class_body
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 (export_statement
   (class_declaration)) @class.outer
@@ -92,68 +68,44 @@
   body: (statement_block
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    )) @loop.outer
+    _+ @loop.inner
+    "}")) @loop.outer
 
 (for_statement
   body: (statement_block
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    )) @loop.outer
+    _+ @loop.inner
+    "}")) @loop.outer
 
 (while_statement
   body: (statement_block
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    )) @loop.outer
+    _+ @loop.inner
+    "}")) @loop.outer
 
 (do_statement
   body: (statement_block
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    )) @loop.outer
+    _+ @loop.inner
+    "}")) @loop.outer
 
 (if_statement
   consequence: (statement_block
     .
     "{"
-    .
-    (_)  @conditional.inner._start  @conditional.inner._end
-    (_)?  @conditional.inner._end
-    .
-    "}"
-    )) @conditional.outer
+    _+ @conditional.inner
+    "}")) @conditional.outer
 
 (if_statement
   alternative: (else_clause
     (statement_block
       .
       "{"
-      .
-      (_)  @conditional.inner._start  @conditional.inner._end
-      (_)?  @conditional.inner._end
-      .
-      "}"
-      ))) @conditional.outer
+      _+ @conditional.inner
+      "}"))) @conditional.outer
 
 (if_statement) @conditional.outer
 
@@ -166,60 +118,105 @@
   arguments: (arguments
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
-((new_expression
-  constructor: (identifier) @_cons
+(new_expression
+  constructor: (identifier) @call.outer
   arguments: (arguments
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")") @_args)
-  
-  )
+    _+ @call.inner
+    ")") @call.outer)
 
 ; blocks
-(_
-  (statement_block) @block.inner) @block.outer
+(statement_block
+  (_)* @block.inner) @block.outer
 
 ; parameters
 ; function ({ x }) ...
 ; function ([ x ]) ...
 ; function (v = default_value)
 (formal_parameters
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (formal_parameters
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
+
+; last element with trailing comma
+(formal_parameters
+  (_) @parameter.outer
+  .
+  "," @parameter.outer .)
+
+; If the array/object pattern is the first parameter, treat its elements as the argument list
+(formal_parameters
+  .
+  (_
+    [
+      (object_pattern
+        "," @parameter.outer
+        .
+        (_) @parameter.inner @parameter.outer)
+      (array_pattern
+        "," @parameter.outer
+        .
+        (_) @parameter.inner @parameter.outer)
+    ]))
+
+(formal_parameters
+  .
+  (_
+    [
+      (object_pattern
+        .
+        (_) @parameter.inner @parameter.outer
+        .
+        ","? @parameter.outer)
+      (array_pattern
+        .
+        (_) @parameter.inner @parameter.outer
+        .
+        ","? @parameter.outer)
+    ]))
+
+; last element with trailing comma
+(formal_parameters
+  .
+  (_
+    [
+      (object_pattern
+        (_) @parameter.outer
+        .
+        "," @parameter.outer .)
+      (array_pattern
+        (_) @parameter.outer
+        .
+        "," @parameter.outer .)
+    ]))
 
 ; arguments
 (arguments
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (arguments
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
+
+; last element with trailing comma
+(arguments
+  (_) @parameter.outer
+  .
+  "," @parameter.outer .)
 
 ; comment
 (comment) @comment.outer
@@ -278,22 +275,20 @@
       (import_specifier) @parameter.inner)))
 
 ; 3‑A.  named import followed by a comma
-((import_statement
+(import_statement
   (import_clause
     (named_imports
-      (import_specifier)  @parameter.outer._start
+      (import_specifier) @parameter.outer
       .
-      ","  @parameter.outer._end)))
-  )
+      "," @parameter.outer)))
 
 ; 3‑B.  comma followed by named import
-((import_statement
+(import_statement
   (import_clause
     (named_imports
-      ","  @parameter.outer._start
+      "," @parameter.outer
       .
-      (import_specifier)  @parameter.outer._end)))
-  )
+      (import_specifier) @parameter.outer)))
 
 ; 3-C.  only one named import without a comma
 (import_statement
@@ -334,43 +329,45 @@
   (_) @parameter.outer .)
 
 ; 3. parameter.outer: Comma before or after
-([
+[
   (object
-    ","  @parameter.outer._start
+    "," @parameter.outer
     .
-    (_)  @parameter.outer._end)
+    (_) @parameter.outer)
   (array
-    ","  @parameter.outer._start
+    "," @parameter.outer
     .
-    (_)  @parameter.outer._end)
+    (_) @parameter.outer)
   (object_pattern
-    ","  @parameter.outer._start
+    "," @parameter.outer
     .
-    (_)  @parameter.outer._end)
+    (_) @parameter.outer)
   (array_pattern
-    ","  @parameter.outer._start
+    "," @parameter.outer
     .
-    (_)  @parameter.outer._end)
+    (_) @parameter.outer)
 ]
-  )
 
-([
+[
   (object
-    (_)  @parameter.outer._start
     .
-    ","  @parameter.outer._end)
+    (_) @parameter.outer
+    .
+    "," @parameter.outer)
   (array
-    (_)  @parameter.outer._start
     .
-    ","  @parameter.outer._end)
+    (_) @parameter.outer
+    .
+    "," @parameter.outer)
   (object_pattern
-    (_)  @parameter.outer._start
     .
-    ","  @parameter.outer._end)
+    (_) @parameter.outer
+    .
+    "," @parameter.outer)
   (array_pattern
-    (_)  @parameter.outer._start
     .
-    ","  @parameter.outer._end)
+    (_) @parameter.outer
+    .
+    "," @parameter.outer)
 ]
-  )
 

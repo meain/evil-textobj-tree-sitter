@@ -1,27 +1,24 @@
 ; Blocks
 (compound_statement) @block.outer
 
-((compound_statement
+(compound_statement
   .
-  (_)  @block.inner._start
-  (_)?  @block.inner._end .)
-  )
+  (_) @block.inner
+  (_)? @block.inner .)
 
 (quote_statement) @block.outer
 
-((quote_statement
+(quote_statement
   .
-  (_)  @block.inner._start
-  (_)?  @block.inner._end .)
-  )
+  (_) @block.inner
+  (_)? @block.inner .)
 
 (let_statement) @block.outer
 
-((let_statement
+(let_statement
   .
-  (_)  @block.inner._start
-  (_)?  @block.inner._end .)
-  )
+  (_) @block.inner
+  (_)? @block.inner .)
 
 ; Conditionals
 (if_statement
@@ -34,67 +31,59 @@
 ((if_statement
   condition: (_)
   .
-  (_)  @conditional.inner._start
-  (_)?  @conditional.inner._end
+  (_) @conditional.inner
+  (_)? @conditional.inner
   .
   [
     "end"
     (elseif_clause)
     (else_clause)
-  ])
-  ) @conditional.outer
+  ]) @conditional.outer
+  (elseif_clause
+    condition: (_)
+    .
+    (_) @conditional.inner
+    (_)? @conditional.inner .))
 
-((elseif_clause
-  condition: (_)
+(else_clause
   .
-  (_)  @conditional.inner._start
-  (_)?  @conditional.inner._end .)
-  )
-
-((else_clause
-  .
-  (_)  @conditional.inner._start
-  (_)?  @conditional.inner._end .)
-  )
+  (_) @conditional.inner
+  (_)? @conditional.inner .)
 
 ; Loops
 (for_statement) @loop.outer
 
-((for_statement
+(for_statement
   .
-  (_)  @loop.inner._start
-  (_)?  @loop.inner._end .)
-  )
+  (_) @loop.inner
+  (_)? @loop.inner .)
 
 (while_statement
   condition: (_) @loop.inner) @loop.outer
 
-((while_statement
+(while_statement
   condition: (_)
   .
-  (_)  @loop.inner._start
-  (_)?  @loop.inner._end .)
-  )
+  (_) @loop.inner
+  (_)? @loop.inner .)
 
 ; Type definitions
 (struct_definition) @class.outer
 
-((struct_definition
+(struct_definition
   (type_head)
   .
-  (_)  @class.inner._start
-  (_)?  @class.inner._end .)
-  )
+  (_) @class.inner
+  (_)? @class.inner .)
 
 ; Function definitions
 (function_definition) @function.outer
 
-((function_definition
+(function_definition
   (signature)
   .
-  (_)  @function.inner._start
-  (_)?  @function.inner._end .)
-  )
+  (_) @function.inner
+  (_)? @function.inner .)
 
 (assignment
   (call_expression)
@@ -111,12 +100,11 @@
 
 (macro_definition) @function.outer
 
-((macro_definition
+(macro_definition
   (signature)
   .
-  (_)  @function.inner._start
-  (_)?  @function.inner._end .)
-  )
+  (_) @function.inner
+  (_)? @function.inner .)
 
 ; Calls
 (call_expression) @call.outer
@@ -126,11 +114,10 @@
     .
     "("
     .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
+    (_) @call.inner
+    (_)? @call.inner
     .
-    ")"
-    ))
+    ")"))
 
 (macrocall_expression) @call.outer
 
@@ -139,11 +126,10 @@
     .
     "("
     .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
+    (_) @call.inner
+    (_)? @call.inner
     .
-    ")"
-    ))
+    ")"))
 
 (broadcast_call_expression) @call.outer
 
@@ -152,88 +138,67 @@
     .
     "("
     .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
+    (_) @call.inner
+    (_)? @call.inner
     .
-    ")"
-    ))
+    ")"))
 
 ; Parameters
 ((argument_list
   [
     ","
     ";"
-  ]  @parameter.outer._start
+  ] @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
+  (argument_list
+    (_) @parameter.inner @parameter.outer
+    .
+    [
+      ","
+      ";"
+    ] @parameter.outer))
 
-((argument_list
-  (_) @parameter.inner @parameter.outer._start
-  .
+(tuple_expression
   [
     ","
     ";"
-  ]  @parameter.outer._end)
-  )
-
-((tuple_expression
-  [
-    ","
-    ";"
-  ]  @parameter.outer._start
+  ] @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((tuple_expression
+(tuple_expression
   "("
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
   [
     ","
     ";"
-  ]?  @parameter.outer._end)
-  )
+  ]? @parameter.outer)
 
-((vector_expression
+(vector_expression
   [
     ","
     ";"
-  ]  @parameter.outer._start
+  ] @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((vector_expression
+(vector_expression
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
   [
     ","
     ";"
-  ]?  @parameter.outer._end)
-  )
+  ]? @parameter.outer)
 
 ; Assignment
-(local_statement
-  (assignment
-    .
-    (_) @assignment.lhs
-    (_) @assignment.inner @assignment.rhs .)) @assignment.outer
-
-(const_statement
-  (assignment
-    .
-    (_) @assignment.lhs
-    (_) @assignment.inner @assignment.rhs .)) @assignment.outer
-
-(global_statement
-  (assignment
-    .
-    (_) @assignment.lhs
-    (_) @assignment.inner @assignment.rhs .)) @assignment.outer
+(assignment
+  .
+  (_) @assignment.lhs
+  (_) @assignment.inner @assignment.rhs .) @assignment.outer
 
 (assignment
   .
@@ -257,6 +222,5 @@
 ; Regex
 ((prefixed_string_literal
   prefix: (identifier) @_prefix) @regex.inner @regex.outer
-  (#eq? @_prefix "r")
-  (#offset! @regex.inner 0 2 0 -1))
+  (#eq? @_prefix "r"))
 

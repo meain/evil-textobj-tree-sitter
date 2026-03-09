@@ -11,12 +11,8 @@
 
 (attribute) @attribute.outer
 
-((tag
+(tag
   (start_tag)
-  .
-  (_)  @function.inner._start
-  (_)  @function.inner._end
-  .
+  _+ @function.inner
   (end_tag))
-  )
 

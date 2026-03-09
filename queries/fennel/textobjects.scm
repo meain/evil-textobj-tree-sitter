@@ -9,60 +9,62 @@
 
 ; functions
 ; NOTE: Doesn't capture the comments before the first `item` field
-([
-  (fn_form
-    [
-      (table_metadata)
-      (docstring)
-    ]
-    .
-    item: (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    close: _ .)
-  (fn_form
-    args: (_)
-    .
-    item: (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    close: _ .)
-  (lambda_form
-    [
-      (table_metadata)
-      (docstring)
-    ]
-    .
-    item: (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    close: _ .)
-  (lambda_form
-    args: (_)
-    .
-    item: (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    close: _ .)
-  (macro_form
-    [
-      (table_metadata)
-      (docstring)
-    ]
-    .
-    item: (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    close: _ .)
-  (macro_form
-    args: (_)
-    .
-    item: (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    close: _ .)
-]
-  )
+(fn_form
+  [
+    (table_metadata)
+    (docstring)
+  ]
+  .
+  item: (_) @function.inner
+  (_)? @function.inner
+  .
+  close: _ .)
+
+(fn_form
+  args: (_)
+  .
+  item: (_) @function.inner
+  (_)? @function.inner
+  .
+  close: _ .)
+
+(lambda_form
+  [
+    (table_metadata)
+    (docstring)
+  ]
+  .
+  item: (_) @function.inner
+  (_)? @function.inner
+  .
+  close: _ .)
+
+(lambda_form
+  args: (_)
+  .
+  item: (_) @function.inner
+  (_)? @function.inner
+  .
+  close: _ .)
+
+(macro_form
+  [
+    (table_metadata)
+    (docstring)
+  ]
+  .
+  item: (_) @function.inner
+  (_)? @function.inner
+  .
+  close: _ .)
+
+(macro_form
+  args: (_)
+  .
+  item: (_) @function.inner
+  (_)? @function.inner
+  .
+  close: _ .)
 
 [
   (fn_form)
@@ -77,12 +79,13 @@
 ; call
 (list
   call: (symbol) @_fn_name
-  item: (_)  @call.inner._start
-  (_)  @call.inner._end
+  item: (_) @call.inner
+  (_) @call.inner
   .
   close: _
-  (#not-any-of? @_fn_name "do" "while" "when")
-  ) @call.outer
+  (#not-eq? @_fn_name "do")
+  (#not-eq? @_fn_name "while")
+  (#not-eq? @_fn_name "when")) @call.outer
 
 ; assignment
 (local_form
@@ -101,9 +104,8 @@
     rhs: (_) @assignment.rhs) @assignment.inner) @assignment.outer
 
 (set_form
-  (binding_pair
-    lhs: (_) @assignment.lhs
-    rhs: (_) @assignment.rhs) @assignment.inner) @assignment.outer
+  lhs: (_) @assignment.lhs @assignment.inner
+  rhs: (_) @assignment.rhs @assignment.inner) @assignment.outer
 
 (let_vars
   (binding_pair
@@ -128,78 +130,50 @@
 ; loops
 (each_form
   iter_body: (_)
-  .
-  (_)  @loop.inner._start
-  (_)?  @loop.inner._end
-  .
-  close: _
-  )
+  _+ @loop.inner
+  close: _)
 
 (each_form) @loop.outer
 
 (collect_form
   iter_body: (_)
-  .
-  (_)  @loop.inner._start
-  (_)?  @loop.inner._end
-  .
-  close: _
-  )
+  _+ @loop.inner
+  close: _)
 
 (collect_form) @loop.outer
 
 (icollect_form
   iter_body: (_)
-  .
-  (_)  @loop.inner._start
-  (_)?  @loop.inner._end
-  .
-  close: _
-  )
+  _+ @loop.inner
+  close: _)
 
 (icollect_form) @loop.outer
 
 (accumulate_form
   iter_body: (_)
-  .
-  (_)  @loop.inner._start
-  (_)?  @loop.inner._end
-  .
-  close: _
-  )
+  _+ @loop.inner
+  close: _)
 
 (accumulate_form) @loop.outer
 
 (for_form
   iter_body: (_)
-  .
-  (_)  @loop.inner._start
-  (_)?  @loop.inner._end
-  .
-  close: _
-  )
+  _+ @loop.inner
+  close: _)
 
 (for_form) @loop.outer
 
 (fcollect_form
   iter_body: (_)
-  .
-  (_)  @loop.inner._start
-  (_)?  @loop.inner._end
-  .
-  close: _
-  )
+  _+ @loop.inner
+  close: _)
 
 (fcollect_form) @loop.outer
 
 (faccumulate_form
   iter_body: (_)
-  .
-  (_)  @loop.inner._start
-  (_)?  @loop.inner._end
-  .
-  close: _
-  )
+  _+ @loop.inner
+  close: _)
 
 (faccumulate_form) @loop.outer
 
@@ -208,7 +182,7 @@
   .
   item: (_)
   item: (_)* @loop.inner
-  (#any-of? @_sym "while"))
+  (#eq? @_sym "while"))
 
 (list
   call: (symbol) @_sym

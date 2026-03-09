@@ -2,8 +2,7 @@
 
 (comment) @comment.outer
 
-((comment) @comment.inner
-  (#offset! @comment.inner 0 1 0 0))
+((comment) @comment.inner)
 
 [
   (alternative)

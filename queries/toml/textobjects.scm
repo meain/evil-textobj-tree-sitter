@@ -6,31 +6,27 @@
 (table
   (pair) @parameter.inner @parameter.outer)
 
-((inline_table
-  ","  @parameter.outer._start
+(inline_table
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((inline_table
+(inline_table
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((array
-  ","  @parameter.outer._start
+(array
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((array
+(array
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
 (comment) @comment.outer
 

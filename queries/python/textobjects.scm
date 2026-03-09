@@ -1,10 +1,14 @@
-((decorated_definition)?
-  (function_definition
-    body: (block)? @function.inner)) @function.outer
+(decorated_definition
+  (function_definition)) @function.outer
 
-((decorated_definition)?
-  (class_definition
-    body: (block)? @class.inner)) @class.outer
+(function_definition
+  body: (block)? @function.inner) @function.outer
+
+(decorated_definition
+  (class_definition)) @class.outer
+
+(class_definition
+  body: (block)? @class.inner) @class.outer
 
 (while_statement
   body: (block)? @loop.inner) @loop.outer
@@ -27,12 +31,10 @@
 
 ; leave space after comment marker if there is one
 ((comment) @comment.inner @comment.outer
-  (#offset! @comment.inner 0 2 0)
   (#match? @comment.outer "# .*"))
 
 ; else remove everything accept comment marker
-((comment) @comment.inner @comment.outer
-  (#offset! @comment.inner 0 1 0))
+((comment) @comment.inner @comment.outer)
 
 (block
   (_) @statement.outer)
@@ -46,19 +48,15 @@
   arguments: (argument_list
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 (return_statement
   (_)? @return.inner) @return.outer
 
 ; Parameters
-((parameters
-  ","  @parameter.outer._start
+(parameters
+  "," @parameter.outer
   .
   [
     (identifier)
@@ -68,10 +66,9 @@
     (typed_default_parameter)
     (dictionary_splat_pattern)
     (list_splat_pattern)
-  ] @parameter.inner @parameter.outer._end)
-  )
+  ] @parameter.inner @parameter.outer)
 
-((parameters
+(parameters
   .
   [
     (identifier)
@@ -81,13 +78,12 @@
     (typed_default_parameter)
     (dictionary_splat_pattern)
     (list_splat_pattern)
-  ] @parameter.inner @parameter.outer._start
+  ] @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((lambda_parameters
-  ","  @parameter.outer._start
+(lambda_parameters
+  "," @parameter.outer
   .
   [
     (identifier)
@@ -97,10 +93,9 @@
     (typed_default_parameter)
     (dictionary_splat_pattern)
     (list_splat_pattern)
-  ] @parameter.inner @parameter.outer._end)
-  )
+  ] @parameter.inner @parameter.outer)
 
-((lambda_parameters
+(lambda_parameters
   .
   [
     (identifier)
@@ -110,104 +105,89 @@
     (typed_default_parameter)
     (dictionary_splat_pattern)
     (list_splat_pattern)
-  ] @parameter.inner @parameter.outer._start
+  ] @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((tuple
-  ","  @parameter.outer._start
+(tuple
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((tuple
+(tuple
   "("
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((list
-  ","  @parameter.outer._start
+(list
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((list
+(list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((dictionary
+(dictionary
   .
-  (pair) @parameter.inner @parameter.outer._start
+  (pair) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((dictionary
-  ","  @parameter.outer._start
+(dictionary
+  "," @parameter.outer
   .
-  (pair) @parameter.inner @parameter.outer._end)
-  )
+  (pair) @parameter.inner @parameter.outer)
 
-((argument_list
+(argument_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((argument_list
-  ","  @parameter.outer._start
+(argument_list
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((subscript
+(subscript
   "["
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((subscript
-  ","  @parameter.outer._start
+(subscript
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((import_statement
+(import_statement
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((import_statement
-  ","  @parameter.outer._start
+(import_statement
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((import_from_statement
-  ","  @parameter.outer._start
+(import_from_statement
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((import_from_statement
+(import_from_statement
   "import"
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
 [
   (integer)

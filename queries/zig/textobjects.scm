@@ -6,12 +6,8 @@
   (struct_declaration
     "struct"
     "{"
-    .
-    _  @class.inner._start  @class.inner._end
-    _?  @class.inner._end
-    .
-    "}")
-  )
+    _+ @class.inner
+    "}"))
 
 ; functions
 (function_declaration) @function.outer
@@ -20,12 +16,8 @@
   body: (block
     .
     "{"
-    .
-    _  @function.inner._start  @function.inner._end
-    _?  @function.inner._end
-    .
-    "}")
-  )
+    _+ @function.inner
+    "}"))
 
 ; loops
 (for_statement) @loop.outer
@@ -43,49 +35,43 @@
 
 (block
   "{"
-  .
-  _  @block.inner._start  @block.inner._end
-  _?  @block.inner._end
-  .
-  "}"
-  )
+  _+ @block.inner
+  "}")
 
 ; statements
 (statement) @statement.outer
 
 ; parameters
 (parameters
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (parameter) @parameter.inner @parameter.outer._end
-  )
+  (parameter) @parameter.inner @parameter.outer)
 
 (parameters
   .
-  (parameter) @parameter.inner @parameter.outer._start
+  (parameter) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; arguments
 (call_expression
   function: (_)
-  "("
-  ","  @parameter.outer._start
-  .
-  (_) @parameter.inner @parameter.outer._end
-  ")"
-  )
+  arguments: (arguments
+    "("
+    "," @parameter.outer
+    .
+    (_) @parameter.inner @parameter.outer
+    ")"))
 
 (call_expression
   function: (_)
-  "("
-  .
-  (_) @parameter.inner @parameter.outer._start
-  .
-  ","?  @parameter.outer._end
-  ")"
-  )
+  arguments: (arguments
+    "("
+    .
+    (_) @parameter.inner @parameter.outer
+    .
+    ","? @parameter.outer
+    ")"))
 
 ; comments
 (comment) @comment.outer
@@ -108,12 +94,8 @@
 
 (switch_expression
   "{"
-  .
-  _  @conditional.inner._start
-  _?  @conditional.inner._end
-  .
-  "}"
-  )
+  _+ @conditional.inner
+  "}")
 
 (while_statement
   condition: (_) @conditional.inner)
@@ -122,11 +104,8 @@
 (call_expression) @call.outer
 
 (call_expression
-  "("
-  .
-  _  @call.inner._start
-  _?  @call.inner._end
-  .
-  ")"
-  )
+  arguments: (arguments
+    "("
+    _+ @call.inner
+    ")"))
 

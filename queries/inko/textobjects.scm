@@ -5,12 +5,8 @@
   body: (class_body
     .
     "{"
-    .
-    (_)  @class.inner._start
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 ; Traits
 (trait) @class.outer
@@ -19,12 +15,8 @@
   body: (trait_body
     .
     "{"
-    .
-    (_)  @class.inner._start
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 ; Implementations
 (implement_trait) @class.outer
@@ -33,12 +25,8 @@
   body: (implement_trait_body
     .
     "{"
-    .
-    (_)  @class.inner._start
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 (reopen_class) @class.outer
 
@@ -46,12 +34,8 @@
   body: (reopen_class_body
     .
     "{"
-    .
-    (_)  @class.inner._start
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 ; Methods and closures
 (method) @function.outer
@@ -60,12 +44,8 @@
   body: (block
     .
     "{"
-    .
-    (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (closure) @function.outer
 
@@ -73,24 +53,16 @@
   body: (block
     .
     "{"
-    .
-    (_)  @function.inner._start
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 ; Loops
 (while
   body: (block
     .
     "{"
-    .
-    (_)  @loop.inner._start
-    (_)?  @loop.inner._end
-    .
-    "}"
-    )) @loop.outer
+    _+ @loop.inner
+    "}")) @loop.outer
 
 (while
   condition: (_) @conditional.inner)
@@ -99,12 +71,8 @@
   body: (block
     .
     "{"
-    .
-    (_)  @loop.inner._start
-    (_)?  @loop.inner._end
-    .
-    "}"
-    )) @loop.outer
+    _+ @loop.inner
+    "}")) @loop.outer
 
 ; Conditionals
 (if
@@ -112,11 +80,7 @@
     (_) @conditional.inner)?) @conditional.outer
 
 (if
-  alternative: (else
-    (block) @conditional.inner))
-
-(if
-  consequence: (block)? @conditional.inner)
+  consequence: (block) @conditional.inner)
 
 (if
   condition: (_) @conditional.inner)
@@ -132,96 +96,80 @@
   arguments: (arguments
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 (return
   (_)? @return.inner) @return.outer
 
 ; Call and type arguments
-((arguments
-  ","  @parameter.outer._start
+(arguments
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((arguments
+(arguments
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((type_arguments
-  ","  @parameter.outer._start
+(type_arguments
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((type_arguments
+(type_arguments
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
 ; Patterns
-((class_pattern
-  ","  @parameter.outer._start
+(class_pattern
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((class_pattern
+(class_pattern
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((tuple_pattern
-  ","  @parameter.outer._start
+(tuple_pattern
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((tuple_pattern
+(tuple_pattern
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
 ; Sequence types
 (tuple
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (tuple
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 (array
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (array
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; Blocks
 (block
@@ -237,9 +185,9 @@
 ] @number.inner
 
 ; Variable definitions and assignments
-(define_variable
+(identifier_pattern
   name: (_) @assignment.lhs
-  value: (_) @assignment.inner @assignment.rhs) @assignment.outer
+  type: (_) @assignment.inner @assignment.rhs) @assignment.outer
 
 (define_constant
   name: (_) @assignment.lhs

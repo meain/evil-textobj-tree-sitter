@@ -13,12 +13,8 @@
   body: (compound_statement
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    ))
+    _+ @loop.inner
+    "}"))
 
 (template_declaration
   (function_definition)) @function.outer
@@ -29,70 +25,60 @@
 (template_declaration
   (class_specifier)) @class.outer
 
-((lambda_capture_specifier
-  ","  @parameter.outer._start
+(lambda_capture_specifier
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((lambda_capture_specifier
+(lambda_capture_specifier
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((template_argument_list
-  ","  @parameter.outer._start
+(template_argument_list
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((template_argument_list
+(template_argument_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((template_parameter_list
-  ","  @parameter.outer._start
+(template_parameter_list
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((template_parameter_list
+(template_parameter_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((parameter_list
-  ","  @parameter.outer._start
+(parameter_list
+  "," @parameter.outer
   .
-  (optional_parameter_declaration) @parameter.inner @parameter.outer._end)
-  )
+  (optional_parameter_declaration) @parameter.inner @parameter.outer)
 
-((parameter_list
+(parameter_list
   .
-  (optional_parameter_declaration) @parameter.inner @parameter.outer._start
+  (optional_parameter_declaration) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
-((initializer_list
-  ","  @parameter.outer._start
+(initializer_list
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end @_end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((initializer_list
+(initializer_list
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 
 (new_expression
   (argument_list) @call.inner) @call.outer

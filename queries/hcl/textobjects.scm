@@ -54,16 +54,14 @@
 
 (numeric_lit) @number.inner
 
-((function_arguments
-  ","  @parameter.outer._start
+(function_arguments
+  "," @parameter.outer
   .
-  (expression) @parameter.inner @parameter.outer._end)
-  )
+  (expression) @parameter.inner @parameter.outer)
 
-((function_arguments
+(function_arguments
   .
-  (expression) @parameter.inner @parameter.outer._start
+  (expression) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end)
-  )
+  ","? @parameter.outer)
 

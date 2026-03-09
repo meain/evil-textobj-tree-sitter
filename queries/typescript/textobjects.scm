@@ -6,12 +6,8 @@
   body: (interface_body
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    _?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 (type_alias_declaration) @class.outer
 
@@ -19,12 +15,8 @@
   value: (object_type
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    _?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 (enum_declaration) @class.outer
 
@@ -32,12 +24,8 @@
   body: (enum_body
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    _?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 ; type, interface items as @parameter
 ; 1. parameter.inner
@@ -53,51 +41,57 @@
   (property_signature) @parameter.outer .)
 
 ; 3. parameter.outer: Comma/semicolon before or after
-([
+[
   (object_type
-    ","  @parameter.outer._start
+    [
+      ","
+      ";"
+    ] @parameter.outer
     .
-    (property_signature)  @parameter.outer._end)
+    (property_signature) @parameter.outer)
   (interface_body
-    ","  @parameter.outer._start
+    [
+      ","
+      ";"
+    ] @parameter.outer
     .
-    (property_signature)  @parameter.outer._end)
+    (property_signature) @parameter.outer)
 ]
-  )
 
-([
+[
   (object_type
-    (property_signature)  @parameter.outer._start
     .
-    ","  @parameter.outer._end)
+    (property_signature) @parameter.outer
+    .
+    [
+      ","
+      ";"
+    ] @parameter.outer)
   (interface_body
-    (property_signature)  @parameter.outer._start
     .
-    ","  @parameter.outer._end)
+    (property_signature) @parameter.outer
+    .
+    [
+      ","
+      ";"
+    ] @parameter.outer)
 ]
-  )
 
-([
+; last element with trailing comma/semicolon
+[
   (object_type
-    ";"  @parameter.outer._start
+    (property_signature) @parameter.outer
     .
-    (property_signature)  @parameter.outer._end)
+    [
+      ","
+      ";"
+    ] @parameter.outer .)
   (interface_body
-    ";"  @parameter.outer._start
+    (property_signature) @parameter.outer
     .
-    (property_signature)  @parameter.outer._end)
+    [
+      ","
+      ";"
+    ] @parameter.outer .)
 ]
-  )
-
-([
-  (object_type
-    (property_signature)  @parameter.outer._start
-    .
-    ";"  @parameter.outer._end)
-  (interface_body
-    (property_signature)  @parameter.outer._start
-    .
-    ";"  @parameter.outer._end)
-]
-  )
 

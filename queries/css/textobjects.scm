@@ -8,13 +8,8 @@
   (property_name) @assignment.lhs
   .
   ":"
-  .
-  (_)  @assignment.rhs._start
-  (_)?  @assignment.rhs._end
-  .
-  ";"
-  
-  ) @assignment.outer
+  _+ @assignment.inner @assignment.rhs
+  ";") @assignment.outer
 
 (declaration
   (property_name) @assignment.inner)

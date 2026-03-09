@@ -3,39 +3,27 @@
   body: (compound_statement
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (function_definition) @function.outer
 
-;; (anonymous_function
-;;   body: (compound_statement
-;;     .
-;;     "{"
-;;     .
-;;     (_)  @function.inner._start  @function.inner._end
-;;     (_)?  @function.inner._end
-;;     .
-;;     "}"
-;;     ))
+(anonymous_function
+  body: (compound_statement
+    .
+    "{"
+    _+ @function.inner
+    "}"))
 
-;; (anonymous_function) @function.outer
+(anonymous_function) @function.outer
 
 ; methods
 (method_declaration
   body: (compound_statement
     .
     "{"
-    .
-    (_)  @function.inner._start  @function.inner._end
-    (_)?  @function.inner._end
-    .
-    "}"
-    ))
+    _+ @function.inner
+    "}"))
 
 (method_declaration) @function.outer
 
@@ -44,12 +32,8 @@
   body: (declaration_list
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 (trait_declaration) @class.outer
 
@@ -58,12 +42,8 @@
   body: (declaration_list
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 (interface_declaration) @class.outer
 
@@ -72,12 +52,8 @@
   body: (enum_declaration_list
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 (enum_declaration) @class.outer
 
@@ -86,12 +62,8 @@
   body: (declaration_list
     .
     "{"
-    .
-    (_)  @class.inner._start  @class.inner._end
-    (_)?  @class.inner._end
-    .
-    "}"
-    ))
+    _+ @class.inner
+    "}"))
 
 (class_declaration) @class.outer
 
@@ -100,12 +72,8 @@
   (compound_statement
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    ))
+    _+ @loop.inner
+    "}"))
 
 (for_statement) @loop.outer
 
@@ -113,12 +81,8 @@
   body: (compound_statement
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    ))
+    _+ @loop.inner
+    "}"))
 
 (foreach_statement) @loop.outer
 
@@ -126,12 +90,8 @@
   body: (compound_statement
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    ))
+    _+ @loop.inner
+    "}"))
 
 (while_statement) @loop.outer
 
@@ -139,12 +99,8 @@
   body: (compound_statement
     .
     "{"
-    .
-    (_)  @loop.inner._start  @loop.inner._end
-    (_)?  @loop.inner._end
-    .
-    "}"
-    ))
+    _+ @loop.inner
+    "}"))
 
 (do_statement) @loop.outer
 
@@ -153,12 +109,8 @@
   body: (switch_block
     .
     "{"
-    .
-    (_)  @conditional.inner._start  @conditional.inner._end
-    (_)?  @conditional.inner._end
-    .
-    "}"
-    ))
+    _+ @conditional.inner
+    "}"))
 
 (switch_statement) @conditional.outer
 
@@ -166,12 +118,8 @@
   body: (compound_statement
     .
     "{"
-    .
-    (_)  @conditional.inner._start  @conditional.inner._end
-    (_)?  @conditional.inner._end
-    .
-    "}"
-    ))
+    _+ @conditional.inner
+    "}"))
 
 (if_statement) @conditional.outer
 
@@ -179,23 +127,15 @@
   body: (compound_statement
     .
     "{"
-    .
-    (_)  @conditional.inner._start  @conditional.inner._end
-    (_)?  @conditional.inner._end
-    .
-    "}"
-    ))
+    _+ @conditional.inner
+    "}"))
 
 (else_if_clause
   body: (compound_statement
     .
     "{"
-    .
-    (_)  @conditional.inner._start  @conditional.inner._end
-    (_)?  @conditional.inner._end
-    .
-    "}"
-    ))
+    _+ @conditional.inner
+    "}"))
 
 ; blocks
 (_
@@ -203,30 +143,26 @@
 
 ; parameters
 (arguments
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (arguments
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 (formal_parameters
-  ","  @parameter.outer._start
+  "," @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end
-  )
+  (_) @parameter.inner @parameter.outer)
 
 (formal_parameters
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  ","?  @parameter.outer._end
-  )
+  ","? @parameter.outer)
 
 ; comments
 (comment) @comment.outer
@@ -244,45 +180,29 @@
   arguments: (arguments
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 (member_call_expression
   arguments: (arguments
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 (nullsafe_member_call_expression
   arguments: (arguments
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 (scoped_call_expression
   arguments: (arguments
     .
     "("
-    .
-    (_)  @call.inner._start
-    (_)?  @call.inner._end
-    .
-    ")"
-    ))
+    _+ @call.inner
+    ")"))
 
 ; statement
 [

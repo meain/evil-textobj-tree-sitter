@@ -1,44 +1,33 @@
-;; ((apply
-;;   .
-;;   function: (_)
-;;   .
-;;   (_)  @call.inner._start
-;;   .
-;;   (_)*
-;;   .
-;;   (_)?  @call.inner._end .)
-;;   ) @call.outer
+(apply
+  .
+  function: (_)
+  _+ @call.inner) @call.outer
 
-;; (infix
-;;   (_)
-;;   [
-;;     (infix_id
-;;       (variable)) ; x `plus` y
-;;     (operator) ; x + y
-;;   ]
-;;   (_)) @call.outer
+(infix
+  (_)
+  [
+    (infix_id
+      (variable)) ; x `plus` y
+    (operator) ; x + y
+  ]
+  (_)) @call.outer
 
 (decl/function) @function.outer
 
 (decl/function
   patterns: (_)
-  .
-  match: (_)  @function.inner._start
-  match: (_)?  @function.inner._end
-  .
-  )
+  match: _+ @function.inner)
 
 ; also treat function signature as @function.outer
 (signature) @function.outer
 
 ; treat signature with function as @function.outer
 (((decl/signature
-  name: (_) @_sig_name)  @function.outer._start
+  name: (_) @_sig_name) @function.outer
   .
   (decl/function
-    name: (_) @_func_name)  @function.outer._end)
-  (#eq? @_sig_name @_func_name)
-  )
+    name: (_) @_func_name) @function.outer)
+  (#eq? @_sig_name @_func_name))
 
 (class) @class.outer
 
@@ -64,7 +53,37 @@
 (infix
   (apply
     (name) @_name
-    (#any-of? @_name "for" "for_" "forM" "forM_"))
+    (#eq? @_name "for"))
+  (operator) @_op
+  (#eq? @_op "$")
+  (lambda
+    (_)
+    (_) @loop.inner)) @loop.outer
+
+(infix
+  (apply
+    (name) @_name
+    (#eq? @_name "for_"))
+  (operator) @_op
+  (#eq? @_op "$")
+  (lambda
+    (_)
+    (_) @loop.inner)) @loop.outer
+
+(infix
+  (apply
+    (name) @_name
+    (#eq? @_name "forM"))
+  (operator) @_op
+  (#eq? @_op "$")
+  (lambda
+    (_)
+    (_) @loop.inner)) @loop.outer
+
+(infix
+  (apply
+    (name) @_name
+    (#eq? @_name "forM_"))
   (operator) @_op
   (#eq? @_op "$")
   (lambda
@@ -74,7 +93,25 @@
 ; e.g. forM [1..10] print
 (apply
   (name) @_name
-  (#any-of? @_name "for" "for_" "forM" "forM_")
+  (#eq? @_name "for")
+  (_)
+  (_) @loop.inner) @loop.outer
+
+(apply
+  (name) @_name
+  (#eq? @_name "for_")
+  (_)
+  (_) @loop.inner) @loop.outer
+
+(apply
+  (name) @_name
+  (#eq? @_name "forM")
+  (_)
+  (_) @loop.inner) @loop.outer
+
+(apply
+  (name) @_name
+  (#eq? @_name "forM_")
   (_)
   (_) @loop.inner) @loop.outer
 

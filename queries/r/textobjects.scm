@@ -44,31 +44,27 @@
   (_) @statement.outer)
 
 ; parameter
-((parameters
-  (comma)  @parameter.outer._start
+(parameters
+  (comma) @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((parameters
+(parameters
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  (comma)?  @parameter.outer._end)
-  )
+  (comma)? @parameter.outer)
 
-((arguments
-  (comma)?  @parameter.outer._start
+(arguments
+  (comma)? @parameter.outer
   .
-  (_) @parameter.inner @parameter.outer._end)
-  )
+  (_) @parameter.inner @parameter.outer)
 
-((arguments
+(arguments
   .
-  (_) @parameter.inner @parameter.outer._start
+  (_) @parameter.inner @parameter.outer
   .
-  (comma)?  @parameter.outer._end)
-  )
+  (comma)? @parameter.outer)
 
 ; number
 (float) @number.inner

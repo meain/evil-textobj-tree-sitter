@@ -1,4 +1,10 @@
-(function_definition) @function.outer
+; assignment
+(command
+  name: (word) @_command
+  argument: (word) @_varname @assignment.lhs @assignment.inner
+  argument: (_)* @assignment.rhs
+  (#not-match? @_varname "^[-].*")
+  (#eq? @_command "set")) @assignment.outer
 
 (command
   name: (word) @_name
@@ -22,12 +28,10 @@
 ; comment
 ; leave space after comment marker if there is one
 ((comment) @comment.inner @comment.outer
-  (#offset! @comment.inner 0 2 0)
   (#match? @comment.outer "# .*"))
 
 ; else remove everything accept comment marker
-((comment) @comment.inner @comment.outer
-  (#offset! @comment.inner 0 1 0))
+((comment) @comment.inner @comment.outer)
 
 ; conditional
 (if_statement
@@ -37,8 +41,7 @@
   (_) @conditional.inner) @conditional.outer
 
 ; function
-((function_definition) @function.inner @function.outer
-  (#offset! @function.inner 1 0 -1 1))
+((function_definition) @function.inner @function.outer)
 
 ; loop
 (for_statement
