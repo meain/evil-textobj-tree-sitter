@@ -38,7 +38,7 @@ The correct query directory is selected at runtime based on whether the current 
 
 ### Scripts
 
-- `scripts/get-neovim-queries` — Pulls queries from nvim-treesitter-textobjects into `queries/`
+- `scripts/get-neovim-queries` — Pulls queries from nvim-treesitter-textobjects into `queries/`. See [docs/updating-neovim-queries.md](docs/updating-neovim-queries.md) for the manual fixup process required after pulling.
 - `scripts/get-helix-queries` — Pulls queries from Helix into `treesit-queries/`, appending `additional-queries/`
 - `scripts/fix-queries` — Post-processing fixups on query files
 
