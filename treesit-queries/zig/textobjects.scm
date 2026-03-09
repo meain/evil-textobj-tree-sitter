@@ -18,5 +18,8 @@
 (parameters
   ((_) @parameter.inner . ","? @parameter.outer) @parameter.outer)
 
+(arguments
+  ((_) @parameter.inner . ","? @parameter.outer) @parameter.outer)
+
 (comment) @comment.inner
 (comment)+ @comment.outer

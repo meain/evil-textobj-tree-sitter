@@ -1,4 +1,4 @@
-(pair 
+(member
   (_) @entry.inner) @entry.outer
 
 (array

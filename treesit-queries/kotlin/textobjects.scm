@@ -40,3 +40,6 @@
 
 (value_arguments
   ((_)@parameter.inner . ","? @parameter.outer) @parameter.outer)
+
+(lambda_parameters
+  ((_) @parameter.inner . ","? @parameter.outer) @parameter.outer)
