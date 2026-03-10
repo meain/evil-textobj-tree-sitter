@@ -256,6 +256,20 @@ func main() {
     (evil-textobj-tree-sitter--thing-at-point-test 'c-mode nil 31 'function 'c-unicode selection (cons 11 45))
     (evil-textobj-tree-sitter--thing-at-point-test 'c-ts-mode t 31 'function 'c-unicode selection (cons 11 45))))
 
+(ert-deftest evil-textobj-tree-sitter-no-error-without-parser ()
+  "Check that operations gracefully return nil when tree-sitter is unavailable."
+  (let* ((bufname (make-temp-name "evil-textobj-tree-sitter-test--"))
+         (buffer (get-buffer-create bufname)))
+    (with-current-buffer buffer
+      (insert "some text without a tree-sitter parser")
+      (fundamental-mode)
+      ;; Should not error, just return nil
+      (goto-char 1)
+      (should (equal (evil-textobj-tree-sitter--range 1 '(function.outer)) nil))
+      (should (equal (evil-textobj-tree-sitter--get-goto-location
+                      '(function.outer) nil nil nil) nil)))
+    (kill-buffer buffer)))
+
 (ert-deftest evil-textobj-tree-sitter-within-leaf-selects-smallest ()
   "Check that leaf text object selects smallest node when multiple overlap.
 Uses the treesit path where the bug manifests: treesit returns nodes
