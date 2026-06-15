@@ -292,4 +292,64 @@ the identifier (71,75)."
                      (cons 71 75))))
     (kill-buffer buffer)))
 
+;;; Predicate normalization tests
+
+(ert-deftest evil-textobj-tree-sitter-any-of-two-values ()
+  "#any-of? with two values converts to #match?."
+  (should (equal
+           (evil-textobj-tree-sitter--convert-any-of-predicates
+            "(#any-of? @_name \"test\" \"testWidgets\")")
+           "(#match? \"^(test|testWidgets)$\" @_name)")))
+
+(ert-deftest evil-textobj-tree-sitter-any-of-three-values ()
+  "#any-of? with three values converts to #match?."
+  (should (equal
+           (evil-textobj-tree-sitter--convert-any-of-predicates
+            "(#any-of? @_fn \"do\" \"while\" \"when\")")
+           "(#match? \"^(do|while|when)$\" @_fn)")))
+
+(ert-deftest evil-textobj-tree-sitter-any-of-unchanged ()
+  "Non-#any-of? predicates pass through convert-any-of unchanged."
+  (should (equal
+           (evil-textobj-tree-sitter--convert-any-of-predicates
+            "(#match \"pattern\" @x)")
+           "(#match \"pattern\" @x)")))
+
+(ert-deftest evil-textobj-tree-sitter-normalize-predicates-emacs30 ()
+  "On Emacs 30 bare predicates are unchanged and ?-variants are stripped."
+  (let ((emacs-major-version 30))
+    (should (equal
+             (evil-textobj-tree-sitter--normalize-treesit-predicates
+              "(#match \"p\" @x) (#equal @a \"b\")")
+             "(#match \"p\" @x) (#equal @a \"b\")"))
+    (should (equal
+             (evil-textobj-tree-sitter--normalize-treesit-predicates
+              "(#match? \"p\" @x) (#eq? @a \"b\")")
+             "(#match \"p\" @x) (#equal @a \"b\")"))))
+
+(ert-deftest evil-textobj-tree-sitter-normalize-predicates-emacs31 ()
+  "On Emacs 31+ bare predicates gain ? and existing ?-variants are unchanged."
+  (let ((emacs-major-version 31))
+    (should (equal
+             (evil-textobj-tree-sitter--normalize-treesit-predicates
+              "(#match \"p\" @x) (#equal @a \"b\")")
+             "(#match? \"p\" @x) (#eq? @a \"b\")"))
+    (should (equal
+             (evil-textobj-tree-sitter--normalize-treesit-predicates
+              "(#match? \"p\" @x) (#eq? @a \"b\")")
+             "(#match? \"p\" @x) (#eq? @a \"b\")"))))
+
+(ert-deftest evil-textobj-tree-sitter-any-of-version-normalized ()
+  "#any-of? is converted then version-normalized correctly."
+  (let ((emacs-major-version 30))
+    (should (equal
+             (evil-textobj-tree-sitter--normalize-treesit-predicates
+              "(#any-of? @_name \"test\" \"testWidgets\")")
+             "(#match \"^(test|testWidgets)$\" @_name)")))
+  (let ((emacs-major-version 31))
+    (should (equal
+             (evil-textobj-tree-sitter--normalize-treesit-predicates
+              "(#any-of? @_name \"test\" \"testWidgets\")")
+             "(#match? \"^(test|testWidgets)$\" @_name)"))))
+
 ;;; evil-textobj-tree-sitter-test.el ends here

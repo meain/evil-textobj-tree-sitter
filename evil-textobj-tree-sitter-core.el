@@ -208,6 +208,38 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
   "Get tree sitter query for `LANGUAGE'."
   (evil-textobj-tree-sitter--get-query-from-dir language (funcall evil-textobj-tree-sitter--get-queries-dir-func) t))
 
+(defun evil-textobj-tree-sitter--convert-any-of-predicates (query)
+  "Convert #any-of? predicates in QUERY to equivalent #match? predicates.
+Transforms (#any-of? @capture \"v1\" \"v2\") into (#match? \"^(v1|v2)$\" @capture)."
+  (replace-regexp-in-string
+   "(#any-of\\? @[^ )]+\\(?:[[:space:]]+\"[^\"]*\"\\)+)"
+   (lambda (m)
+     (save-match-data
+       (let (values capture)
+         (string-match "#any-of\\? \\(@[^ )]+\\)" m)
+         (setq capture (match-string 1 m))
+         (let ((pos 0))
+           (while (string-match "\"\\([^\"]*\\)\"" m pos)
+             (push (regexp-quote (match-string 1 m)) values)
+             (setq pos (match-end 0))))
+         (format "(#match? \"^(%s)$\" %s)"
+                 (mapconcat #'identity (nreverse values) "|")
+                 capture))))
+   query t t))
+
+(defun evil-textobj-tree-sitter--normalize-treesit-predicates (query)
+  "Normalize predicate names in QUERY for the current Emacs version.
+Emacs 31+ requires `#match?' and `#eq?' while earlier versions use `#match' and `#equal'.
+Also converts `#any-of?' to `#match?' for all versions."
+  (let ((q (evil-textobj-tree-sitter--convert-any-of-predicates query)))
+    (if (>= emacs-major-version 31)
+        (replace-regexp-in-string
+         "#equal\\([^?]\\)" "#eq?\\1"
+         (replace-regexp-in-string "#match\\([^?]\\)" "#match?\\1" q))
+      (replace-regexp-in-string
+       "#eq[?]" "#equal"
+       (replace-regexp-in-string "#match[?]" "#match" q)))))
+
 (defun evil-textobj-tree-sitter--treesit-get-nodes (query)
   "Get nodes for `QUERY' using builtin `treesit'."
   (if (not (treesit-parser-list))
@@ -216,9 +248,10 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
         nil)
     (let* ((lang-name (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
            (user-query (alist-get major-mode query))
-           (f-query (if (eq user-query nil)
-                        (evil-textobj-tree-sitter--get-query lang-name)
-                      user-query))
+           (f-query (evil-textobj-tree-sitter--normalize-treesit-predicates
+                     (if (eq user-query nil)
+                         (evil-textobj-tree-sitter--get-query lang-name)
+                       user-query)))
            (root-node (treesit-buffer-root-node))
            (captures (treesit-query-capture root-node f-query)))
       (seq-map (lambda (x)
