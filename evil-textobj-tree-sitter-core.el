@@ -61,10 +61,10 @@
 
 (defvar evil-textobj-tree-sitter--treesit-question-predicates nil
   "Non-nil if the tree-sitter C library requires `#match?' style predicates.
-Detected lazily on first treesit query, when a language grammar is available.")
+Lazily detected on first treesit query by probing the current language.")
 
 (defvar evil-textobj-tree-sitter--treesit-predicates-detected nil
-  "Non-nil once predicate style detection has completed.")
+  "Non-nil once `evil-textobj-tree-sitter--treesit-question-predicates' is set.")
 
 (defun evil-textobj-tree-sitter--use-builtin-treesitter ()
   "Return non-nil if we should use builtin treesitter."
