@@ -53,10 +53,28 @@
 (declare-function treesit-node-start "treesit.c")
 (declare-function treesit-query-capture "treesit.c")
 (declare-function treesit-buffer-root-node "treesit")
+(declare-function treesit-parser-create "treesit.c")
+(declare-function treesit-language-available-p "treesit.c")
 
 (defconst evil-textobj-tree-sitter--dir (file-name-directory (locate-library "evil-textobj-tree-sitter.el"))
   "The directory where the library `tree-sitter-langs' is located.")
 
+(defvar evil-textobj-tree-sitter--treesit-question-predicates
+  ;; Detect at load time, before any ERT/eask signal hooks are installed.
+  ;; Try a bare #match query against the C grammar; if the tree-sitter C
+  ;; library rejects it, we know this build requires #match? instead.
+  (when (and (fboundp 'treesit-language-available-p)
+             (fboundp 'treesit-query-capture)
+             (treesit-language-available-p 'c))
+    (with-temp-buffer
+      (treesit-parser-create 'c)
+      (condition-case nil
+          (prog1 nil (treesit-query-capture
+                      (treesit-buffer-root-node)
+                      "((comment) @x (#match \"test\" @x))"))
+        (treesit-query-error t))))
+  "Non-nil if the tree-sitter C library requires `#match?' style predicates.
+Detected at package load time by probing with a bare `#match' query.")
 
 (defun evil-textobj-tree-sitter--use-builtin-treesitter ()
   "Return non-nil if we should use builtin treesitter."
@@ -228,11 +246,13 @@ Transforms (#any-of? @capture \"v1\" \"v2\") into (#match? \"^(v1|v2)$\" @captur
    query t t))
 
 (defun evil-textobj-tree-sitter--normalize-treesit-predicates (query)
-  "Normalize predicate names in QUERY for the current Emacs version.
-Emacs 31+ requires `#match?' and `#eq?' while earlier versions use `#match' and `#equal'.
+  "Normalize predicate names in QUERY for the current treesit build.
+Emacs 31+ and builds whose tree-sitter C library requires `#match?' receive
+question-mark predicates; earlier standard builds receive bare predicates.
 Also converts `#any-of?' to `#match?' for all versions."
   (let ((q (evil-textobj-tree-sitter--convert-any-of-predicates query)))
-    (if (>= emacs-major-version 31)
+    (if (or (>= emacs-major-version 31)
+            evil-textobj-tree-sitter--treesit-question-predicates)
         (replace-regexp-in-string
          "#equal\\([^?]\\)" "#eq?\\1"
          (replace-regexp-in-string "#match\\([^?]\\)" "#match?\\1" q))

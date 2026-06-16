@@ -17,8 +17,10 @@
 
 (comment)+ @comment.outer
 
-(function_definition
-  body: (block)? @test.inner) @test.outer
+((function_definition
+   name: (identifier) @_name
+   body: (block)? @test.inner) @test.outer
+ (#match "^test_" @_name))
 
 (list
   (_) @entry.outer)

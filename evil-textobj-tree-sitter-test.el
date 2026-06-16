@@ -316,18 +316,23 @@ the identifier (71,75)."
            "(#match \"pattern\" @x)")))
 
 (ert-deftest evil-textobj-tree-sitter-normalize-predicates ()
-  "Predicates are normalized for the running Emacs version."
-  (let* ((new-style (>= emacs-major-version 31))
+  "Predicates are normalized for the running Emacs version and detected build."
+  (let* ((use-question (or (>= emacs-major-version 31)
+                           evil-textobj-tree-sitter--treesit-question-predicates))
          (bare-in   "(#match \"p\" @x) (#equal @a \"b\")")
          (q-in      "(#match? \"p\" @x) (#eq? @a \"b\")")
          (new-out   "(#match? \"p\" @x) (#eq? @a \"b\")")
          (old-out   "(#match \"p\" @x) (#equal @a \"b\")"))
-    ;; Bare predicates: gain ? on Emacs 31+, unchanged otherwise.
+    ;; Bare predicates: gain ? when question style is needed, unchanged otherwise.
     (should (equal (evil-textobj-tree-sitter--normalize-treesit-predicates bare-in)
-                   (if new-style new-out old-out)))
-    ;; Question-mark predicates: kept on Emacs 31+, stripped otherwise.
+                   (if use-question new-out old-out)))
+    ;; Question-mark predicates: kept when question style needed, stripped otherwise.
     (should (equal (evil-textobj-tree-sitter--normalize-treesit-predicates q-in)
-                   (if new-style new-out old-out)))))
+                   (if use-question new-out old-out)))
+    ;; Runtime detection flag overrides version check.
+    (let ((evil-textobj-tree-sitter--treesit-question-predicates t))
+      (should (equal (evil-textobj-tree-sitter--normalize-treesit-predicates bare-in)
+                     new-out)))))
 
 (ert-deftest evil-textobj-tree-sitter-any-of-version-normalized ()
   "#any-of? is converted then version-normalized correctly."
