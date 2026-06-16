@@ -251,7 +251,22 @@ Also converts `#any-of?' to `#match?' for all versions."
        (replace-regexp-in-string "#match[?]" "#match" q)))))
 
 (defun evil-textobj-tree-sitter--detect-predicates (lang-sym)
-  "Detect and cache which predicate style LANG-SYM's treesit build needs."
+  "Detect and cache which predicate style LANG-SYM's treesit build needs.
+
+Different tree-sitter C library versions accept different predicate formats:
+older ones (bundled with Emacs 29) accept bare `#match', while newer ones
+(>=0.22, used in nixos-unstable and some Emacs 30+ builds) require `#match?'.
+The same Emacs major version can be built against either library, so we
+cannot rely on `emacs-major-version' alone.
+
+We probe by running a trivial `#match' query against the current language.
+If the C library raises `treesit-query-error', it needs `#match?' instead.
+We use `(comment)' rather than `(_)' because the wildcard node itself causes
+a syntax error in some Emacs builds when combined with a predicate.
+
+Detection runs on the first real treesit query rather than at package load
+time, because language grammars (installed by packages like treesit-auto)
+may not be available until after the first mode activation."
   (unless evil-textobj-tree-sitter--treesit-predicates-detected
     (setq evil-textobj-tree-sitter--treesit-question-predicates
           (with-temp-buffer
