@@ -63,16 +63,22 @@
   ;; Detect at load time, before any ERT/eask signal hooks are installed.
   ;; Try a bare #match query against the C grammar; if the tree-sitter C
   ;; library rejects it, we know this build requires #match? instead.
-  (when (and (fboundp 'treesit-language-available-p)
-             (fboundp 'treesit-query-capture)
-             (treesit-language-available-p 'c))
-    (with-temp-buffer
-      (treesit-parser-create 'c)
-      (condition-case nil
-          (prog1 nil (treesit-query-capture
-                      (treesit-buffer-root-node)
-                      "((comment) @x (#match \"test\" @x))"))
-        (treesit-query-error t))))
+  (let ((result
+         (when (and (fboundp 'treesit-language-available-p)
+                    (fboundp 'treesit-query-capture)
+                    (treesit-language-available-p 'c))
+           (ignore-errors
+             (with-temp-buffer
+               (treesit-parser-create 'c)
+               (condition-case nil
+                   (prog1 nil (treesit-query-capture
+                               (treesit-buffer-root-node)
+                               "((comment) @x (#match \"test\" @x))"))
+                 (treesit-query-error t)))))))
+    (message "evil-textobj-tree-sitter: question-predicates=%s c-available=%s"
+             result (and (fboundp 'treesit-language-available-p)
+                         (treesit-language-available-p 'c)))
+    result)
   "Non-nil if the tree-sitter C library requires `#match?' style predicates.
 Detected at package load time by probing with a bare `#match' query.")
 
