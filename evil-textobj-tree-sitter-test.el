@@ -330,7 +330,8 @@ the identifier (71,75)."
     (should (equal (evil-textobj-tree-sitter--normalize-treesit-predicates q-in)
                    (if use-question new-out old-out)))
     ;; Runtime detection flag overrides version check.
-    (let ((evil-textobj-tree-sitter--treesit-question-predicates t))
+    (let ((evil-textobj-tree-sitter--treesit-question-predicates t)
+          (evil-textobj-tree-sitter--treesit-predicates-detected t))
       (should (equal (evil-textobj-tree-sitter--normalize-treesit-predicates bare-in)
                      new-out)))))
 

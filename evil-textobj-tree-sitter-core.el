@@ -59,28 +59,12 @@
 (defconst evil-textobj-tree-sitter--dir (file-name-directory (locate-library "evil-textobj-tree-sitter.el"))
   "The directory where the library `tree-sitter-langs' is located.")
 
-(defvar evil-textobj-tree-sitter--treesit-question-predicates
-  ;; Detect at load time, before any ERT/eask signal hooks are installed.
-  ;; Try a bare #match query against the C grammar; if the tree-sitter C
-  ;; library rejects it, we know this build requires #match? instead.
-  (let ((result
-         (when (and (fboundp 'treesit-language-available-p)
-                    (fboundp 'treesit-query-capture)
-                    (treesit-language-available-p 'c))
-           (ignore-errors
-             (with-temp-buffer
-               (treesit-parser-create 'c)
-               (condition-case nil
-                   (prog1 nil (treesit-query-capture
-                               (treesit-buffer-root-node)
-                               "((comment) @x (#match \"test\" @x))"))
-                 (treesit-query-error t)))))))
-    (message "evil-textobj-tree-sitter: question-predicates=%s c-available=%s"
-             result (and (fboundp 'treesit-language-available-p)
-                         (treesit-language-available-p 'c)))
-    result)
+(defvar evil-textobj-tree-sitter--treesit-question-predicates nil
   "Non-nil if the tree-sitter C library requires `#match?' style predicates.
-Detected at package load time by probing with a bare `#match' query.")
+Detected lazily on first treesit query, when a language grammar is available.")
+
+(defvar evil-textobj-tree-sitter--treesit-predicates-detected nil
+  "Non-nil once predicate style detection has completed.")
 
 (defun evil-textobj-tree-sitter--use-builtin-treesitter ()
   "Return non-nil if we should use builtin treesitter."
@@ -266,6 +250,19 @@ Also converts `#any-of?' to `#match?' for all versions."
        "#eq[?]" "#equal"
        (replace-regexp-in-string "#match[?]" "#match" q)))))
 
+(defun evil-textobj-tree-sitter--detect-predicates (lang-sym)
+  "Detect and cache which predicate style LANG-SYM's treesit build needs."
+  (unless evil-textobj-tree-sitter--treesit-predicates-detected
+    (setq evil-textobj-tree-sitter--treesit-question-predicates
+          (with-temp-buffer
+            (treesit-parser-create lang-sym)
+            (condition-case nil
+                (prog1 nil (treesit-query-capture
+                            (treesit-buffer-root-node)
+                            "((comment) @x (#match \"test\" @x))"))
+              (treesit-query-error t)))
+          evil-textobj-tree-sitter--treesit-predicates-detected t)))
+
 (defun evil-textobj-tree-sitter--treesit-get-nodes (query)
   "Get nodes for `QUERY' using builtin `treesit'."
   (if (not (treesit-parser-list))
@@ -274,10 +271,12 @@ Also converts `#any-of?' to `#match?' for all versions."
         nil)
     (let* ((lang-name (alist-get major-mode evil-textobj-tree-sitter-major-mode-language-alist))
            (user-query (alist-get major-mode query))
-           (f-query (evil-textobj-tree-sitter--normalize-treesit-predicates
-                     (if (eq user-query nil)
-                         (evil-textobj-tree-sitter--get-query lang-name)
-                       user-query)))
+           (raw-query (if (eq user-query nil)
+                          (evil-textobj-tree-sitter--get-query lang-name)
+                        user-query))
+           ;; Detect predicate style on first call using the current language.
+           (_ (evil-textobj-tree-sitter--detect-predicates (intern lang-name)))
+           (f-query (evil-textobj-tree-sitter--normalize-treesit-predicates raw-query))
            (root-node (treesit-buffer-root-node))
            (captures (treesit-query-capture root-node f-query)))
       (seq-map (lambda (x)
