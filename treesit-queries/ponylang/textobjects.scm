@@ -33,7 +33,7 @@
 ) @function.outer
 (lambda
   body: (block)? @function.inner
-) @function.outside
+) @function.outer
 
 (params
   ((_) @parameter.inner . ","? @parameter.outer) @parameter.outer
@@ -58,7 +58,7 @@
   (entity
     provides: (type (nominal_type name: (identifier) @_provides))
     members: (members) @test.inner
-  ) @test.outside
+  ) @test.outer
   (#equal @_provides "UnitTest")
 )
 

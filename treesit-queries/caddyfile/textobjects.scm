@@ -13,4 +13,4 @@
 (named_route
   (block) @class.inner) @class.outer
 
-(site_definition (block) @class.inner) @class.outer
+(site_block (block) @class.inner) @class.outer

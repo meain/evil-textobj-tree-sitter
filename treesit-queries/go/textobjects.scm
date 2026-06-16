@@ -2,7 +2,7 @@
   body: (block)? @function.inner) @function.outer
 
 (func_literal
-  (_)? @function.inner) @function.outer
+  body: (block)? @function.inner) @function.outer
 
 (method_declaration
   body: (block)? @function.inner) @function.outer
@@ -27,10 +27,11 @@
 
 (comment)+ @comment.outer
 
+; Go test/benchmark/example/fuzz functions (all live in _test.go).
 ((function_declaration
    name: (identifier) @_name
    body: (block)? @test.inner) @test.outer
- (#match "^Test" @_name))
+ (#match "^(Test|Benchmark|Example|Fuzz)" @_name))
 
 ;; Additional queries
 

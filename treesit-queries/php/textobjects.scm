@@ -19,7 +19,13 @@
 (arrow_function 
   body: (_) @function.inner) @function.outer
   
-(anonymous_function_creation_expression
+(anonymous_function
+  body: (_) @function.inner) @function.outer
+
+(anonymous_class
+  body: (_) @class.inner) @class.outer
+
+(property_hook
   body: (_) @function.inner) @function.outer
 
 (anonymous_function_use_clause

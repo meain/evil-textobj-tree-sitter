@@ -7,6 +7,9 @@
 (extension_declaration
   (extension_body) @class.inner) @class.outer
 
+(extension_type_declaration
+  body: (_) @class.inner) @class.outer
+
 (enum_declaration
   body: (_) @class.inner) @class.outer
 
