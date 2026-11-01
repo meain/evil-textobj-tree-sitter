@@ -31,7 +31,7 @@
 ((function_declaration
    name: (identifier) @_name
    body: (block)? @test.inner) @test.outer
- (#match "^(Test|Benchmark|Example|Fuzz)" @_name))
+ (#match "^\\(Test\\|Benchmark\\|Example\\|Fuzz\\)" @_name))
 
 ;; Additional queries
 

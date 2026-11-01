@@ -17,6 +17,10 @@ find $HELIX_DIR/runtime/queries -name 'textobjects.scm' |
         # match? to match mapping is kinda hacky
         sed 's|\(@[^\.]*\)\.inside|\1.inner|g;s|\(@[^\.]*\)\.around|\1.outer|g;s|#match? @\([^ ]*\) "\([^"]*\)"|#match "\2" @\1|g;s/#eq?/#equal/g' \
             "$HELIX_DIR/runtime/queries/$file" > "treesit-queries/$dir/$filename"
+        # Helix's #match regexps are Rust syntax; treesit reads Emacs regexps.
+        emacs --batch -l scripts/translate-helix-regexps.el \
+            -f evil-textobj-tree-sitter-translate-helix-files \
+            "treesit-queries/$dir/$filename" </dev/null
     done
 
 ./scripts/append-additional-helix-queries

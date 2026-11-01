@@ -5,7 +5,7 @@
   .
   (sym_lit)
   (_)* @function.inner
-  (#match "^(defn|defn-|defmacro|defmethod|defmulti|definline)$" @_keyword)) @function.outer
+  (#match "^\\(defn\\|defn-\\|defmacro\\|defmethod\\|defmulti\\|definline\\)$" @_keyword)) @function.outer
 
 ; Anonymous functions (fn)
 (list_lit
@@ -25,7 +25,7 @@
   .
   (sym_lit)
   (_)* @class.inner
-  (#match "^(deftype|defrecord|defprotocol|definterface|defstruct)$" @_keyword)) @class.outer
+  (#match "^\\(deftype\\|defrecord\\|defprotocol\\|definterface\\|defstruct\\)$" @_keyword)) @class.outer
 
 ; Test definitions (deftest)
 (list_lit

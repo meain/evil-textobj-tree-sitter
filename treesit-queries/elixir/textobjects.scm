@@ -16,7 +16,7 @@
        (pair
          value: (_) @function.inner))?)?
    (do_block (_)* @function.inner)?)
- (#match "^(def|defdelegate|defguard|defguardp|defmacro|defmacrop|defn|defnp|defp)$" @_keyword)) @function.outer
+ (#match "^\\(def\\|defdelegate\\|defguard\\|defguardp\\|defmacro\\|defmacrop\\|defn\\|defnp\\|defp\\)$" @_keyword)) @function.outer
 
 (anonymous_function
   (stab_clause right: (body) @function.inner)) @function.outer
@@ -24,12 +24,12 @@
 ((call
    target: (identifier) @_keyword
    (do_block (_)* @class.inner))
- (#match "^(defmodule|defprotocol|defimpl)$" @_keyword)) @class.outer
+ (#match "^\\(defmodule\\|defprotocol\\|defimpl\\)$" @_keyword)) @class.outer
 
 ((call
   target: (identifier) @_keyword
   (arguments ((string) . (_)?))
   (do_block (_)* @test.inner)?)
- (#match "^(test|describe)$" @_keyword)) @test.outer
+ (#match "^\\(test\\|describe\\)$" @_keyword)) @test.outer
 
 (comment)+ @comment.outer @comment.inner
