@@ -28,7 +28,7 @@
 
 (macrocall_expression (macro_identifier
     (identifier) @_name
-    (#match "^(test|test_throws|test_logs|inferred|test_deprecated|test_warn|test_nowarn|test_broken|test_skip)$" @_name)
+    (#match "^\\(test\\|test_throws\\|test_logs\\|inferred\\|test_deprecated\\|test_warn\\|test_nowarn\\|test_broken\\|test_skip\\)$" @_name)
   )
   .
   (macro_argument_list) @test.inner) @test.outer

@@ -218,7 +218,9 @@ https://github.com/nvim-treesitter/nvim-treesitter/pull/564"
 
 (defun evil-textobj-tree-sitter--convert-any-of-predicates (query)
   "Convert #any-of? predicates in QUERY to equivalent #match? predicates.
-Transforms (#any-of? @capture \"v1\" \"v2\") into (#match? \"^(v1|v2)$\" @capture)."
+Transforms (#any-of? @capture \"v1\" \"v2\") into a #match? whose regexp
+is the Emacs regexp ^\\(v1\\|v2\\)$, since builtin `treesit' matches
+with Emacs regexps.  Its backslashes are doubled in the query text."
   (replace-regexp-in-string
    "(#any-of\\? @[^ )]+\\(?:[[:space:]]+\"[^\"]*\"\\)+)"
    (lambda (m)
@@ -228,10 +230,12 @@ Transforms (#any-of? @capture \"v1\" \"v2\") into (#match? \"^(v1|v2)$\" @captur
          (setq capture (match-string 1 m))
          (let ((pos 0))
            (while (string-match "\"\\([^\"]*\\)\"" m pos)
-             (push (regexp-quote (match-string 1 m)) values)
+             (push (replace-regexp-in-string
+                    "\\\\" "\\\\" (regexp-quote (match-string 1 m)) t t)
+                   values)
              (setq pos (match-end 0))))
-         (format "(#match? \"^(%s)$\" %s)"
-                 (mapconcat #'identity (nreverse values) "|")
+         (format "(#match? \"^\\\\(%s\\\\)$\" %s)"
+                 (mapconcat #'identity (nreverse values) "\\\\|")
                  capture))))
    query t t))
 

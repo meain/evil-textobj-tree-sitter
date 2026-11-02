@@ -9,6 +9,9 @@
 (require 'tree-sitter-langs)
 (require 'evil-textobj-tree-sitter)
 (require 'go-mode)
+(load (expand-file-name "scripts/translate-helix-regexps"
+                        (file-name-directory (or load-file-name buffer-file-name)))
+      nil t)
 
 (setq treesit-language-source-alist
       '((c . ("https://github.com/tree-sitter/tree-sitter-c"))
@@ -61,6 +64,14 @@ func main() {
 		fmt.Println(\"yo!\")
 	}
 }")
+    (go-test-func . "package main
+
+func TestFoo(t *testing.T) {
+	t.Log(\"x\")
+}
+
+func helper() {}
+")
     (py-complex . "def func ():
     var1
     def func2(): pass
@@ -295,18 +306,27 @@ the identifier (71,75)."
 ;;; Predicate normalization tests
 
 (ert-deftest evil-textobj-tree-sitter-any-of-two-values ()
-  "#any-of? with two values converts to #match?."
+  "#any-of? with two values converts to #match?.
+The group is an Emacs regexp, since treesit matches with Emacs regexps;
+in the query text each of its backslashes is escaped."
   (should (equal
            (evil-textobj-tree-sitter--convert-any-of-predicates
             "(#any-of? @_name \"test\" \"testWidgets\")")
-           "(#match? \"^(test|testWidgets)$\" @_name)")))
+           "(#match? \"^\\\\(test\\\\|testWidgets\\\\)$\" @_name)")))
 
 (ert-deftest evil-textobj-tree-sitter-any-of-three-values ()
-  "#any-of? with three values converts to #match?."
+  "#any-of? with three values converts to an Emacs-syntax #match?."
   (should (equal
            (evil-textobj-tree-sitter--convert-any-of-predicates
             "(#any-of? @_fn \"do\" \"while\" \"when\")")
-           "(#match? \"^(do|while|when)$\" @_fn)")))
+           "(#match? \"^\\\\(do\\\\|while\\\\|when\\\\)$\" @_fn)")))
+
+(ert-deftest evil-textobj-tree-sitter-any-of-quotes-values ()
+  "#any-of? values are matched literally, escaped for the query text."
+  (should (equal
+           (evil-textobj-tree-sitter--convert-any-of-predicates
+            "(#any-of? @_fn \"a.b\")")
+           "(#match? \"^\\\\(a\\\\.b\\\\)$\" @_fn)")))
 
 (ert-deftest evil-textobj-tree-sitter-any-of-unchanged ()
   "Non-#any-of? predicates pass through convert-any-of unchanged."
@@ -341,7 +361,53 @@ the identifier (71,75)."
            (evil-textobj-tree-sitter--normalize-treesit-predicates
             "(#any-of? @_name \"test\" \"testWidgets\")")
            (if (>= emacs-major-version 31)
-               "(#match? \"^(test|testWidgets)$\" @_name)"
-             "(#match \"^(test|testWidgets)$\" @_name)"))))
+               "(#match? \"^\\\\(test\\\\|testWidgets\\\\)$\" @_name)"
+             "(#match \"^\\\\(test\\\\|testWidgets\\\\)$\" @_name)"))))
+
+;;; #match regexp translation tests
+
+(ert-deftest evil-textobj-tree-sitter-match-regexp-translates-groups ()
+  "Rust-syntax groups and alternation become Emacs regexp syntax."
+  (dolist (case '(("^(Test|Benchmark|Example|Fuzz)"
+                   . "^\\(Test\\|Benchmark\\|Example\\|Fuzz\\)")
+                  ("^(?:a|b)$" . "^\\(?:a\\|b\\)$")))
+    (should (equal (evil-textobj-tree-sitter--treesit-match-regexp (car case))
+                   (cdr case))))
+  (let ((re (evil-textobj-tree-sitter--treesit-match-regexp
+             "^(defn|defn-|defmacro)$")))
+    (should (string-match-p re "defmacro"))
+    (should-not (string-match-p re "def"))))
+
+(ert-deftest evil-textobj-tree-sitter-match-regexp-rust-escapes ()
+  "Rust-escaped parens and bars become literal characters."
+  (should (equal (evil-textobj-tree-sitter--treesit-match-regexp "a\\(b\\)\\|")
+                 "a(b)|")))
+
+(ert-deftest evil-textobj-tree-sitter-match-regexp-unchanged ()
+  "Regexps that mean the same in both syntaxes pass through unchanged.
+This includes bracket expressions, where parens and bars are literal."
+  (dolist (re '("^on[A-Z].*" "[()|]x" "^fn$" "_test$" "[]|]" "[^]|]" "a\\.b"))
+    (should (equal (evil-textobj-tree-sitter--treesit-match-regexp re) re))))
+
+(ert-deftest evil-textobj-tree-sitter-translate-match-regexps-in-query ()
+  "#match regexps in query text translate to Emacs syntax."
+  (should (equal (evil-textobj-tree-sitter--translate-match-regexps
+                  "((x) @x (#match \"^(a|b)$\" @x))")
+                 "((x) @x (#match \"^\\\\(a\\\\|b\\\\)$\" @x))"))
+  ;; A Rust-escaped paren is written \\( in the query text.
+  (should (equal (evil-textobj-tree-sitter--translate-match-regexps
+                  "(#match \"a\\\\(\" @x)")
+                 "(#match \"a(\" @x)"))
+  ;; Other predicates are left alone.
+  (should (equal (evil-textobj-tree-sitter--translate-match-regexps
+                  "(#eq? @x \"(a|b)\")")
+                 "(#eq? @x \"(a|b)\")")))
+
+(ert-deftest evil-textobj-tree-sitter-treesit-bundled-match-alternation ()
+  "Bundled Go test.outer, whose #match uses alternation, selects tests."
+  ;; Point inside TestFoo selects the whole function.
+  (evil-textobj-tree-sitter--range-test 'go-ts-mode t 45 "test.outer" (cons 15 57) 'go-test-func)
+  ;; `helper' is no test, and no test follows it.
+  (evil-textobj-tree-sitter--range-test 'go-ts-mode t 66 "test.outer" nil 'go-test-func))
 
 ;;; evil-textobj-tree-sitter-test.el ends here
