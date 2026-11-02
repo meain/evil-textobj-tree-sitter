@@ -1,5 +1,9 @@
-(function_item
-  body: (_) @function.inner) @function.outer
+(
+  (attribute_item)* @function.outer
+  .
+  (function_item
+    body: (_) @function.inner) @function.outer
+)
 
 (closure_expression
   body: (_) @function.inner) @function.outer
@@ -49,12 +53,13 @@
 (; #[test]
  (attribute_item
    (attribute
-     (identifier) @_test_attribute))
+     (identifier) @_test_attribute)) @test.outer
  ; allow other attributes like #[should_panic] and comments
  [
-   (attribute_item)
-   (line_comment)
+   (attribute_item) @test.outer
+   (line_comment) @test.outer
  ]*
+ .
  ; the test function
  (function_item
    body: (_) @test.inner) @test.outer
